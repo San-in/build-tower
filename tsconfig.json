@@ -1,0 +1,77 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "skipLibCheck": true,
+    "lib": [
+      "esnext"
+    ],
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-native",
+    "baseUrl": "./src",
+    "strictBindCallApply": true,
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@components/*": [
+        "components/*"
+      ],
+      "@types": [
+        "types/index.ts"
+      ],
+      "@screens": [
+        "screens/index.ts"
+      ],
+      "@utils": [
+        "utils/index.ts"
+      ],
+      "@theme": [
+        "theme/index.ts"
+      ],
+      "@navigation/*": [
+        "navigation/*"
+      ],
+      "@validation": [
+        "validation/index.ts"
+      ],
+      "@constants": [
+        "constants/index.ts"
+      ],
+      "@context/*": [
+        "context/*"
+      ],
+      "@assets/*": [
+        "../assets/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ]
+    },
+    "removeComments": true,
+    "noEmit": true,
+    "pretty": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": [
+      "expo",
+      "react-native"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
