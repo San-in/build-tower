@@ -44,3 +44,8 @@ export const TextStyles = StyleSheet.create({
     lineHeight: 21,
   },
 })
+
+export const FONT_FAMILY = {
+  regular: 'BellGothicBlack',
+  bold: 'BellGothicBold',
+}

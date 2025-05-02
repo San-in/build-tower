@@ -1,10 +1,11 @@
 import { COLORS } from '@theme'
 import * as Font from 'expo-font'
 import { FC, useEffect, useState } from 'react'
-import { StatusBar, View } from 'react-native'
-
+import { ActivityIndicator, StatusBar, View } from 'react-native'
 import { styles } from './RootStackWrapper.styles'
 import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/RootStackWrapper.types'
+import { useAppDispatch } from '@store/hooks'
+import { bananasService, levelService } from '@services'
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -15,28 +16,36 @@ const loadFonts = async () => {
 }
 
 const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
-  const [fontsLoaded, setFontsLoaded] = useState(false)
+  const dispatch = useAppDispatch()
+  const [appLoaded, setAppLoaded] = useState(false)
 
   useEffect(() => {
     const loadApp = async () => {
       try {
-        await loadFonts()
-        setFontsLoaded(true)
+        await Promise.all([
+          loadFonts(),
+          levelService.initLevels(dispatch),
+          bananasService.initBananas(dispatch),
+        ])
+        setAppLoaded(true)
       } catch (error) {
         console.warn(error)
       }
     }
-
     loadApp()
   }, [])
 
-  if (!fontsLoaded) {
-    return null
+  if (!appLoaded) {
+    return <ActivityIndicator />
   }
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.codeGrey} barStyle={'light-content'} />
+      <StatusBar
+        backgroundColor={COLORS.codeGrey}
+        barStyle={'light-content'}
+        hidden={true}
+      />
 
       {children}
     </View>

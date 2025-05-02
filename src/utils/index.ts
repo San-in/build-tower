@@ -1,2 +1,6 @@
 export { splitArray } from './splitArray'
 export { generateRandomNumber } from './generateRandomNumber'
+export { getLevelIcon } from './getLevelIcon'
+export { getLevelBackground } from './getLevelBackground'
+export { generateInitialLevels } from './generateInitialLevels'
+export { calculateIsLevelAvailable } from './calculateIsLevelAvailable'

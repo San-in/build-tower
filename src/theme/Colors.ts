@@ -108,4 +108,43 @@ export const COLORS = {
   roofTerracotta30: 'rgba(179,38,30,0.3)',
   roofTerracotta20: 'rgba(179,38,30,0.2)',
   roofTerracotta10: 'rgba(179,38,30,0.1)',
+
+  brown: 'rgb(128,76,1)',
+  yellow: 'rgb(251,216,2)',
+
+  gradientGreen_1: 'rgb(19,103,22)',
+  gradientGreen_2: 'rgb(35,136,39)',
+  gradientGreen_3: 'rgb(178,230,180)',
+  gradientGreen_4: 'rgb(110,221,115)',
+  gradientGreen_5: 'rgb(19,103,22)',
+
+  gradientTerracotta_1: 'rgb(159,64,17)',
+  gradientTerracotta_2: 'rgb(193,74,41)',
+  gradientTerracotta_3: 'rgb(214,112,86)',
+  gradientTerracotta_4: 'rgb(209,134,102)',
+  gradientTerracotta_5: 'rgb(241,173,149)',
+
+  gradientPurple_1: 'rgb(62,24,117)',
+  gradientPurple_2: 'rgb(93,63,159)',
+  gradientPurple_3: 'rgb(128,88,172)',
+  gradientPurple_4: 'rgb(97,68,128)',
+  gradientPurple_5: 'rgb(190,166,209)',
+
+  gradientOrange_1: 'rgb(250,71,1)',
+  gradientOrange_2: 'rgb(243,104,45)',
+  gradientOrange_3: 'rgb(237,217,204)',
+  gradientOrange_4: 'rgb(246,141,97)',
+  gradientOrange_5: 'rgb(250,71,1)',
+
+  gradientRed_1: 'rgb(244,4,4)',
+  gradientRed_2: 'rgb(241,56,56)',
+  gradientRed_3: 'rgb(237,200,200)',
+  gradientRed_4: 'rgb(234,146,146)',
+  gradientRed_5: 'rgb(244,4,4)',
+
+  gradientGrey_1: 'rgb(69,69,69)',
+  gradientGrey_2: 'rgb(87,87,87)',
+  gradientGrey_3: 'rgb(122,122,122)',
+  gradientGrey_4: 'rgb(163,163,163)',
+  gradientGrey_5: 'rgb(197,197,197)',
 }

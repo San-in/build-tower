@@ -45,14 +45,14 @@
       "@constants": [
         "constants/index.ts"
       ],
-      "@context/*": [
-        "context/*"
+      "@store/*": [
+        "store/*"
       ],
       "@assets/*": [
         "../assets/*"
       ],
-      "@services/*": [
-        "services/*"
+      "@services": [
+        "services/index.ts"
       ]
     },
     "removeComments": true,

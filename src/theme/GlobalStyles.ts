@@ -16,4 +16,10 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
+  transparent: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+  },
 })

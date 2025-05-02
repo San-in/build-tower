@@ -2,11 +2,17 @@ import { CloseIcon } from '@assets/icons'
 
 import { GlobalStyles } from '@theme'
 import { FC } from 'react'
-import { Modal, Pressable, View } from 'react-native'
+import { Modal, Pressable, Text, View } from 'react-native'
 import { OptionModalProps } from '@components/ui/OptionModal/OptionModal.types'
 import { styles } from '@components/ui/OptionModal/OptionModal.styles'
 
-const OptionModal: FC<OptionModalProps> = ({ modalVisible, handleClose }) => (
+const OptionModal: FC<OptionModalProps> = ({
+  modalVisible,
+  handleClose,
+  firstOption,
+  secondOption,
+  changeOption,
+}) => (
   <Modal
     animationType="slide"
     onRequestClose={handleClose}
@@ -24,7 +30,28 @@ const OptionModal: FC<OptionModalProps> = ({ modalVisible, handleClose }) => (
         >
           <CloseIcon />
         </Pressable>
-        <View style={styles.contentContainer}></View>
+        <View style={[styles.contentContainer, { flexDirection: 'row' }]}>
+          <Pressable
+            onPress={() => {
+              handleClose()
+              changeOption(1)
+            }}
+          >
+            <Text>
+              {firstOption.operator} {firstOption.number}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              handleClose()
+              changeOption(2)
+            }}
+          >
+            <Text>
+              {secondOption.operator} {secondOption.number}
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   </Modal>

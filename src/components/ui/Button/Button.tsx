@@ -1,69 +1,306 @@
-import { TextStyles } from '@theme'
-import { BUTTON_TYPE } from '@types'
-import { FC, useMemo } from 'react'
-import { Pressable, Text } from 'react-native'
-
-import { styles } from './Button.styles'
+import { FC, useEffect, useRef, useState } from 'react'
+import { Pressable, View, Animated, StyleSheet } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 import { ButtonProps } from './Button.types'
+import { OutlinedText } from '@components/ui/OutlinedText'
+import { styles } from './Button.styles'
+import { COLORS } from '@theme'
+import { BUTTON_TYPE } from '@types'
 
 const Button: FC<ButtonProps> = ({
   title,
-  type = BUTTON_TYPE.Filled,
-  minWidth = 120,
   isDisabled = false,
   style,
+  onPress,
+  type = BUTTON_TYPE.Success,
+  textSize = 20,
   ...props
 }) => {
-  const buttonStyle = useMemo(
-    () =>
-      ({
-        [BUTTON_TYPE.Filled]: [
-          styles.buttonFilled,
-          styles.buttonFilledPressed,
-          styles.buttonFilledDisabled,
-        ],
-        [BUTTON_TYPE.Outlined]: [
-          styles.buttonOutlined,
-          styles.buttonOutlinedPressed,
-          styles.buttonOutlinedDisabled,
-        ],
-        [BUTTON_TYPE.Text]: [
-          styles.buttonText,
-          styles.buttonTextPressed,
-          styles.buttonTextDisabled,
-        ],
-      })[type],
-    [type]
-  )
+  const borderAnim = useRef(new Animated.Value(0)).current
+  const [gradientIndex, setGradientIndex] = useState(0)
 
-  const textStyle = useMemo(
-    () =>
-      ({
-        [BUTTON_TYPE.Filled]: isDisabled
-          ? styles.textButtonDisabled
-          : styles.textButtonFilled,
-        [BUTTON_TYPE.Outlined]: isDisabled
-          ? styles.textButtonDisabled
-          : styles.textButton,
-        [BUTTON_TYPE.Text]: isDisabled
-          ? styles.textButtonDisabled
-          : styles.textButton,
-      })[type],
-    [type, isDisabled]
-  )
+  const gradients: readonly [string, string, ...string[]][] = {
+    [BUTTON_TYPE.Success]: [
+      [
+        COLORS.gradientGreen_1,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_5,
+      ],
+      [
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_1,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_4,
+      ],
+      [
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_1,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_3,
+      ],
+      [
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_1,
+        COLORS.gradientGreen_2,
+      ],
+      [
+        COLORS.gradientGreen_5,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_1,
+      ],
+      [
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_5,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_2,
+      ],
+      [
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_5,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_3,
+      ],
+      [
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_5,
+        COLORS.gradientGreen_4,
+      ],
+      [
+        COLORS.gradientGreen_1,
+        COLORS.gradientGreen_2,
+        COLORS.gradientGreen_3,
+        COLORS.gradientGreen_4,
+        COLORS.gradientGreen_5,
+      ],
+    ],
+    [BUTTON_TYPE.Warning]: [
+      [
+        COLORS.gradientOrange_1,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_5,
+      ],
+      [
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_1,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_4,
+      ],
+      [
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_1,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_3,
+      ],
+      [
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_1,
+        COLORS.gradientOrange_2,
+      ],
+      [
+        COLORS.gradientOrange_5,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_1,
+      ],
+      [
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_5,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_2,
+      ],
+      [
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_5,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_3,
+      ],
+      [
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_5,
+        COLORS.gradientOrange_4,
+      ],
+      [
+        COLORS.gradientOrange_1,
+        COLORS.gradientOrange_2,
+        COLORS.gradientOrange_3,
+        COLORS.gradientOrange_4,
+        COLORS.gradientOrange_5,
+      ],
+    ],
+    [BUTTON_TYPE.Error]: [
+      [
+        COLORS.gradientRed_1,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_5,
+      ],
+      [
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_1,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_4,
+      ],
+      [
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_1,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_3,
+      ],
+      [
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_1,
+        COLORS.gradientRed_2,
+      ],
+      [
+        COLORS.gradientRed_5,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_1,
+      ],
+      [
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_5,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_2,
+      ],
+      [
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_5,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_3,
+      ],
+      [
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_5,
+        COLORS.gradientRed_4,
+      ],
+      [
+        COLORS.gradientRed_1,
+        COLORS.gradientRed_2,
+        COLORS.gradientRed_3,
+        COLORS.gradientRed_4,
+        COLORS.gradientRed_5,
+      ],
+    ],
+  }[type] as [string, string, ...string[]][]
+
+  const runChangeGradient = () => {
+    for (let i = 0; i < gradients.length; i += 1) {
+      setTimeout(() => {
+        setGradientIndex(i)
+      }, i * 50)
+    }
+  }
+
+  const animateBorder = borderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-5, -2],
+  })
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      runChangeGradient()
+    }, 10000)
+    return () => clearInterval(intervalId)
+  }, [])
+
+  const currentColors = gradients[gradientIndex]
 
   return (
     <Pressable
       {...props}
+      onLongPress={() => runChangeGradient()}
+      onPressIn={() => {
+        Animated.timing(borderAnim, {
+          toValue: 1,
+          duration: 250,
+          useNativeDriver: false,
+        }).start()
+      }}
+      onPressOut={() => {
+        Animated.timing(borderAnim, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: false,
+        }).start()
+      }}
+      onPress={onPress}
       disabled={isDisabled}
-      style={({ pressed }: { pressed: boolean }) => [
-        styles.container,
-        style,
-        !isDisabled ? buttonStyle[Number(pressed)] : buttonStyle.at(-1),
-        { minWidth },
-      ]}
+      style={({ pressed }: { pressed: boolean }) => [styles.container, style]}
     >
-      <Text style={[textStyle, TextStyles.buttonLabel]}>{title}</Text>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: animateBorder,
+          bottom: animateBorder,
+          borderRadius: 14,
+          borderWidth: 6,
+          borderColor: '#202020',
+          zIndex: 0,
+        }}
+      />
+
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { borderRadius: 14, zIndex: 1 }]}
+      >
+        {currentColors && (
+          <LinearGradient
+            colors={
+              isDisabled
+                ? [
+                    COLORS.gradientGrey_1,
+                    COLORS.gradientGrey_2,
+                    COLORS.gradientGrey_3,
+                    COLORS.gradientGrey_4,
+                    COLORS.gradientGrey_2,
+                  ]
+                : currentColors
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientBackground}
+          />
+        )}
+      </Animated.View>
+
+      <View style={{ zIndex: 2 }}>
+        <OutlinedText fontSize={textSize}>{title}</OutlinedText>
+      </View>
     </Pressable>
   )
 }

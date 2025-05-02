@@ -1,15 +1,17 @@
 import { Operator } from '@types'
 
 export const generateRandomOperator = (
-  operator: Operator | null = null
+  exceptions: Array<Operator> | null = null
 ): Operator => {
-  const operators: Array<Operator> = ['+', '-', '*', '/']
+  const operators: Array<Operator> = ['+', '-', '+', '-', '*', '/']
 
-  if (operator === null) {
+  if (exceptions === null) {
     return operators[Math.floor(Math.random() * operators.length)] as Operator
   }
 
-  const remainingOperators = operators.filter((op) => op !== operator)
+  const remainingOperators = operators.filter(
+    (operator) => !exceptions.includes(operator)
+  )
 
   return remainingOperators[
     Math.floor(Math.random() * remainingOperators.length)
