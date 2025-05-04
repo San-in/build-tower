@@ -1,3 +1,14 @@
+import { BlockTowerCreator } from '@components/gameplay'
+import { Button, Header, OptionModal } from '@components/ui'
+import WheelOfFortune, {
+  WheelOfFortuneRef,
+} from '@components/ui/WheelOfFortune/WheelOfFortune'
+// import { LEVEL_CONFIG } from '@constants'
+import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
+import { RouteProp, useRoute } from '@react-navigation/core'
+import { BUTTON_TYPE, OptionValue, SCREENS } from '@types'
+import { generateRandomNumber, OperatorType } from '@utils'
+// import LottieView from 'lottie-react-native'
 import { FC, useEffect, useRef, useState } from 'react'
 import {
   Alert,
@@ -6,37 +17,42 @@ import {
   ScrollView,
   View,
 } from 'react-native'
-import { Button, OptionModal } from '@components/ui'
-import { BlockTowerCreator } from '@components/gameplay'
-import { BUTTON_TYPE, Operator, OptionValue } from '@types'
-import { generateRandomNumber } from '@utils'
+
 import { generateRandomOperator } from '../../utils/generateRandomOperator'
-import LottieView from 'lottie-react-native'
-import WheelOfFortune, {
-  WheelOfFortuneRef,
-} from '@components/ui/WheelOfFortune/WheelOfFortune'
 
 const INITIAL_OPTION_STATE = { number: 0, operator: null }
 
 const GameScreen: FC = () => {
+  const {
+    params: { level },
+  } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
+
+  // const {
+  //   attempts,
+  //   difficulty,
+  //   fistTower,
+  //   secondTower,
+  //   simpleOperators,
+  //   multiplicativeOperators,
+  //   prize,
+  // } = LEVEL_CONFIG[level]
+
   const [step, setStep] = useState(0)
   const [initialBlockValue, setInitialBlockValue] = useState(0)
   const [userBlockValue, setUserBlockValue] = useState(0)
   const [focusedTower, setFocusedTower] = useState<'initial' | 'customer'>(
     'initial'
   )
-  const [isBigImage, setIsBigImage] = useState(true)
   const [firstOptionCard, setFirstOptionCard] =
     useState<OptionValue>(INITIAL_OPTION_STATE)
   const [secondOptionCard, setSecondOptionCard] =
     useState<OptionValue>(INITIAL_OPTION_STATE)
   const [chosenOption, setChosenOption] = useState<1 | 2 | null>(null)
   const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
+  const [isFinishRoundModalVisible, setIsFinishRoundModalVisible] =
+    useState(false)
   const [isScaledTower, setIsScaledTower] = useState(false)
   const scrollViewRef = useRef<ScrollView>(null)
-
-  const isOperatorSimple = (operator: Operator): boolean =>
-    operator === '+' || operator === '-'
 
   useEffect(() => {
     if (chosenOption) {
@@ -66,7 +82,7 @@ const GameScreen: FC = () => {
       setStep((prevState) => prevState + 1)
       setChosenOption(null)
     }
-  }, [chosenOption])
+  }, [chosenOption, firstOptionCard, secondOptionCard])
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -80,10 +96,10 @@ const GameScreen: FC = () => {
         })
       }
     }, 100)
-  }, [scrollViewRef, initialBlockValue, userBlockValue])
+  }, [scrollViewRef, initialBlockValue, userBlockValue, focusedTower])
 
   useEffect(() => {
-    if (step === 6) {
+    if (isFinishRoundModalVisible) {
       let message = 'You need higher tower'
       if (initialBlockValue < userBlockValue) {
         message = 'You lose!'
@@ -98,6 +114,7 @@ const GameScreen: FC = () => {
         message = 'Satisfy'
       }
       Alert.alert(message)
+      setIsFinishRoundModalVisible(false)
       setStep(0)
       setInitialBlockValue(0)
       setUserBlockValue(0)
@@ -105,16 +122,24 @@ const GameScreen: FC = () => {
       setSecondOptionCard(INITIAL_OPTION_STATE)
       setFirstOptionCard(INITIAL_OPTION_STATE)
     }
-  }, [step])
+  }, [initialBlockValue, isFinishRoundModalVisible, userBlockValue])
+
   const wheelRef = useRef<WheelOfFortuneRef>(null)
   const sectors = ['x8', 'x15', 'x10', 'x9', 'x12', 'x13', 'x11', 'x14']
 
   return (
     <>
       <ImageBackground
-        style={{ flex: 1 }}
         source={require('../../../assets/images/levels/1/background.png')}
+        style={{ flex: 1 }}
       >
+        <Header
+          level={level}
+          onHomePress={() => {}}
+          onRandomAddBlockPress={() => {}}
+          onRandomRemoveBlockPress={() => {}}
+          onResetPress={() => {}}
+        />
         <View
           style={{
             marginTop: 200,
@@ -126,27 +151,27 @@ const GameScreen: FC = () => {
           }}
         >
           <WheelOfFortune
-            ref={wheelRef}
-            sectors={sectors}
-            winnerIndex={4}
             onFinish={(winner, index) => {
               console.log(`Winner is ${winner} at index ${index}`)
             }}
+            ref={wheelRef}
+            sectors={sectors}
+            winnerIndex={4}
           />
 
           <Button
-            title="Крутить колесо"
             onPress={() => wheelRef.current?.spin()}
+            title="Крутить колесо"
           />
         </View>
         <ScrollView
-          bounces={false}
           alwaysBounceVertical={false}
-          ref={scrollViewRef}
+          bounces={false}
           contentContainerStyle={{
             flexGrow: 1,
             alignItems: 'flex-end',
           }}
+          ref={scrollViewRef}
         >
           <View
             style={{
@@ -160,21 +185,21 @@ const GameScreen: FC = () => {
           >
             {!!initialBlockValue && (
               <BlockTowerCreator
-                quantity={initialBlockValue}
-                type={'initial'}
                 isInitializing={true}
                 isScaled={isScaledTower}
+                quantity={initialBlockValue}
+                type={'initial'}
               />
             )}
 
             {!!userBlockValue && (
               <BlockTowerCreator
-                quantity={userBlockValue}
-                type={'user'}
                 isInitializing={
                   !firstOptionCard.operator && !firstOptionCard.operator
                 }
+                quantity={userBlockValue}
                 step={step}
+                type={'user'}
               />
             )}
             {/*<LottieView*/}
@@ -196,8 +221,8 @@ const GameScreen: FC = () => {
           </View>
 
           <ImageBackground
-            style={{ backgroundColor: 'black', width: '100%', height: 140 }}
             source={require('../../../assets/images/ground.png')}
+            style={{ backgroundColor: 'black', width: '100%', height: 140 }}
           />
         </ScrollView>
       </ImageBackground>
@@ -213,17 +238,15 @@ const GameScreen: FC = () => {
         }}
       >
         <Button
-          title={'Scale'}
           onPress={() => setIsScaledTower(true)}
           style={{ alignSelf: 'center' }}
+          title={'Scale'}
           type={BUTTON_TYPE.Error}
         />
         <Button
-          title={'Attempt'}
-          style={{ alignSelf: 'center' }}
           onPress={() => {
             if (step === 5) {
-              setStep(6)
+              setIsFinishRoundModalVisible(true)
               return
             }
             const isUserNeedHelp = userBlockValue - initialBlockValue > 8
@@ -241,11 +264,11 @@ const GameScreen: FC = () => {
             if (isTheLastBlock) {
               secondOperator = generateRandomOperator([firstOperator, '-', '/'])
             }
-            let firstNumber = isOperatorSimple(firstOperator)
+            let firstNumber = OperatorType.isSimple(firstOperator)
               ? generateRandomNumber(1, 5)
               : generateRandomNumber(2, 3)
 
-            let secondNumber = isOperatorSimple(secondOperator)
+            let secondNumber = OperatorType.isSimple(secondOperator)
               ? generateRandomNumber(1, 5)
               : generateRandomNumber(2, 3)
 
@@ -274,19 +297,19 @@ const GameScreen: FC = () => {
             })
             setIsModalOptionVisible(true)
           }}
+          style={{ alignSelf: 'center' }}
+          title={'Attempt'}
         />
         <Button
-          title={'Build 1st tower'}
-          style={{ maxWidth: 170 }}
           onPress={() => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
             setInitialBlockValue(generateRandomNumber(8, 15))
           }}
+          style={{ maxWidth: 170 }}
+          title={'Build 1st tower'}
         />
         <Button
-          title={!!userBlockValue ? 'Reset' : 'Build 2nd tower'}
-          style={{ maxWidth: 170 }}
           onPress={() => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
             if (!!userBlockValue) {
@@ -297,26 +320,26 @@ const GameScreen: FC = () => {
               setChosenOption(null)
               setSecondOptionCard(INITIAL_OPTION_STATE)
               setFirstOptionCard(INITIAL_OPTION_STATE)
-              setIsBigImage(true)
               return
             }
             setFocusedTower('customer')
             setUserBlockValue(generateRandomNumber(1, 3))
             setStep(1)
-            setIsBigImage(false)
           }}
+          style={{ maxWidth: 170 }}
+          title={!!userBlockValue ? 'Reset' : 'Build 2nd tower'}
           type={BUTTON_TYPE.Warning}
         />
       </View>
 
       <OptionModal
-        modalVisible={isModalOptionVisible}
-        handleClose={() => setIsModalOptionVisible(false)}
-        firstOption={firstOptionCard}
-        secondOption={secondOptionCard}
         changeOption={(option) => {
           setChosenOption(option)
         }}
+        firstOption={firstOptionCard}
+        handleClose={() => setIsModalOptionVisible(false)}
+        modalVisible={isModalOptionVisible}
+        secondOption={secondOptionCard}
       />
     </>
   )

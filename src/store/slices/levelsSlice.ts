@@ -1,5 +1,4 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TOTAL_LEVELS } from '@constants'
 import { LEVEL_DIFFICULTY, LevelId } from '@types'
 import { generateInitialLevels } from '@utils'
 
@@ -11,7 +10,7 @@ export type Level = {
 }
 
 interface LevelsState {
-  levels: Level[]
+  levels: Array<Level>
 }
 
 const initialState: LevelsState = {
@@ -37,7 +36,7 @@ const levelsSlice = createSlice({
         level.stars = stars
       }
     },
-    setAllLevels: (state, { payload }: PayloadAction<Level[]>) => {
+    setAllLevels: (state, { payload }: PayloadAction<Array<Level>>) => {
       state.levels = payload
     },
     resetLevels: () => initialState,
@@ -63,8 +62,8 @@ const levelByIdSelectorsCache: Record<
 export const getLevelById = (id: number) => {
   if (!levelByIdSelectorsCache[id]) {
     levelByIdSelectorsCache[id] = createSelector(
-      (state: { levels: { levels: Level[] } }) => state.levels.levels,
-      (levels: Level[]) => levels.find((level: Level) => level.id === id)
+      (state: { levels: { levels: Array<Level> } }) => state.levels.levels,
+      (levels: Array<Level>) => levels.find((level: Level) => level.id === id)
     )
   }
   return levelByIdSelectorsCache[id]

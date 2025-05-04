@@ -1,8 +1,8 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-import { COLORS } from '@theme'
 import { styles } from '@components/ui/OutlinedText/OutlinedText.styles'
 import { OutlinedTextProps } from '@components/ui/OutlinedText/OutlinedText.types'
+import { COLORS } from '@theme'
+import React from 'react'
+import { Text,View } from 'react-native'
 
 const OutlinedText = ({
   children,

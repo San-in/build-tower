@@ -1,7 +1,7 @@
-import { SCREENS } from '@types'
+import { LevelId, SCREENS } from '@types'
 
 type GameStackParamList = {
-  [SCREENS.GameScreen]: undefined
+  [SCREENS.GameScreen]: { level: LevelId }
   [SCREENS.WelcomeScreen]: undefined
 }
 

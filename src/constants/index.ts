@@ -1,5 +1,5 @@
-import { Country, LEVEL_DIFFICULTY, LevelConfig, LevelId } from '@types'
 import { CAFlagIcon, USAFlagIcon } from '@assets/icons/flags'
+import { Country, LEVEL_DIFFICULTY, LevelConfig, LevelId } from '@types'
 
 export const TOTAL_LEVELS = 30
 export const LEVEL_CARD_WIDTH = 200

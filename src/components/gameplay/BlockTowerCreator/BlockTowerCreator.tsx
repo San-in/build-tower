@@ -1,15 +1,16 @@
+import * as Haptics from 'expo-haptics'
+import { AnimatePresence, Image, MotiView } from 'moti'
 import { FC, memo, useEffect, useState } from 'react'
 import { View } from 'react-native'
-import { MotiView, AnimatePresence, Image } from 'moti'
-import * as Haptics from 'expo-haptics'
-import { BlockTowerCreatorProps } from './BlockTowerCreator.types'
 import { Easing } from 'react-native-reanimated'
+
+import { BlockTowerCreatorProps } from './BlockTowerCreator.types'
 
 const ANIMATION_DELAY = 80
 
 const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
-  ({ quantity, onAnimatedEnd, type, isScaled = true }) => {
-    const [blocks, setBlocks] = useState<number[]>([])
+  ({ quantity, onAnimatedEnd, isScaled = true }) => {
+    const [blocks, setBlocks] = useState<Array<number>>([])
 
     useEffect(() => {
       if (quantity > blocks.length) {
@@ -37,13 +38,6 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
           <AnimatePresence>
             {blocks.map((id, index) => (
               <MotiView
-                key={id}
-                from={{
-                  opacity: 0,
-                  translateY: -80,
-                  height: isScaled ? 70 : 25,
-                  width: isScaled ? 70 : 25,
-                }}
                 animate={{
                   opacity: 1,
                   translateY: 0,
@@ -51,6 +45,25 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
                 exit={{
                   opacity: 0,
                   translateY: 60,
+                }}
+                from={{
+                  opacity: 0,
+                  translateY: -80,
+                  height: isScaled ? 70 : 25,
+                  width: isScaled ? 70 : 25,
+                }}
+                key={id}
+                onDidAnimate={() => {
+                  if (index + 1 === blocks.length && onAnimatedEnd) {
+                    onAnimatedEnd()
+                  }
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                }}
+                style={{
+                  borderLeftWidth: 0.5,
+                  borderRightWidth: 0.5,
+                  borderColor: '#959191',
+                  backgroundColor: '#ccc',
                 }}
                 transition={{
                   opacity: {
@@ -78,18 +91,6 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
                     duration: 500,
                     easing: Easing.bezier(0.68, -0.55, 0.27, 1.55),
                   },
-                }}
-                style={{
-                  borderLeftWidth: 0.5,
-                  borderRightWidth: 0.5,
-                  borderColor: '#959191',
-                  backgroundColor: '#ccc',
-                }}
-                onDidAnimate={() => {
-                  if (index + 1 === blocks.length && onAnimatedEnd) {
-                    onAnimatedEnd()
-                  }
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
                 }}
               >
                 <View

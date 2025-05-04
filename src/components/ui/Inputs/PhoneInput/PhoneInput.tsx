@@ -1,5 +1,15 @@
 import { ArrowDropUpIcon, CheckIcon } from '@assets/icons'
-
+import { styles } from '@components/ui/Inputs/Inputs.styles'
+import { PhoneInputProps } from '@components/ui/Inputs/PhoneInput/PhoneInput.types'
+import {
+  getDropdownInputStyles,
+  getLabelStyles,
+  getPhoneInputStyles,
+  getPlaceholderTextColor,
+  getRotateStyle,
+  getSupportingTextStyles,
+} from '@components/ui/Inputs/utils'
+import { COUNTRY_LIST } from '@constants'
 import { COLORS, TextStyles } from '@theme'
 import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -12,17 +22,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { PhoneInputProps } from '@components/ui/Inputs/PhoneInput/PhoneInput.types'
-import { styles } from '@components/ui/Inputs/Inputs.styles'
-import {
-  getDropdownInputStyles,
-  getLabelStyles,
-  getPhoneInputStyles,
-  getPlaceholderTextColor,
-  getRotateStyle,
-  getSupportingTextStyles,
-} from '@components/ui/Inputs/utils'
-import { COUNTRY_LIST } from '@constants'
 
 const PhoneInput: FC<PhoneInputProps> = ({
   label,

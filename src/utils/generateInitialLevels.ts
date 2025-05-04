@@ -1,6 +1,6 @@
-import { LEVEL_DIFFICULTY, LevelId } from '@types'
 import { TOTAL_LEVELS } from '@constants'
 import { Level } from '@store/slices/levelsSlice'
+import { LEVEL_DIFFICULTY, LevelId } from '@types'
 
 const getDifficultyByIndex = (index: number): LEVEL_DIFFICULTY => {
   if (index < 10) {
@@ -12,7 +12,7 @@ const getDifficultyByIndex = (index: number): LEVEL_DIFFICULTY => {
   }
 }
 
-export const generateInitialLevels = (): Level[] =>
+export const generateInitialLevels = (): Array<Level> =>
   Array.from({ length: TOTAL_LEVELS }, (_, index) => ({
     id: (index + 1) as LevelId,
     stars: 0,

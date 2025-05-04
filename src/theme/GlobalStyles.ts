@@ -8,6 +8,9 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  invisible: {
+    opacity: 0,
+  },
   safeAreaContainer: {
     backgroundColor: COLORS.white,
     flex: 1,
@@ -17,7 +20,7 @@ export const GlobalStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   transparent: {
-    opacity: 0,
+    backgroundColor: 'transparent',
   },
   visible: {
     opacity: 1,

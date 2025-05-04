@@ -1,8 +1,8 @@
+import { RootStackWrapper } from '@components/wrappers'
 import { GameStack } from '@navigation/GameStack'
 import { NavigationContainer } from '@react-navigation/native'
-import { RootStackWrapper } from '@components/wrappers'
-import { Platform, UIManager } from 'react-native'
 import { store } from '@store/index'
+import { Platform, UIManager } from 'react-native'
 import { Provider } from 'react-redux'
 
 if (Platform.OS === 'android') {

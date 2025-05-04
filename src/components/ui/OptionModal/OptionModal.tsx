@@ -1,10 +1,9 @@
 import { CloseIcon } from '@assets/icons'
-
+import { styles } from '@components/ui/OptionModal/OptionModal.styles'
+import { OptionModalProps } from '@components/ui/OptionModal/OptionModal.types'
 import { GlobalStyles } from '@theme'
 import { FC } from 'react'
 import { Modal, Pressable, Text, View } from 'react-native'
-import { OptionModalProps } from '@components/ui/OptionModal/OptionModal.types'
-import { styles } from '@components/ui/OptionModal/OptionModal.styles'
 
 const OptionModal: FC<OptionModalProps> = ({
   modalVisible,

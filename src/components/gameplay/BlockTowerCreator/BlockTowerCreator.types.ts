@@ -1,5 +1,3 @@
-import { Dimensions } from 'react-native'
-
 type BlockType = 'initial' | 'user'
 
 export type BlockTowerCreatorProps = {

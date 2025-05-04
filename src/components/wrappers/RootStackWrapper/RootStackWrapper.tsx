@@ -1,11 +1,13 @@
-import { COLORS } from '@theme'
+import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/RootStackWrapper.types'
+import { bananasService, levelService } from '@services'
+import { useAppDispatch } from '@store/hooks'
+import { COLORS, GlobalStyles } from '@theme'
 import * as Font from 'expo-font'
 import { FC, useEffect, useState } from 'react'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
+
+import { marketService } from '../../../services/marketService'
 import { styles } from './RootStackWrapper.styles'
-import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/RootStackWrapper.types'
-import { useAppDispatch } from '@store/hooks'
-import { bananasService, levelService } from '@services'
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -26,6 +28,7 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
           loadFonts(),
           levelService.initLevels(dispatch),
           bananasService.initBananas(dispatch),
+          marketService.initMarket(dispatch),
         ])
         setAppLoaded(true)
       } catch (error) {
@@ -33,10 +36,14 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
       }
     }
     loadApp()
-  }, [])
+  }, [dispatch])
 
   if (!appLoaded) {
-    return <ActivityIndicator />
+    return (
+      <View style={[styles.container, GlobalStyles.centeredContainer]}>
+        <ActivityIndicator color={COLORS.white} size="large" />
+      </View>
+    )
   }
 
   return (

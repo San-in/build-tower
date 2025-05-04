@@ -1,8 +1,3 @@
-import { COLORS } from '@theme'
-import { FC, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Text, TextInput, View } from 'react-native'
-
-import { InputProps } from './Input.types'
 import { styles } from '@components/ui/Inputs/Inputs.styles'
 import {
   getInputStyles,
@@ -10,6 +5,11 @@ import {
   getPlaceholderTextColor,
   getSupportingTextStyles,
 } from '@components/ui/Inputs/utils'
+import { COLORS } from '@theme'
+import { FC, useEffect, useRef, useState } from 'react'
+import { Animated, Easing, Text, TextInput, View } from 'react-native'
+
+import { InputProps } from './Input.types'
 
 const Input: FC<InputProps> = ({
   label,

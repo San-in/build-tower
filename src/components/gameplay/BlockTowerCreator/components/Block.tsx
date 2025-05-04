@@ -1,10 +1,9 @@
-import { FC } from 'react'
-import { View } from 'react-native'
 import { BlockProps } from '@components/gameplay/BlockTowerCreator/BlockTowerCreator.types'
 import { COLORS } from '@theme'
+import { FC } from 'react'
+import { View } from 'react-native'
 
-const Block: FC<BlockProps> = ({ type }) => {
-  return (
+const Block: FC<BlockProps> = ({ type }) => (
     <View
       style={{
         width: 30,
@@ -14,6 +13,5 @@ const Block: FC<BlockProps> = ({ type }) => {
       }}
     />
   )
-}
 
 export default Block

@@ -1,18 +1,17 @@
-import { Pressable, View } from 'react-native'
-import { LevelCardProps } from '@components/ui/LevelCard/LevelCard.types'
-import { FC } from 'react'
-import { Image } from 'moti'
-import { LinearGradient } from 'expo-linear-gradient'
-
-import { COLORS, GlobalStyles } from '@theme'
-import { OutlinedText } from '@components/ui/OutlinedText'
-import { getLevelIcon } from '@utils'
-import { getLevelById, Level } from '@store/slices/levelsSlice'
-import { useAppSelector } from '@store/hooks'
-import { LEVEL_NAMES } from '@constants'
 import { StarIcon } from '@assets/icons'
 import { styles } from '@components/ui/LevelCard/LevelCard.styles'
+import { LevelCardProps } from '@components/ui/LevelCard/LevelCard.types'
+import { OutlinedText } from '@components/ui/OutlinedText'
+import { LEVEL_NAMES } from '@constants'
+import { useAppSelector } from '@store/hooks'
+import { getLevelById, Level } from '@store/slices/levelsSlice'
+import { COLORS, GlobalStyles } from '@theme'
 import { LEVEL_DIFFICULTY } from '@types'
+import { getLevelIcon } from '@utils'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Image } from 'moti'
+import { FC } from 'react'
+import { Pressable, View } from 'react-native'
 
 const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
   const closedLevelIcon = require('../../../../assets/images/levels/lock-icon.png')
@@ -20,7 +19,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
     getLevelById(level)
   ) as Level
 
-  const containerGradient: readonly [string, string, ...string[]] = {
+  const containerGradient: readonly [string, string, ...Array<string>] = {
     [LEVEL_DIFFICULTY.Easy]: [
       COLORS.gradientGreen_5,
       COLORS.gradientGreen_2,
@@ -42,7 +41,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
       COLORS.gradientPurple_3,
       COLORS.gradientPurple_1,
     ],
-  }[difficulty] as [string, string, ...string[]]
+  }[difficulty] as [string, string, ...Array<string>]
 
   const containerShadow = {
     [LEVEL_DIFFICULTY.Easy]: styles.greenShadow,
@@ -74,36 +73,34 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
       />
       <LinearGradient
         colors={containerGradient}
-        start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
+        start={{ x: 0, y: 0 }}
         style={styles.gradientContainer}
       >
         <View style={styles.labelContainer}>
           <OutlinedText
             fontSize={20}
-            style={
-              !isAvailable ? GlobalStyles.transparent : GlobalStyles.visible
-            }
+            style={!isAvailable ? GlobalStyles.invisible : GlobalStyles.visible}
           >
             {LEVEL_NAMES[level]}
           </OutlinedText>
         </View>
         <View style={styles.imageContainer}>
           <Image
-            source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
             resizeMode={'cover'}
+            source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
             style={styles.image}
           />
         </View>
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
           <OutlinedText
-            style={styles.levelLabel}
             fontSize={stars ? 25 : 32}
+            style={styles.levelLabel}
           >{`Level ${level}`}</OutlinedText>
           {isAvailable && (
             <View style={styles.ratingContainer}>
               {Array.from({ length: stars }, (_, i) => i).map((item) => (
-                <StarIcon key={item} width={25} height={25} />
+                <StarIcon height={25} key={item} width={25} />
               ))}
             </View>
           )}

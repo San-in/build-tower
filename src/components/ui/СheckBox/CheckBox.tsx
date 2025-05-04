@@ -1,9 +1,9 @@
 import { CheckBoxCheckedIcon } from '@assets/icons'
+import { styles } from '@components/ui/СheckBox/CheckBox.styles'
+import { CheckBoxProps } from '@components/ui/СheckBox/CheckBox.types'
 import { COLORS, TextStyles } from '@theme'
 import React, { FC, useEffect, useRef } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
-import { CheckBoxProps } from '@components/ui/СheckBox/CheckBox.types'
-import { styles } from '@components/ui/СheckBox/CheckBox.styles'
 
 const CheckBox: FC<CheckBoxProps> = ({
   label,

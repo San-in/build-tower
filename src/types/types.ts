@@ -1,4 +1,5 @@
 import { FC, SVGProps } from 'react'
+
 import { LEVEL_DIFFICULTY } from './enums'
 
 export const isKeyOfEnum = <T extends Record<string, string>>(
@@ -22,7 +23,7 @@ export type OptionValue = {
 type TowerConfig = {
   start: number
   end: number
-  fortuneWheelData: string[]
+  fortuneWheelData: Array<string>
 }
 
 type OperatorRange = {

@@ -8,9 +8,9 @@ export const styles = StyleSheet.create({
   container: {
     position: 'relative',
   },
-  text: plainText,
   frontText: {
     ...plainText,
     position: 'absolute',
   },
+  text: plainText,
 })

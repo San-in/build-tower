@@ -1,38 +1,37 @@
+import { KnobIcon } from '@assets/icons'
+import * as d3Shape from 'd3-shape'
+import * as Haptics from 'expo-haptics'
 import React, {
-  useRef,
-  useImperativeHandle,
   forwardRef,
+  useCallback,
+  useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import {
-  View,
-  Dimensions,
   Animated,
-  StyleSheet,
-  Image,
-  TextStyle,
   Easing,
+  StyleSheet,
+  TextStyle,
   useWindowDimensions,
+  View,
 } from 'react-native'
 import Svg, {
+  Defs,
   G,
+  LinearGradient,
   Path,
+  Stop,
   Text as SvgText,
   TSpan,
-  Defs,
-  LinearGradient,
-  Stop,
 } from 'react-native-svg'
-import * as d3Shape from 'd3-shape'
-import * as Haptics from 'expo-haptics'
-import { KnobIcon } from '@assets/icons'
 
 interface WheelOfFortuneProps {
-  sectors: string[]
+  sectors: Array<string>
   winnerIndex: number
   onFinish: (winner: string, index: number) => void
-  colors?: string[]
+  colors?: Array<string>
   borderColor?: string
   borderWidth?: number
   textStyle?: TextStyle
@@ -65,9 +64,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     const angleOffset = 360 / Math.max(sectors.length, 1) / 2
     const [winnerSector, setWinnerSector] = useState<number | null>(null)
 
-    const wheelPaths = useMemo(() => makeWheel(), [sectors])
-
-    function makeWheel() {
+    const makeWheel = useCallback(() => {
       const data = Array.from<number>({ length: sectors.length }).fill(1)
       const arcs = d3Shape.pie<number>().value(1)(data)
 
@@ -95,7 +92,9 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
           }),
         }
       })
-    }
+    }, [colors, innerRadius, outerRadius, sectors])
+
+    const wheelPaths = useMemo(() => makeWheel(), [makeWheel])
 
     function getWinnerIndex(currentAngle: number) {
       const deg = Math.abs(Math.round(currentAngle % oneTurn))
@@ -116,7 +115,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       angle.setValue(0)
       setWinnerSector(null)
 
-      let hapticInterval = setInterval(() => {
+      const hapticInterval = setInterval(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
       }, 300)
 
@@ -150,8 +149,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               <LinearGradient
                 id={`grad-${i}`}
                 x1="0%"
-                y1="0%"
                 x2="100%"
+                y1="0%"
                 y2="0%"
               >
                 <Stop offset="0%" stopColor={arc.color} stopOpacity="0.7" />
@@ -171,16 +170,16 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               strokeWidth={2}
             />
             <G
-              rotation={(i * oneTurn) / sectors.length + angleOffset}
               origin={`${x}, ${y}`}
+              rotation={(i * oneTurn) / sectors.length + angleOffset}
             >
               <SvgText
+                fill={(textStyle as TextStyle).color || '#fff'}
+                fontSize={(textStyle as TextStyle).fontSize || 24}
+                fontWeight={(textStyle as TextStyle).fontWeight || '900'}
+                textAnchor="middle"
                 x={x}
                 y={y}
-                fill={(textStyle as any).color || '#fff'}
-                fontSize={(textStyle as any).fontSize || 24}
-                fontWeight={(textStyle as any).fontWeight || '900'}
-                textAnchor="middle"
               >
                 <TSpan>{label}</TSpan>
               </SvgText>
@@ -225,7 +224,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             zIndex: 1,
           }}
         >
-          <KnobIcon width={70} height={70} />
+          <KnobIcon height={70} width={70} />
         </Animated.View>
         <Animated.View
           style={{
@@ -244,14 +243,14 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
           }}
         >
           <Svg
-            width={size}
             height={size}
-            viewBox={`0 0 ${size} ${size}`}
             style={{
               borderRadius: size / 2,
               borderWidth,
               borderColor,
             }}
+            viewBox={`0 0 ${size} ${size}`}
+            width={size}
           >
             <G x={size / 2} y={size / 2}>
               {renderSectors()}
@@ -265,8 +264,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 })
 

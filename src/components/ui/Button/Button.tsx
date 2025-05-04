@@ -1,11 +1,12 @@
-import { FC, useEffect, useRef, useState } from 'react'
-import { Pressable, View, Animated, StyleSheet } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
-import { ButtonProps } from './Button.types'
 import { OutlinedText } from '@components/ui/OutlinedText'
-import { styles } from './Button.styles'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
+import { LinearGradient } from 'expo-linear-gradient'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { Animated, Pressable, StyleSheet, View } from 'react-native'
+
+import { styles } from './Button.styles'
+import { ButtonProps } from './Button.types'
 
 const Button: FC<ButtonProps> = ({
   title,
@@ -19,7 +20,7 @@ const Button: FC<ButtonProps> = ({
   const borderAnim = useRef(new Animated.Value(0)).current
   const [gradientIndex, setGradientIndex] = useState(0)
 
-  const gradients: readonly [string, string, ...string[]][] = {
+  const gradients: ReadonlyArray<[string, string, ...Array<string>]> = {
     [BUTTON_TYPE.Success]: [
       [
         COLORS.gradientGreen_1,
@@ -215,15 +216,15 @@ const Button: FC<ButtonProps> = ({
         COLORS.gradientRed_5,
       ],
     ],
-  }[type] as [string, string, ...string[]][]
+  }[type] as Array<[string, string, ...Array<string>]>
 
-  const runChangeGradient = () => {
+  const runChangeGradient = useCallback(() => {
     for (let i = 0; i < gradients.length; i += 1) {
       setTimeout(() => {
         setGradientIndex(i)
       }, i * 50)
     }
-  }
+  }, [gradients])
 
   const animateBorder = borderAnim.interpolate({
     inputRange: [0, 1],
@@ -235,14 +236,16 @@ const Button: FC<ButtonProps> = ({
       runChangeGradient()
     }, 10000)
     return () => clearInterval(intervalId)
-  }, [])
+  }, [runChangeGradient])
 
   const currentColors = gradients[gradientIndex]
 
   return (
     <Pressable
       {...props}
+      disabled={isDisabled}
       onLongPress={() => runChangeGradient()}
+      onPress={onPress}
       onPressIn={() => {
         Animated.timing(borderAnim, {
           toValue: 1,
@@ -257,26 +260,24 @@ const Button: FC<ButtonProps> = ({
           useNativeDriver: false,
         }).start()
       }}
-      onPress={onPress}
-      disabled={isDisabled}
-      style={({ pressed }: { pressed: boolean }) => [styles.container, style]}
+      style={({ pressed }) => [
+        styles.container,
+        style,
+        pressed && styles.pressedContainer,
+      ]}
     >
       <Animated.View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: animateBorder,
-          bottom: animateBorder,
-          borderRadius: 14,
-          borderWidth: 6,
-          borderColor: '#202020',
-          zIndex: 0,
-        }}
+        style={[
+          styles.externalBorder,
+          {
+            right: animateBorder,
+            bottom: animateBorder,
+          },
+        ]}
       />
 
       <Animated.View
-        style={[StyleSheet.absoluteFill, { borderRadius: 14, zIndex: 1 }]}
+        style={[StyleSheet.absoluteFill, styles.gradientContainer]}
       >
         {currentColors && (
           <LinearGradient
@@ -291,14 +292,14 @@ const Button: FC<ButtonProps> = ({
                   ]
                 : currentColors
             }
-            start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
+            start={{ x: 0, y: 0 }}
             style={styles.gradientBackground}
           />
         )}
       </Animated.View>
 
-      <View style={{ zIndex: 2 }}>
+      <View style={styles.titleContainer}>
         <OutlinedText fontSize={textSize}>{title}</OutlinedText>
       </View>
     </Pressable>

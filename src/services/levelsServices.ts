@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AppDispatch } from '@store/index'
 import {
+  changeLevelRatingById,
   Level,
+  makeLevelAvailable,
   resetLevels,
   setAllLevels,
-  changeLevelRatingById,
-  makeLevelAvailable,
 } from '@store/slices/levelsSlice'
 import { calculateIsLevelAvailable, generateInitialLevels } from '@utils'
 
@@ -16,7 +16,7 @@ export const levelService = {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
 
     if (raw) {
-      const levels: Level[] = JSON.parse(raw)
+      const levels: Array<Level> = JSON.parse(raw)
       dispatch(setAllLevels(levels))
     } else {
       const levels = generateInitialLevels()
@@ -37,7 +37,7 @@ export const levelService = {
     stars: 0 | 1 | 2 | 3
   ) {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
-    let levels: Level[] = raw ? JSON.parse(raw) : generateInitialLevels()
+    let levels: Array<Level> = raw ? JSON.parse(raw) : generateInitialLevels()
 
     levels = levels.map((level) =>
       level.id === levelId ? { ...level, stars } : level

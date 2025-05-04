@@ -1,3 +1,4 @@
+import { ArrowDropUpIcon, CheckIcon } from '@assets/icons'
 import {
   DropdownInputProps,
   DropdownOption,
@@ -21,7 +22,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { ArrowDropUpIcon, CheckIcon } from '@assets/icons'
 
 const DropdownInput: FC<DropdownInputProps> = ({
   label,
