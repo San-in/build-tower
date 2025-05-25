@@ -1,4 +1,5 @@
 export { calculateIsLevelAvailable } from './calculateIsLevelAvailable'
+export { calculateWheelResult } from './calculateWheelResult'
 export { OperatorType } from './checkOperatorType'
 export { generateInitialLevels } from './generateInitialLevels'
 export { generateRandomNumber } from './generateRandomNumber'

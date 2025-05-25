@@ -21,11 +21,11 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
 
   const containerGradient: readonly [string, string, ...Array<string>] = {
     [LEVEL_DIFFICULTY.Easy]: [
-      COLORS.gradientGreen_5,
       COLORS.gradientGreen_2,
+      COLORS.gradientGreen_3,
       COLORS.gradientGreen_1,
+      COLORS.gradientGreen_3,
       COLORS.gradientGreen_2,
-      COLORS.gradientGreen_5,
     ],
     [LEVEL_DIFFICULTY.Medium]: [
       COLORS.gradientTerracotta_1,
@@ -36,9 +36,9 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
     ],
     [LEVEL_DIFFICULTY.Hard]: [
       COLORS.gradientPurple_1,
-      COLORS.gradientPurple_3,
+      COLORS.gradientPurple_4,
       COLORS.gradientPurple_2,
-      COLORS.gradientPurple_3,
+      COLORS.gradientPurple_4,
       COLORS.gradientPurple_1,
     ],
   }[difficulty] as [string, string, ...Array<string>]
@@ -64,49 +64,58 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
   ].filter(Boolean)
 
   return (
-    <Pressable onPress={onPress} style={containerStyles}>
-      <View
-        style={[
-          styles.cardContainer,
-          isAvailable && styles.cardContainerAvailable,
-        ]}
-      />
-      <LinearGradient
-        colors={containerGradient}
-        end={{ x: 1, y: 0 }}
-        start={{ x: 0, y: 0 }}
-        style={styles.gradientContainer}
-      >
-        <View style={styles.labelContainer}>
-          <OutlinedText
-            fontSize={20}
-            style={!isAvailable ? GlobalStyles.invisible : GlobalStyles.visible}
-          >
-            {LEVEL_NAMES[level]}
-          </OutlinedText>
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            resizeMode={'cover'}
-            source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
-            style={styles.image}
-          />
-        </View>
-        <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
-          <OutlinedText
-            fontSize={stars ? 25 : 32}
-            style={styles.levelLabel}
-          >{`Level ${level}`}</OutlinedText>
-          {isAvailable && (
-            <View style={styles.ratingContainer}>
-              {Array.from({ length: stars }, (_, i) => i).map((item) => (
-                <StarIcon height={25} key={item} width={25} />
-              ))}
-            </View>
-          )}
-        </View>
-      </LinearGradient>
-    </Pressable>
+    <View
+      style={[
+        styles.wrapper,
+        isSelectedLevel && isAvailable && styles.selectedWrapper,
+      ]}
+    >
+      <Pressable onPress={onPress} style={containerStyles}>
+        <View
+          style={[
+            styles.cardContainer,
+            isAvailable && styles.cardContainerAvailable,
+          ]}
+        />
+        <LinearGradient
+          colors={containerGradient}
+          end={{ x: 1, y: 0 }}
+          start={{ x: 0, y: 0 }}
+          style={styles.gradientContainer}
+        >
+          <View style={styles.labelContainer}>
+            <OutlinedText
+              fontSize={20}
+              style={
+                !isAvailable ? GlobalStyles.invisible : GlobalStyles.visible
+              }
+            >
+              {LEVEL_NAMES[level]}
+            </OutlinedText>
+          </View>
+          <View style={styles.imageContainer}>
+            <Image
+              resizeMode={'cover'}
+              source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
+              style={styles.image}
+            />
+          </View>
+          <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
+            <OutlinedText
+              fontSize={stars ? 25 : 32}
+              style={styles.levelLabel}
+            >{`Level ${level}`}</OutlinedText>
+            {isAvailable && (
+              <View style={styles.ratingContainer}>
+                {Array.from({ length: stars }, (_, i) => i).map((item) => (
+                  <StarIcon height={25} key={item} width={25} />
+                ))}
+              </View>
+            )}
+          </View>
+        </LinearGradient>
+      </Pressable>
+    </View>
   )
 }
 

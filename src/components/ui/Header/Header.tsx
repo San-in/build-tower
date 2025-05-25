@@ -49,8 +49,8 @@ const Header: FC<HeaderProps> = ({
               <LinearGradient
                 colors={[
                   COLORS.gradientGreen_1,
-                  COLORS.gradientGreen_5,
                   COLORS.gradientGreen_2,
+                  COLORS.gradientGreen_3,
                   COLORS.gradientGreen_1,
                 ]}
                 end={{ x: 1, y: 0 }}
@@ -79,8 +79,8 @@ const Header: FC<HeaderProps> = ({
               <LinearGradient
                 colors={[
                   COLORS.gradientRed_1,
-                  COLORS.gradientRed_5,
                   COLORS.gradientRed_2,
+                  COLORS.gradientRed_3,
                   COLORS.gradientRed_1,
                 ]}
                 end={{ x: 1, y: 0 }}
@@ -102,14 +102,7 @@ const Header: FC<HeaderProps> = ({
           </View>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 5,
-            marginLeft: 'auto',
-            alignSelf: 'center',
-          }}
-        >
+        <View style={styles.actionButtonsContainer}>
           <IconButton
             icon={<RestartIcon height={36} width={36} />}
             onPress={onResetPress}

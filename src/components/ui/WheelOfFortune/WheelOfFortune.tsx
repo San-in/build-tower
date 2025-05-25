@@ -1,7 +1,15 @@
 import { KnobIcon } from '@assets/icons'
+import { OutlinedText } from '@components/ui/OutlinedText'
+import { styles } from '@components/ui/WheelOfFortune/WheelOfFortune.styles'
+import {
+  WheelOfFortuneProps,
+  WheelOfFortuneRef,
+} from '@components/ui/WheelOfFortune/WheelOfFortune.types'
+import { COLORS, GlobalStyles } from '@theme'
 import * as d3Shape from 'd3-shape'
 import * as Haptics from 'expo-haptics'
-import React, {
+import { MotiView } from 'moti'
+import {
   forwardRef,
   useCallback,
   useImperativeHandle,
@@ -12,7 +20,6 @@ import React, {
 import {
   Animated,
   Easing,
-  StyleSheet,
   TextStyle,
   useWindowDimensions,
   View,
@@ -26,21 +33,17 @@ import Svg, {
   Text as SvgText,
   TSpan,
 } from 'react-native-svg'
-
-interface WheelOfFortuneProps {
-  sectors: Array<string>
-  winnerIndex: number
-  onFinish: (winner: string, index: number) => void
-  colors?: Array<string>
-  borderColor?: string
-  borderWidth?: number
-  textStyle?: TextStyle
-  innerRadius?: number
-}
-
-export interface WheelOfFortuneRef {
-  spin: () => void
-}
+const INITIAL_COLORS = [
+  COLORS.gradientPurple_2,
+  COLORS.green,
+  COLORS.yellow,
+  COLORS.lightBlue,
+  COLORS.gradientOrange_1,
+  COLORS.vividPurple,
+  COLORS.gradientRed_1,
+  COLORS.lightGreen,
+  COLORS.aqua,
+]
 
 const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
   (
@@ -48,11 +51,12 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       sectors,
       winnerIndex,
       onFinish,
-      colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-      borderColor = '#fff',
+      colors = INITIAL_COLORS,
+      borderColor = COLORS.white,
       borderWidth = 4,
       textStyle = {},
-      innerRadius = 50,
+      innerRadius = 60,
+      result = false,
     },
     ref
   ) => {
@@ -96,22 +100,12 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
     const wheelPaths = useMemo(() => makeWheel(), [makeWheel])
 
-    function getWinnerIndex(currentAngle: number) {
-      const deg = Math.abs(Math.round(currentAngle % oneTurn))
-      return (
-        (sectors.length - Math.floor(deg / (oneTurn / sectors.length))) %
-        sectors.length
-      )
-    }
-
     const spin = () => {
       const sectorAngle = oneTurn / sectors.length
-      const halfSector = sectorAngle / 2
 
-      const numberOfTurns = 5
+      const numberOfTurns = 8
       const finalRotation =
-        360 * numberOfTurns - (winnerIndex * sectorAngle + halfSector)
-
+        360 * numberOfTurns - (winnerIndex * sectorAngle + angleOffset)
       angle.setValue(0)
       setWinnerSector(null)
 
@@ -127,9 +121,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       }).start(() => {
         clearInterval(hapticInterval)
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-        const finalIndex = getWinnerIndex(finalRotation) - 1
-        setWinnerSector(finalIndex)
-        onFinish(sectors[finalIndex] ?? '', finalIndex)
+        setWinnerSector(winnerIndex)
+        onFinish(sectors[winnerIndex] ?? '', winnerIndex)
       })
     }
 
@@ -174,7 +167,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               rotation={(i * oneTurn) / sectors.length + angleOffset}
             >
               <SvgText
-                fill={(textStyle as TextStyle).color || '#fff'}
+                fill={(textStyle as TextStyle).color || COLORS.white}
                 fontSize={(textStyle as TextStyle).fontSize || 24}
                 fontWeight={(textStyle as TextStyle).fontWeight || '900'}
                 textAnchor="middle"
@@ -190,57 +183,93 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
     return (
       <View style={styles.container}>
+        <View
+          style={[
+            styles.innerCircleContainer,
+            {
+              top: size / 2,
+            },
+          ]}
+        >
+          <MotiView
+            animate={{ opacity: result ? 1 : 0 }}
+            from={{ opacity: 0 }}
+            style={GlobalStyles.centeredContainer}
+            transition={{ type: 'timing', duration: 500, delay: 500 }}
+          >
+            {Boolean(result) && (
+              <>
+                <OutlinedText fontSize={20} offset={2}>
+                  Result:
+                </OutlinedText>
+                <OutlinedText
+                  color={COLORS.gradientGold_1}
+                  fontSize={40}
+                  offset={1}
+                  strokeColor={COLORS.gradientBronze_1}
+                >
+                  {`${result}`}
+                </OutlinedText>
+              </>
+            )}
+          </MotiView>
+        </View>
         <Animated.View
-          style={{
-            transform: [
-              {
-                rotate: angle.interpolate({
-                  inputRange: [
-                    0, 180, 360, 540, 720, 900, 1080, 1260, 1440, 1620, 1800,
-                    1980, 2100,
-                  ],
-                  outputRange: [
-                    '0deg',
-                    '-35deg',
-                    '35deg',
-                    '-30deg',
-                    '30deg',
-                    '-25deg',
-                    '25deg',
-                    '-15deg',
-                    '15deg',
-                    '-10deg',
-                    '10deg',
-                    '-5deg',
-
-                    '0deg',
-                  ],
-                  extrapolate: 'clamp',
-                }),
-              },
-            ],
-            position: 'absolute',
-            top: -35,
-            zIndex: 1,
-          }}
+          style={[
+            styles.knobIconContainer,
+            {
+              transform: [
+                {
+                  rotate: angle.interpolate({
+                    inputRange: [
+                      0, 180, 360, 540, 720, 900, 1080, 1260, 1440, 1620, 1800,
+                      1980, 2100, 2280, 2360, 2540, 2720, 2900,
+                    ],
+                    outputRange: [
+                      '0deg',
+                      '-35deg',
+                      '35deg',
+                      '-35deg',
+                      '35deg',
+                      '-35deg',
+                      '35deg',
+                      '-30deg',
+                      '30deg',
+                      '-25deg',
+                      '25deg',
+                      '-15deg',
+                      '15deg',
+                      '-10deg',
+                      '10deg',
+                      '-5deg',
+                      '5deg',
+                      '0deg',
+                    ],
+                    extrapolate: 'clamp',
+                  }),
+                },
+              ],
+            },
+          ]}
         >
           <KnobIcon height={70} width={70} />
         </Animated.View>
         <Animated.View
-          style={{
-            width: size,
-            height: size,
-            alignItems: 'center',
-            justifyContent: 'center',
-            transform: [
-              {
-                rotate: angle.interpolate({
-                  inputRange: [-360, 0, 360],
-                  outputRange: ['-360deg', '0deg', '360deg'],
-                }),
-              },
-            ],
-          }}
+          style={[
+            styles.container,
+            {
+              width: size,
+              height: size,
+              transform: [
+                {
+                  rotate: angle.interpolate({
+                    inputRange: [-360, 0, 360],
+                    outputRange: ['-360deg', '0deg', '360deg'],
+                  }),
+                },
+              ],
+            },
+          ]}
         >
           <Svg
             height={size}
@@ -261,12 +290,5 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     )
   }
 )
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
 
 export default WheelOfFortune

@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "lint-fix": "eslint . --fix",
+    "create-component-ui": "node scripts/create-component-ui.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",

@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
   },
-  startButton: { marginTop: 100 },
+  startButton: { marginTop: 130 },
   title: {
     marginTop: 300,
     transform: [{ rotate: '7deg' }],

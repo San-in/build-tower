@@ -22,3 +22,54 @@ export enum MARKET_PRODUCT {
   RemoveRandomBlocks_Silver = 'removeRandomBlocks_silver',
   RemoveRandomBlocks_Gold = 'removeRandomBlocks_gold',
 }
+
+export enum INFO_UNLOCK_OPTION_MODAL_KEY {
+  Empty = 'empty',
+  DisabledAd = 'disabledAd',
+  DisabledBananas = 'disabledBananas',
+  EnabledAd = 'enabledAd',
+  EnabledBananas = 'enabledBananas',
+}
+
+export enum GAME_MODAL_TYPE {
+  Home = 'Home',
+  Reset = 'Reset ',
+  AddBlocks = 'AddBlocks',
+  RemoveBlocks = 'RemoveBlocks',
+  PowerUpWarning = 'PowerUpWarning',
+}
+export enum MODAL_TYPE {
+  Orange = 'Orange',
+  Green = 'Green ',
+}
+export enum POWER_UP_GRADE {
+  Bronze = 'Bronze',
+  Silver = 'Silver',
+  Gold = 'Gold',
+}
+
+export enum POWER_UP_TYPE {
+  Plus = 'Plus',
+  Minus = 'Minus',
+}
+
+export enum OPERATOR {
+  Minus = '-',
+  Plus = '+',
+  Division = '÷',
+  Multiply = 'x',
+}
+
+export enum TOWER {
+  First = 'First',
+  Second = 'Second',
+}
+
+export enum BONUS_OPTION_TYPE {
+  Ad = 'ad',
+  Bananas = 'bananas',
+}
+
+export enum BLOCK_TYPE {
+  Basic = 'Basic',
+}

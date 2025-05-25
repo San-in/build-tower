@@ -1,12 +1,19 @@
-import { Operator } from '@types'
+import { OPERATOR } from '@types'
 
 export const generateRandomOperator = (
-  exceptions: Array<Operator> | null = null
-): Operator => {
-  const operators: Array<Operator> = ['+', '-', '+', '-', '*', '/']
+  exceptions: Array<OPERATOR> | null = null
+): OPERATOR => {
+  const operators: Array<OPERATOR> = [
+    OPERATOR.Plus,
+    OPERATOR.Minus,
+    OPERATOR.Plus,
+    OPERATOR.Minus,
+    OPERATOR.Division,
+    OPERATOR.Multiply,
+  ]
 
   if (exceptions === null) {
-    return operators[Math.floor(Math.random() * operators.length)] as Operator
+    return operators[Math.floor(Math.random() * operators.length)] as OPERATOR
   }
 
   const remainingOperators = operators.filter(
@@ -15,5 +22,5 @@ export const generateRandomOperator = (
 
   return remainingOperators[
     Math.floor(Math.random() * remainingOperators.length)
-  ] as Operator
+  ] as OPERATOR
 }

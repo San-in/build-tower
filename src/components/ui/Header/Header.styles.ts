@@ -2,6 +2,12 @@ import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
+  actionButtonsContainer: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 5,
+    marginLeft: 'auto',
+  },
   bananasContainer: {
     alignItems: 'center',
     borderColor: COLORS.yellow,

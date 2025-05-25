@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   gradientContainer: { height: '100%', width: '100%' },
   greenBorder: { borderColor: COLORS.gradientGreen_1 },
-  greenShadow: { shadowColor: COLORS.gradientGreen_4 },
+  greenShadow: { shadowColor: COLORS.gradientGreen_5 },
   greyShadow: { shadowColor: COLORS.swirl },
   image: { borderRadius: 5, height: '100%', width: '100%' },
   imageContainer: { height: '65%', paddingHorizontal: 15, paddingTop: 15 },
@@ -53,4 +53,6 @@ export const styles = StyleSheet.create({
   purpleBorder: { borderColor: COLORS.gradientPurple_1 },
   purpleShadow: { shadowColor: COLORS.gradientPurple_5 },
   ratingContainer: { flexDirection: 'row', gap: 10 },
+  selectedWrapper: { borderColor: COLORS.codeGrey, borderWidth: 2 },
+  wrapper: { borderRadius: 16 },
 })

@@ -164,7 +164,7 @@ const WelcomeScreen = () => {
                 onPress={handleLetsGoButtonPress}
                 style={styles.letsGoButton}
                 textSize={22}
-                title="Let's go"
+                title="LET'S GO"
                 type={BUTTON_TYPE.Warning}
               />
             </View>
@@ -219,8 +219,8 @@ const WelcomeScreen = () => {
               >
                 <Button
                   onPress={handleStartButtonPress}
-                  textSize={32}
-                  title="Start"
+                  textSize={27}
+                  title="START"
                 />
               </MotiView>
             </>

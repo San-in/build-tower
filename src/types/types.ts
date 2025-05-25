@@ -1,6 +1,6 @@
 import { FC, SVGProps } from 'react'
 
-import { LEVEL_DIFFICULTY } from './enums'
+import { LEVEL_DIFFICULTY, OPERATOR } from './enums'
 
 export const isKeyOfEnum = <T extends Record<string, string>>(
   key: string,
@@ -14,15 +14,12 @@ export type Country = {
   flag: FC<SVGProps<SVGSVGElement>>
 }
 
-export type Operator = '+' | '-' | '*' | '/'
-
 export type OptionValue = {
   number: number
-  operator: Operator | null
+  operator: OPERATOR | null
 }
 type TowerConfig = {
   start: number
-  end: number
   fortuneWheelData: Array<string>
 }
 
@@ -39,6 +36,11 @@ export type LevelConfig = {
   prize: number
   attempts: number
   difficulty: LEVEL_DIFFICULTY
+}
+
+export type ModalState<T> = {
+  isVisible: boolean
+  type: T
 }
 
 export type LevelId =

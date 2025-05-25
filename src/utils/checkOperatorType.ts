@@ -1,6 +1,6 @@
-import { Operator } from '@types'
+import { OPERATOR } from '@types'
 
 export const OperatorType = {
-  isSimple: (operator: Operator): boolean =>
-    operator === '+' || operator === '-',
+  isSimple: (operator: OPERATOR): boolean =>
+    operator === OPERATOR.Plus || operator === OPERATOR.Minus,
 }

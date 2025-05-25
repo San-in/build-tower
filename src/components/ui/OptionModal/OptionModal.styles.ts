@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 16,
     width: '100%',
   },

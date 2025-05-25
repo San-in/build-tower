@@ -29,7 +29,7 @@ const OptionModal: FC<OptionModalProps> = ({
         >
           <CloseIcon />
         </Pressable>
-        <View style={[styles.contentContainer, { flexDirection: 'row' }]}>
+        <View style={styles.contentContainer}>
           <Pressable
             onPress={() => {
               handleClose()
