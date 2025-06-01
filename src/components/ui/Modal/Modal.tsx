@@ -5,6 +5,7 @@ import { OutlinedText } from '@components/ui/OutlinedText'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Image } from 'moti'
 import { FC } from 'react'
 import { ImageBackground, Modal, Pressable, View } from 'react-native'
 
@@ -14,6 +15,8 @@ const CustomModal: FC<ModalProps> = ({
   title = '',
   children,
   type = MODAL_TYPE.Orange,
+  containerStyles = {},
+  withCrossIcon = true,
 }) => {
   const backgroundImage = {
     [MODAL_TYPE.Orange]: require('../../../../assets/images/modal-border-orange.png'),
@@ -47,21 +50,28 @@ const CustomModal: FC<ModalProps> = ({
       visible={modalVisible}
     >
       <View style={[GlobalStyles.centeredContainer, styles.background]}>
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyles]}>
+          <Image
+            resizeMode={'contain'}
+            source={require('../../../../assets/images/monkey-modal.png')}
+            style={styles.monkeyImage}
+          />
           <ImageBackground
             resizeMode={'cover'}
             source={backgroundImage}
             style={styles.imageBackground}
           >
-            <Pressable
-              onPress={handleClose}
-              style={({ pressed }: { pressed: boolean }) => [
-                styles.closeIcon,
-                pressed && styles.closeIconPressed,
-              ]}
-            >
-              <CloseCrossIcon height={40} width={40} />
-            </Pressable>
+            {withCrossIcon && (
+              <Pressable
+                onPress={handleClose}
+                style={({ pressed }: { pressed: boolean }) => [
+                  styles.closeIcon,
+                  pressed && styles.closeIconPressed,
+                ]}
+              >
+                <CloseCrossIcon height={40} width={40} />
+              </Pressable>
+            )}
             <LinearGradient
               colors={gradientColors}
               end={{ x: 1, y: 1 }}

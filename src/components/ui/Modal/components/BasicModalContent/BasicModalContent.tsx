@@ -19,6 +19,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
     <View style={styles.buttonContainer}>
       {onCancel && (
         <Button
+          buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
           textSize={15}
@@ -27,6 +28,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
         />
       )}
       <Button
+        buttonContainerStyle={styles.buttonContent}
         onPress={onConfirm}
         style={[styles.button, !onCancel && styles.buttonRestricted]}
         textSize={15}

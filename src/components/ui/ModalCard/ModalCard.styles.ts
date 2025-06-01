@@ -16,11 +16,11 @@ export const styles = StyleSheet.create({
   cardContent: {
     alignItems: 'center',
     borderRadius: 8,
-    gap: 8,
+    gap: 3,
     height: 100,
     padding: 10,
   },
-  container: { position: 'relative', width: '40%' },
+  container: { minWidth: '35%', position: 'relative' },
   overlay: {
     backgroundColor: COLORS.codeGrey70,
     borderRadius: 10,

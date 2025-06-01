@@ -37,6 +37,7 @@ export enum GAME_MODAL_TYPE {
   AddBlocks = 'AddBlocks',
   RemoveBlocks = 'RemoveBlocks',
   PowerUpWarning = 'PowerUpWarning',
+  LevelConditions = 'LevelConditions',
 }
 export enum MODAL_TYPE {
   Orange = 'Orange',

@@ -2,7 +2,8 @@ import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  button: { flex: 1, paddingHorizontal: 5 },
+  button: { flex: 1 },
+  buttonContent: { paddingHorizontal: 5 },
   buttonsContainer: {
     flexDirection: 'row',
     gap: 10,

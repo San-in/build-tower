@@ -1,3 +1,4 @@
+import { BananasIcon } from '@assets/icons'
 import {
   Button,
   Header,
@@ -7,6 +8,7 @@ import {
 import { CustomModal } from '@components/ui/Modal'
 import {
   BasicModalContent,
+  LevelConditionsModalContent,
   PowerUpModalContent,
 } from '@components/ui/Modal/components'
 import { BLOCK_DIMENSION, LEVEL_CONFIG } from '@constants'
@@ -27,6 +29,7 @@ import {
   TOWER,
 } from '@types'
 import { generateRandomNumber, getLevelBackground } from '@utils'
+import { MotiView } from 'moti'
 // import LottieView from 'lottie-react-native'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -36,6 +39,7 @@ import {
   ScrollView,
   View,
 } from 'react-native'
+import { Easing } from 'react-native-reanimated'
 
 import { marketService } from '../../services/marketService'
 import { BlockTowerCreator, BuildTowerSplash } from './components'
@@ -84,7 +88,7 @@ const GameScreen: FC = () => {
   const [isFinishRoundModalVisible, setIsFinishRoundModalVisible] =
     useState(false)
   const [isScaledTower, setIsScaledTower] = useState(false)
-
+  const [isPrizeVisible, setIsPrizeVisible] = useState(false)
   const scrollViewRef = useRef<ScrollView>(null)
 
   // NEW
@@ -107,6 +111,7 @@ const GameScreen: FC = () => {
     setFirstOptionCard(INITIAL_OPTION_STATE)
     setBuildModalData(INITIAL_BUILD_MODAL_STATE)
     setIsScaledTower(false)
+    setIsPrizeVisible(false)
   }, [])
 
   const dispatch = useAppDispatch()
@@ -132,11 +137,14 @@ const GameScreen: FC = () => {
     handleCLoseActionModal()
   }, [handleCLoseActionModal, handleResetLevel])
 
-  const handleInitFirstTowerCallBack = (number: number) => {
+  const handleInitFirstTowerCallBack = useCallback((number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setInitialBlockValue(number)
     setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
-  }
+    setTimeout(() => {
+      handleOpenActionModal(GAME_MODAL_TYPE.LevelConditions)
+    }, 1500)
+  }, [])
 
   const handleInitSecondTowerCallBack = (number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -170,6 +178,7 @@ const GameScreen: FC = () => {
             />
           ),
           actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
         },
         [GAME_MODAL_TYPE.Reset]: {
           actionModalHeader: 'Start over? Really?',
@@ -181,6 +190,7 @@ const GameScreen: FC = () => {
             />
           ),
           actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
         },
         [GAME_MODAL_TYPE.AddBlocks]: {
           actionModalHeader: 'Let`s add some blocks?',
@@ -192,6 +202,7 @@ const GameScreen: FC = () => {
             />
           ),
           actionModalColor: MODAL_TYPE.Green,
+          withCrossIcon: true,
         },
         [GAME_MODAL_TYPE.RemoveBlocks]: {
           actionModalHeader: 'Let`s remove some blocks?',
@@ -203,6 +214,7 @@ const GameScreen: FC = () => {
             />
           ),
           actionModalColor: MODAL_TYPE.Green,
+          withCrossIcon: true,
         },
         [GAME_MODAL_TYPE.PowerUpWarning]: {
           actionModalHeader: 'Build both towers first',
@@ -216,12 +228,34 @@ const GameScreen: FC = () => {
             />
           ),
           actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
+        },
+        [GAME_MODAL_TYPE.LevelConditions]: {
+          actionModalContent: (
+            <LevelConditionsModalContent
+              initialBlocksQuantity={initialBlockValue}
+              onConfirm={() => {
+                setIsPrizeVisible(true)
+                setIsScaledTower(true)
+                handleCLoseActionModal()
+              }}
+              prize={prize}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Green,
+          withCrossIcon: false,
+          actionModalStyles: {
+            alignSelf: 'flex-end',
+            maxWidth: '79%',
+          },
         },
       })[actionModalData.type],
     [
       handleCLoseActionModal,
       handleGoHome,
       handleResetPressed,
+      initialBlockValue,
+      prize,
       actionModalData.type,
     ]
   )
@@ -240,11 +274,24 @@ const GameScreen: FC = () => {
           initTowerCallBack: handleInitSecondTowerCallBack,
         },
       })[initBuildTowerModalData.type],
-    [fistTower, secondTower, initBuildTowerModalData]
+    [
+      fistTower.start,
+      fistTower.fortuneWheelData,
+      handleInitFirstTowerCallBack,
+      secondTower.start,
+      secondTower.fortuneWheelData,
+      initBuildTowerModalData.type,
+    ]
   )
 
-  const { actionModalHeader, actionModalContent, actionModalColor } =
-    actionModalConfig
+  const {
+    actionModalHeader,
+    actionModalContent,
+    actionModalColor,
+    actionModalStyles = {},
+    withCrossIcon,
+  } = actionModalConfig
+
   const { initTowerStart, initTowerSectors, initTowerCallBack } =
     initTowerModalConfig
   // NEW END
@@ -345,17 +392,44 @@ const GameScreen: FC = () => {
               flexDirection: 'row',
               gap: 50,
               paddingHorizontal: 20,
-              paddingTop: 100,
+              paddingTop: 60,
               flex: 1,
               width: '100%',
             }}
           >
             {!!initialBlockValue && (
-              <BlockTowerCreator
-                isScaled={isScaledTower}
-                quantity={initialBlockValue}
-                type={TOWER.First}
-              />
+              <View style={{ justifyContent: 'flex-end', marginBottom: -2 }}>
+                <MotiView
+                  animate={{
+                    translateX: isPrizeVisible ? 0 : -200,
+                  }}
+                >
+                  <MotiView
+                    animate={{ scale: isPrizeVisible ? 1.3 : 1 }}
+                    from={{ scale: 1 }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 10,
+                    }}
+                    transition={{
+                      loop: isPrizeVisible,
+                      type: 'timing',
+                      duration: 2000,
+                      easing: Easing.inOut(Easing.ease),
+                      delay: 1000,
+                    }}
+                  >
+                    <BananasIcon height={50} width={50} />
+                  </MotiView>
+                </MotiView>
+
+                <BlockTowerCreator
+                  isScaled={isScaledTower}
+                  quantity={initialBlockValue}
+                  type={TOWER.First}
+                />
+              </View>
             )}
 
             {!!userBlockValue && (
@@ -410,12 +484,6 @@ const GameScreen: FC = () => {
           bottom: 30,
         }}
       >
-        <Button
-          onPress={() => setIsScaledTower(true)}
-          style={{ alignSelf: 'center' }}
-          title={'Scale'}
-          type={BUTTON_TYPE.Error}
-        />
         {/*<Button*/}
         {/*  onPress={() => {*/}
         {/*    if (step === 5) {*/}
@@ -512,10 +580,12 @@ const GameScreen: FC = () => {
         secondOption={secondOptionCard}
       />
       <CustomModal
+        containerStyles={actionModalStyles}
         handleClose={handleCLoseActionModal}
         modalVisible={actionModalData.isVisible}
         title={actionModalHeader}
         type={actionModalColor}
+        withCrossIcon={withCrossIcon}
       >
         {actionModalContent}
       </CustomModal>

@@ -11,7 +11,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
-  button: { flex: 1, paddingHorizontal: 5 },
+  button: { flex: 1 },
+  buttonContent: { paddingHorizontal: 5 },
   buttonsContainer: {
     flexDirection: 'row',
     gap: 30,

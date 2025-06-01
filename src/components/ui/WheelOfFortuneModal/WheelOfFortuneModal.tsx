@@ -24,12 +24,16 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
 }) => {
   const wheelRef = useRef<WheelOfFortuneRef>(null)
   const [spinCounter, setSpinCounter] = useState<number>(INITIAL_SPIN_QUANTITY)
-  const [winnerIndex, setWinnerIndex] = useState(0)
+  const [winnerIndex, setWinnerIndex] = useState(() =>
+    generateRandomNumber(0, sectors.length - 1)
+  )
   const [isWheelModalResultVisible, setIsWheelModalResultVisible] =
     useState(false)
   const [tryAgainModalVisible, setTryAgainModalVisible] = useState(false)
   const [wheelWinnerSector, setWheelWinnerSector] = useState('')
   const [isFirstSpinFinished, setIsFirstSpinFinished] = useState(false)
+  const [isSpinButtonDisabled, setIsSpinButtonDisabled] = useState(false)
+  const [shouldReset, setShouldReset] = useState(true)
 
   const isSpinCounterVisible = useMemo(
     () => spinCounter < INITIAL_SPIN_QUANTITY && spinCounter,
@@ -49,9 +53,18 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setWheelWinnerSector('')
     wheelRef.current?.spin()
   }
-
   const handleClose = () => {
     setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
+    setShouldReset(true)
+  }
+
+  const handleReset = () => {
+    setIsWheelModalResultVisible(false)
+    setSpinCounter(INITIAL_SPIN_QUANTITY)
+    setIsFirstSpinFinished(false)
+    setWheelWinnerSector('')
+    setIsSpinButtonDisabled(false)
+    setShouldReset(false)
   }
 
   const handleCloseTryAgainModal = () => {
@@ -60,11 +73,11 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   const handleOpenTryAgainModal = () => {
     setTryAgainModalVisible(true)
   }
-  const handleSpinPressed = () => {
-    setWinnerIndex(generateRandomNumber(0, sectors.length - 1))
+  const handleSpinPress = () => {
+    setIsSpinButtonDisabled(true)
     wheelRef.current?.spin()
   }
-  const handleConfirmPressed = () => {
+  const handleConfirmPress = () => {
     handleClose()
     onFinish(wheelResult)
   }
@@ -79,13 +92,10 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   }
 
   useEffect(() => {
-    if (!isVisible) {
-      setIsWheelModalResultVisible(false)
-      setSpinCounter(INITIAL_SPIN_QUANTITY)
-      setIsFirstSpinFinished(false)
-      setWheelWinnerSector('')
+    if (shouldReset) {
+      setTimeout(handleReset, 1000)
     }
-  }, [isVisible])
+  }, [shouldReset])
 
   return (
     <Modal
@@ -174,6 +184,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
             {spinCounter < INITIAL_SPIN_QUANTITY && isFirstSpinFinished && (
               <View style={styles.buttonsContainer}>
                 <Button
+                  buttonContainerStyle={styles.buttonContent}
                   isDisabled={!spinCounter}
                   onPress={handleOpenTryAgainModal}
                   style={styles.button}
@@ -181,7 +192,9 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   type={BUTTON_TYPE.Warning}
                 />
                 <Button
-                  onPress={handleConfirmPressed}
+                  buttonContainerStyle={styles.buttonContent}
+                  isDisabled={!wheelWinnerSector}
+                  onPress={handleConfirmPress}
                   style={styles.button}
                   title="CONFIRM"
                 />
@@ -189,8 +202,9 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
             )}
             {!isFirstSpinFinished && (
               <Button
+                isDisabled={isSpinButtonDisabled}
                 minWidth={'50%'}
-                onPress={handleSpinPressed}
+                onPress={handleSpinPress}
                 title="SPIN"
               />
             )}

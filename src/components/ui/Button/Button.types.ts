@@ -12,5 +12,6 @@ export type ButtonProps = PressableProps & {
   minWidth?: DimensionValue
   isDisabled?: boolean
   style?: StyleProp<ViewStyle>
+  buttonContainerStyle?: StyleProp<ViewStyle>
   textSize?: number
 }

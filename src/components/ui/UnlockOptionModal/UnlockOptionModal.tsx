@@ -27,7 +27,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   initialPrice,
 }) => {
   const [selectedOption, setSelectedOption] =
-    useState<BONUS_OPTION_TYPE | null>(null)
+    useState<BONUS_OPTION_TYPE | null>(BONUS_OPTION_TYPE.Bananas)
   const bananas = useAppSelector((state) => state.bananas.bananas)
 
   const enabledBananasText = useMemo(
@@ -110,18 +110,21 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const handleCardPress = (option: BONUS_OPTION_TYPE) =>
     setSelectedOption((prev) => (prev === option ? null : option))
+  const handleClose = () => {
+    setSelectedOption(null)
+    onClose()
+  }
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
       await bananasService.removeBananas(dispatch, price)
-      onClose()
-      setSelectedOption(null)
+      handleClose()
       onConfirm()
     }
   }
 
   return (
     <CustomModal
-      handleClose={onClose}
+      handleClose={handleClose}
       modalVisible={visible}
       type={MODAL_TYPE.Green}
     >
@@ -152,13 +155,15 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
       </MotiView>
       <View style={styles.buttonsContainer}>
         <Button
-          onPress={onClose}
+          buttonContainerStyle={styles.buttonContent}
+          onPress={handleClose}
           style={styles.button}
           textSize={15}
           title={'CANCEL'}
           type={BUTTON_TYPE.Error}
         />
         <Button
+          buttonContainerStyle={styles.buttonContent}
           isDisabled={!!isConfirmDisabled}
           onPress={handleConfirmPress}
           style={styles.button}

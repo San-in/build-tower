@@ -1,4 +1,4 @@
-import { AdIcon, BananasIcon } from '@assets/icons'
+import { AdIcon, BananasWithBGIcon } from '@assets/icons'
 import { OutlinedText } from '@components/ui/OutlinedText'
 import { COLORS } from '@theme'
 import { BONUS_OPTION_TYPE } from '@types'
@@ -50,7 +50,7 @@ const ModalCard: FC<ModalCardProps> = ({
       >
         {option === BONUS_OPTION_TYPE.Bananas ? (
           <>
-            <BananasIcon height={50} transform="scale(-1,1)" width={50} />
+            <BananasWithBGIcon height={60} width={60} />
             <OutlinedText fontSize={20}>{`${price}`}</OutlinedText>
           </>
         ) : (

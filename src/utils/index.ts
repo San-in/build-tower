@@ -1,3 +1,4 @@
+export { calculateExpectedLevelConditions } from './calculateExpectedLevelConditions'
 export { calculateIsLevelAvailable } from './calculateIsLevelAvailable'
 export { calculateWheelResult } from './calculateWheelResult'
 export { OperatorType } from './checkOperatorType'

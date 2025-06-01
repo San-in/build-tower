@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   background: {
     backgroundColor: COLORS.codeGrey50,
+    paddingHorizontal: 16,
   },
-
   buttonsContainer: { flexDirection: 'row', gap: 20, marginTop: 20 },
   closeIcon: {
     opacity: 1,
@@ -19,8 +19,8 @@ export const styles = StyleSheet.create({
     transform: [{ scale: 0.9 }],
   },
   container: {
+    maxWidth: '90%',
     position: 'relative',
-    width: '80%',
   },
   contentContainer: {
     alignItems: 'center',
@@ -41,6 +41,15 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     padding: 15,
     position: 'relative',
+  },
+  monkeyImage: {
+    height: 150,
+    left: '50%',
+    position: 'absolute',
+    top: -125,
+    transform: [{ translateX: '-50%' }],
+    width: 150,
+    zIndex: 9,
   },
   text: { alignSelf: 'flex-start', color: COLORS.codeGrey },
   title: { color: COLORS.vanCleef, textAlign: 'center' },

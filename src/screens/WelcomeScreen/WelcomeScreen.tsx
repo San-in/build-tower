@@ -126,7 +126,7 @@ const WelcomeScreen = () => {
               />
               <View style={styles.bananasCounter}>
                 <OutlinedText fontSize={25}>{`${bananas}`}</OutlinedText>
-                <BananasIcon height={25} transform="scale(-1,1)" width={25} />
+                <BananasIcon height={25} width={25} />
               </View>
             </View>
 

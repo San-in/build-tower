@@ -165,6 +165,7 @@ between 1 and 4 random blocks`,
       </View>
       <View style={styles.buttonsContainer}>
         <Button
+          buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
           textSize={15}
@@ -172,6 +173,7 @@ between 1 and 4 random blocks`,
           type={BUTTON_TYPE.Error}
         />
         <Button
+          buttonContainerStyle={styles.buttonContent}
           isDisabled={!isSelectedPowerUpAvailable}
           onPress={onConfirm}
           style={styles.button}
