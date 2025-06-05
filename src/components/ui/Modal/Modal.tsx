@@ -21,6 +21,8 @@ const CustomModal: FC<ModalProps> = ({
   const backgroundImage = {
     [MODAL_TYPE.Orange]: require('../../../../assets/images/modal-border-orange.png'),
     [MODAL_TYPE.Green]: require('../../../../assets/images/modal-border-green.png'),
+    [MODAL_TYPE.Purple]: require('../../../../assets/images/modal-border-purple.png'),
+    [MODAL_TYPE.Blue]: require('../../../../assets/images/modal-border-blue.png'),
   }[type]
 
   const gradientColors: readonly [string, string, ...Array<string>] = {
@@ -39,6 +41,22 @@ const CustomModal: FC<ModalProps> = ({
       COLORS.gradientGreen_3,
       COLORS.green40,
       COLORS.green60,
+    ],
+    [MODAL_TYPE.Purple]: [
+      COLORS.purple60,
+      COLORS.purple80,
+      COLORS.gradientPurple_3,
+      COLORS.gradientPurple_1,
+      COLORS.gradientPurple_2,
+      COLORS.purple60,
+    ],
+    [MODAL_TYPE.Blue]: [
+      COLORS.blue20,
+      COLORS.blue40,
+      COLORS.blue50,
+      COLORS.blue60,
+      COLORS.blue40,
+      COLORS.blue20,
     ],
   }[type] as [string, string, ...Array<string>]
 

@@ -1,10 +1,5 @@
 import { BananasIcon } from '@assets/icons'
-import {
-  Button,
-  Header,
-  OptionModal,
-  WheelOfFortuneModal,
-} from '@components/ui'
+import { Header, OptionModal, WheelOfFortuneModal } from '@components/ui'
 import { CustomModal } from '@components/ui/Modal'
 import {
   BasicModalContent,
@@ -17,7 +12,6 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppDispatch } from '@store/hooks'
 import {
-  BUTTON_TYPE,
   GAME_MODAL_TYPE,
   MARKET_PRODUCT,
   MODAL_TYPE,
@@ -28,7 +22,7 @@ import {
   SCREENS,
   TOWER,
 } from '@types'
-import { generateRandomNumber, getLevelBackground } from '@utils'
+import { getLevelBackground } from '@utils'
 import { MotiView } from 'moti'
 // import LottieView from 'lottie-react-native'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -100,6 +94,8 @@ const GameScreen: FC = () => {
   const [buildModalData, setBuildModalData] = useState<ModalState<TOWER>>(
     INITIAL_BUILD_MODAL_STATE
   )
+  const animationRestartKey = `${actionModalData.isVisible}`
+
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setFocusedTower(TOWER.First)
@@ -242,11 +238,13 @@ const GameScreen: FC = () => {
               prize={prize}
             />
           ),
-          actionModalColor: MODAL_TYPE.Green,
+          actionModalColor: MODAL_TYPE.Purple,
           withCrossIcon: false,
           actionModalStyles: {
             alignSelf: 'flex-end',
-            maxWidth: '79%',
+            maxWidth: '76%',
+            minWidth: 275,
+            transform: [{ translateY: '15%' }],
           },
         },
       })[actionModalData.type],
@@ -405,12 +403,13 @@ const GameScreen: FC = () => {
                   }}
                 >
                   <MotiView
-                    animate={{ scale: isPrizeVisible ? 1.3 : 1 }}
+                    animate={{ scale: isPrizeVisible ? 1.2 : 1 }}
                     from={{ scale: 1 }}
+                    key={animationRestartKey}
                     style={{
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: 10,
+                      marginBottom: 5,
                     }}
                     transition={{
                       loop: isPrizeVisible,
@@ -458,7 +457,7 @@ const GameScreen: FC = () => {
 
           <ImageBackground
             source={require('../../../assets/images/ground.png')}
-            style={{ backgroundColor: 'black', width: '100%', height: 140 }}
+            style={{ backgroundColor: 'black', width: '100%', height: 80 }}
           />
         </ScrollView>
       </ImageBackground>
@@ -552,16 +551,16 @@ const GameScreen: FC = () => {
         {/*  title={'Attempt'}*/}
         {/*/>*/}
 
-        <Button
-          onPress={() => {
-            setFocusedTower(TOWER.Second)
-            setUserBlockValue(generateRandomNumber(1, 3))
-            setStep(1)
-          }}
-          style={{ maxWidth: 170 }}
-          title={'Build 2nd tower'}
-          type={BUTTON_TYPE.Warning}
-        />
+        {/*<Button*/}
+        {/*  onPress={() => {*/}
+        {/*    setFocusedTower(TOWER.Second)*/}
+        {/*    setUserBlockValue(generateRandomNumber(1, 3))*/}
+        {/*    setStep(1)*/}
+        {/*  }}*/}
+        {/*  style={{ maxWidth: 170 }}*/}
+        {/*  title={'Build 2nd tower'}*/}
+        {/*  type={BUTTON_TYPE.Warning}*/}
+        {/*/>*/}
       </View>
       <WheelOfFortuneModal
         initialResult={initTowerStart}

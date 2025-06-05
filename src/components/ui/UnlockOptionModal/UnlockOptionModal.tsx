@@ -27,7 +27,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   initialPrice,
 }) => {
   const [selectedOption, setSelectedOption] =
-    useState<BONUS_OPTION_TYPE | null>(BONUS_OPTION_TYPE.Bananas)
+    useState<BONUS_OPTION_TYPE | null>(null)
   const bananas = useAppSelector((state) => state.bananas.bananas)
 
   const enabledBananasText = useMemo(
@@ -110,10 +110,12 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const handleCardPress = (option: BONUS_OPTION_TYPE) =>
     setSelectedOption((prev) => (prev === option ? null : option))
+
   const handleClose = () => {
     setSelectedOption(null)
     onClose()
   }
+
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
       await bananasService.removeBananas(dispatch, price)

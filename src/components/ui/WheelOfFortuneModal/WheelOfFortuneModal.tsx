@@ -65,6 +65,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setWheelWinnerSector('')
     setIsSpinButtonDisabled(false)
     setShouldReset(false)
+    setWinnerIndex(generateRandomNumber(0, sectors.length - 1))
   }
 
   const handleCloseTryAgainModal = () => {
@@ -95,7 +96,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     if (shouldReset) {
       setTimeout(handleReset, 1000)
     }
-  }, [shouldReset])
+  }, [handleReset, shouldReset])
 
   return (
     <Modal

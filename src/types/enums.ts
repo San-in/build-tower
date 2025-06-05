@@ -42,6 +42,8 @@ export enum GAME_MODAL_TYPE {
 export enum MODAL_TYPE {
   Orange = 'Orange',
   Green = 'Green ',
+  Purple = 'Purple',
+  Blue = 'Blue',
 }
 export enum POWER_UP_GRADE {
   Bronze = 'Bronze',

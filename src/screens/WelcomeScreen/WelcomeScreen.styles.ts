@@ -15,7 +15,6 @@ export const styles = StyleSheet.create({
   bananasCounter: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 5,
   },
   foregroundImage: {
     height: '100%',
