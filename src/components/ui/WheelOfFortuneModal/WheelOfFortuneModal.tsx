@@ -9,7 +9,7 @@ import { COLORS, GlobalStyles } from '@theme'
 import { BUTTON_TYPE } from '@types'
 import { calculateWheelResult, generateRandomNumber } from '@utils'
 import { MotiView } from 'moti'
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ImageBackground, Modal, Pressable, View } from 'react-native'
 
 import { WheelOfFortuneModalProps } from './WheelOfFortuneModal.types'
@@ -24,9 +24,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
 }) => {
   const wheelRef = useRef<WheelOfFortuneRef>(null)
   const [spinCounter, setSpinCounter] = useState<number>(INITIAL_SPIN_QUANTITY)
-  const [winnerIndex, setWinnerIndex] = useState(() =>
-    generateRandomNumber(0, sectors.length - 1)
-  )
+  const [winnerIndex, setWinnerIndex] = useState<null | number>(null)
   const [isWheelModalResultVisible, setIsWheelModalResultVisible] =
     useState(false)
   const [tryAgainModalVisible, setTryAgainModalVisible] = useState(false)
@@ -34,11 +32,27 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   const [isFirstSpinFinished, setIsFirstSpinFinished] = useState(false)
   const [isSpinButtonDisabled, setIsSpinButtonDisabled] = useState(false)
   const [shouldReset, setShouldReset] = useState(true)
-
+  const [shouldSpinWheel, setShouldSpinWheel] = useState(false)
   const isSpinCounterVisible = useMemo(
     () => spinCounter < INITIAL_SPIN_QUANTITY && spinCounter,
     [spinCounter]
   )
+
+  useEffect(() => {
+    setWinnerIndex((prevState) =>
+      generateRandomNumber({
+        min: 0,
+        max: sectors.length - 1,
+        exceptions: prevState !== null ? [prevState] : [],
+      })
+    )
+  }, [sectors.length])
+
+  useEffect(() => {
+    if (shouldSpinWheel && winnerIndex !== null) {
+      wheelRef.current?.spin()
+    }
+  }, [shouldSpinWheel, winnerIndex])
 
   const wheelResult = useMemo(
     () =>
@@ -48,25 +62,37 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     [wheelWinnerSector, initialResult]
   )
 
-  const handleTryAgain = () => {
-    setWinnerIndex(generateRandomNumber(0, sectors.length - 1))
+  const handleTryAgain = async () => {
+    setWinnerIndex((prevState) =>
+      generateRandomNumber({
+        min: 0,
+        max: sectors.length - 1,
+        exceptions: prevState !== null ? [prevState] : [],
+      })
+    )
     setWheelWinnerSector('')
-    wheelRef.current?.spin()
+    setShouldSpinWheel(true)
   }
   const handleClose = () => {
     setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
     setShouldReset(true)
   }
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setIsWheelModalResultVisible(false)
     setSpinCounter(INITIAL_SPIN_QUANTITY)
     setIsFirstSpinFinished(false)
     setWheelWinnerSector('')
     setIsSpinButtonDisabled(false)
     setShouldReset(false)
-    setWinnerIndex(generateRandomNumber(0, sectors.length - 1))
-  }
+    setWinnerIndex((prevState) =>
+      generateRandomNumber({
+        min: 0,
+        max: sectors.length - 1,
+        exceptions: prevState !== null ? [prevState] : [],
+      })
+    )
+  }, [sectors.length])
 
   const handleCloseTryAgainModal = () => {
     setTryAgainModalVisible(false)
@@ -76,7 +102,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   }
   const handleSpinPress = () => {
     setIsSpinButtonDisabled(true)
-    wheelRef.current?.spin()
+    setShouldSpinWheel(true)
   }
   const handleConfirmPress = () => {
     handleClose()
@@ -86,6 +112,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setWheelWinnerSector(winner)
     setIsWheelModalResultVisible(true)
     setSpinCounter((prevState) => prevState && prevState - 1)
+    setShouldSpinWheel(false)
   }
   const handleCloseWheelResult = () => {
     setIsWheelModalResultVisible(false)
@@ -159,13 +186,15 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
             </View>
             <OutlinedText fontSize={25}>Spin for building tower</OutlinedText>
           </View>
-          <WheelOfFortune
-            onFinish={handleWheelFortuneFinish}
-            ref={wheelRef}
-            result={wheelResult}
-            sectors={sectors}
-            winnerIndex={winnerIndex}
-          />
+          {winnerIndex !== null && (
+            <WheelOfFortune
+              onFinish={handleWheelFortuneFinish}
+              ref={wheelRef}
+              result={wheelResult}
+              sectors={sectors}
+              winnerIndex={winnerIndex}
+            />
+          )}
 
           <MotiView
             animate={{ opacity: isSpinCounterVisible ? 1 : 0 }}

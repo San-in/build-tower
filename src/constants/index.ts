@@ -25,7 +25,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x1', 'x2', '+1', '/1', 'x3'],
+      fortuneWheelData: ['x1', 'x2', '+1', '÷1', 'x3'],
     },
     simpleOperators: {
       start: 1,
@@ -56,7 +56,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['+1', 'x1', 'x2', '+3', '/1'],
+      fortuneWheelData: ['+1', 'x1', 'x2', '+3', '÷1'],
     },
     simpleOperators: {
       start: 1,
@@ -87,7 +87,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x3', '+2', '+1', 'x4', '/1'],
+      fortuneWheelData: ['x3', '+2', '+1', 'x4', '÷1'],
     },
     simpleOperators: {
       start: 1,
@@ -139,7 +139,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['/1', '+3', 'x2', '+5', '+4'],
+      fortuneWheelData: ['÷1', '+3', 'x2', '+5', '+4'],
     },
     simpleOperators: {
       start: 1,
@@ -160,7 +160,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x3', '/1', '+2', 'x5', '+4'],
+      fortuneWheelData: ['x3', '÷1', '+2', 'x5', '+4'],
     },
     simpleOperators: {
       start: 1,
@@ -212,7 +212,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x3', 'x2', '/1', '+5', '+4'],
+      fortuneWheelData: ['x3', 'x2', '÷1', '+5', '+4'],
     },
     simpleOperators: {
       start: 1,
@@ -233,7 +233,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x1', '+2', '/1', '+4', 'x3'],
+      fortuneWheelData: ['x1', '+2', '÷1', '+4', 'x3'],
     },
     simpleOperators: {
       start: 1,
@@ -264,7 +264,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x4', '+2', '+1', '/1', 'x1'],
+      fortuneWheelData: ['x4', '+2', '+1', '÷1', 'x1'],
     },
     simpleOperators: {
       start: 1,
@@ -326,7 +326,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['/1', '+3', '+4', 'x2', 'x3'],
+      fortuneWheelData: ['÷1', '+3', '+4', 'x2', 'x3'],
     },
     simpleOperators: {
       start: 1,
@@ -357,7 +357,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x2', '/1', 'x3', '+3', 'x5'],
+      fortuneWheelData: ['x2', '÷1', 'x3', '+3', 'x5'],
     },
     simpleOperators: {
       start: 1,
@@ -481,7 +481,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 1,
-      fortuneWheelData: ['x3', '+3', '/1', '+1', 'x5', '+5'],
+      fortuneWheelData: ['x3', '+3', '÷1', '+1', 'x5', '+5'],
     },
     simpleOperators: {
       start: 1,
@@ -636,7 +636,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 2,
-      fortuneWheelData: ['x2.5', 'x3', '/1', '+2', '+1'],
+      fortuneWheelData: ['x2.5', 'x3', '÷1', '+2', '+1'],
     },
     simpleOperators: {
       start: 2,
@@ -760,7 +760,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 2,
-      fortuneWheelData: ['x3', 'x2', '+3', '/1', '+1'],
+      fortuneWheelData: ['x3', 'x2', '+3', '÷1', '+1'],
     },
     simpleOperators: {
       start: 2,
@@ -884,7 +884,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     },
     secondTower: {
       start: 3,
-      fortuneWheelData: ['+1', '/1', '+2', 'x2', '+4'],
+      fortuneWheelData: ['+1', '÷1', '+2', 'x2', '+4'],
     },
     simpleOperators: {
       start: 2,

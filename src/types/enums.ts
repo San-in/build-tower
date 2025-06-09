@@ -76,3 +76,9 @@ export enum BONUS_OPTION_TYPE {
 export enum BLOCK_TYPE {
   Basic = 'Basic',
 }
+
+export enum MONKEY_ANIMATION_TYPE {
+  RUN_AND_JUMP = 'run-and-jump',
+  LANDING = 'landing',
+  IDLE = 'idle',
+}

@@ -11,13 +11,13 @@ export const calculateWheelResult = (
     case OPERATOR.Plus:
       return value + operand
     case OPERATOR.Minus:
-      return value - operand
+      return value - operand < 1 ? 1 : value - operand
     case OPERATOR.Multiply:
       return value * operand
     case OPERATOR.Division:
-      return value / operand
+      return value / operand < 1 ? 1 : value / operand
     default:
       console.warn(`Unsupported operator: ${operator}`)
-      return 0
+      return value
   }
 }

@@ -16,6 +16,7 @@ import {
   MARKET_PRODUCT,
   MODAL_TYPE,
   ModalState,
+  MONKEY_ANIMATION_TYPE,
   OPERATOR,
   OptionValue,
   POWER_UP_TYPE,
@@ -24,7 +25,6 @@ import {
 } from '@types'
 import { getLevelBackground } from '@utils'
 import { MotiView } from 'moti'
-// import LottieView from 'lottie-react-native'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
@@ -35,6 +35,7 @@ import {
 } from 'react-native'
 import { Easing } from 'react-native-reanimated'
 
+import MonkeyAnimation from '../../components/ui/MonkeyAnimation/MonkeyAnimation'
 import { marketService } from '../../services/marketService'
 import { BlockTowerCreator, BuildTowerSplash } from './components'
 
@@ -51,6 +52,12 @@ const INITIAL_INIT_BUILD_TOWER_MODAL_STATE: ModalState<TOWER> = {
   isVisible: false,
   type: TOWER.First,
 }
+
+const INITIAL_MONKEY_ANIMATION_MODAL_STATE: ModalState<MONKEY_ANIMATION_TYPE> =
+  {
+    isVisible: false,
+    type: MONKEY_ANIMATION_TYPE.RUN_AND_JUMP,
+  }
 
 const GameScreen: FC = () => {
   const {
@@ -94,7 +101,11 @@ const GameScreen: FC = () => {
   const [buildModalData, setBuildModalData] = useState<ModalState<TOWER>>(
     INITIAL_BUILD_MODAL_STATE
   )
-  const animationRestartKey = `${actionModalData.isVisible}`
+  const [monkeyAnimationData, setMonkeyAnimationData] = useState<
+    ModalState<MONKEY_ANIMATION_TYPE>
+  >(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
+  const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
+  ${monkeyAnimationData.isVisible}`
 
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -108,13 +119,47 @@ const GameScreen: FC = () => {
     setBuildModalData(INITIAL_BUILD_MODAL_STATE)
     setIsScaledTower(false)
     setIsPrizeVisible(false)
+    setMonkeyAnimationData(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
+    setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
   }, [])
 
   const dispatch = useAppDispatch()
 
-  const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
-    await marketService.increment(dispatch, type)
-  }
+  const monkeyAnimationConfig = {
+    [MONKEY_ANIMATION_TYPE.RUN_AND_JUMP]: {
+      size: 400,
+      loop: false,
+      onFinishCalBack: () => {
+        setMonkeyAnimationData({
+          isVisible: true,
+          type: MONKEY_ANIMATION_TYPE.LANDING,
+        })
+      },
+      speed: 3,
+    },
+
+    [MONKEY_ANIMATION_TYPE.LANDING]: {
+      size: 100,
+      loop: false,
+      onFinishCalBack: () => {
+        setMonkeyAnimationData({
+          isVisible: true,
+          type: MONKEY_ANIMATION_TYPE.IDLE,
+        })
+      },
+      speed: 4,
+    },
+    [MONKEY_ANIMATION_TYPE.IDLE]: {
+      size: 100,
+      loop: true,
+      onFinishCalBack: () => {},
+      speed: 3,
+    },
+  }[monkeyAnimationData.type]
+
+  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
+  //   await marketService.increment(dispatch, type)
+  // }
 
   const handleCLoseActionModal = useCallback(() => {
     setActionModalData((prevState) => ({ ...prevState, isVisible: false }))
@@ -138,12 +183,14 @@ const GameScreen: FC = () => {
     setInitialBlockValue(number)
     setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
     setTimeout(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       handleOpenActionModal(GAME_MODAL_TYPE.LevelConditions)
     }, 1500)
   }, [])
 
   const handleInitSecondTowerCallBack = (number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setFocusedTower(TOWER.Second)
     setUserBlockValue(number)
     setStep(1)
     setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
@@ -234,6 +281,12 @@ const GameScreen: FC = () => {
                 setIsPrizeVisible(true)
                 setIsScaledTower(true)
                 handleCLoseActionModal()
+                setTimeout(() => {
+                  LayoutAnimation.configureNext(
+                    LayoutAnimation.Presets.easeInEaseOut
+                  )
+                  setBuildModalData({ isVisible: true, type: TOWER.Second })
+                }, 1500)
               }}
               prize={prize}
             />
@@ -382,6 +435,7 @@ const GameScreen: FC = () => {
           contentContainerStyle={{
             flexGrow: 1,
             alignItems: 'flex-end',
+            position: 'relative',
           }}
           ref={scrollViewRef}
         >
@@ -393,10 +447,16 @@ const GameScreen: FC = () => {
               paddingTop: 60,
               flex: 1,
               width: '100%',
+              position: 'relative',
             }}
           >
             {!!initialBlockValue && (
-              <View style={{ justifyContent: 'flex-end', marginBottom: -2 }}>
+              <View
+                style={{
+                  justifyContent: 'flex-end',
+                  marginBottom: -2,
+                }}
+              >
                 <MotiView
                   animate={{
                     translateX: isPrizeVisible ? 0 : -200,
@@ -432,29 +492,75 @@ const GameScreen: FC = () => {
             )}
 
             {!!userBlockValue && (
-              <BlockTowerCreator
-                quantity={userBlockValue}
-                type={TOWER.Second}
+              <View
+                style={{
+                  justifyContent: 'flex-end',
+                  marginBottom: 2,
+                  position: 'relative',
+                }}
+              >
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: userBlockValue * BLOCK_DIMENSION - 12,
+                    zIndex: 10,
+                    right: -15,
+                  }}
+                >
+                  {[
+                    MONKEY_ANIMATION_TYPE.IDLE,
+                    MONKEY_ANIMATION_TYPE.LANDING,
+                  ].includes(monkeyAnimationData.type) && (
+                    <MonkeyAnimation
+                      isVisible={monkeyAnimationData.isVisible}
+                      loop={monkeyAnimationConfig.loop}
+                      onFinish={monkeyAnimationConfig.onFinishCalBack}
+                      size={monkeyAnimationConfig.size}
+                      speed={monkeyAnimationConfig.speed}
+                      type={monkeyAnimationData.type}
+                    />
+                  )}
+                </View>
+                <BlockTowerCreator
+                  onAnimatedEnd={() => {
+                    if (
+                      step === 1 &&
+                      !monkeyAnimationData.isVisible &&
+                      monkeyAnimationData.type ===
+                        MONKEY_ANIMATION_TYPE.RUN_AND_JUMP
+                    ) {
+                      setMonkeyAnimationData({
+                        isVisible: true,
+                        type: MONKEY_ANIMATION_TYPE.RUN_AND_JUMP,
+                      })
+                    }
+                  }}
+                  quantity={userBlockValue}
+                  type={TOWER.Second}
+                />
+              </View>
+            )}
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -30,
+              right: -180,
+              zIndex: 10,
+            }}
+          >
+            {monkeyAnimationData.type ===
+              MONKEY_ANIMATION_TYPE.RUN_AND_JUMP && (
+              <MonkeyAnimation
+                isVisible={monkeyAnimationData.isVisible}
+                loop={monkeyAnimationConfig.loop}
+                onFinish={monkeyAnimationConfig.onFinishCalBack}
+                size={monkeyAnimationConfig.size}
+                speed={monkeyAnimationConfig.speed}
+                type={monkeyAnimationData.type}
               />
             )}
-            {/*<LottieView*/}
-            {/*  source={require('../../../assets/icons/animations/run-2.json')}*/}
-            {/*  autoPlay*/}
-            {/*  loop={true}*/}
-            {/*  speed={4}*/}
-            {/*  style={{*/}
-            {/*    width: 150,*/}
-            {/*    height: 150,*/}
-            {/*    transform: [{ scaleX: -1 }],*/}
-            {/*    position: 'absolute',*/}
-            {/*    bottom: 27,*/}
-            {/*    right: 0,*/}
-            {/*    shadowColor: '#000',*/}
-            {/*    shadowOffset: { width: 10, height: 5 },*/}
-            {/*  }}*/}
-            {/*/>*/}
           </View>
-
           <ImageBackground
             source={require('../../../assets/images/ground.png')}
             style={{ backgroundColor: 'black', width: '100%', height: 80 }}
@@ -562,6 +668,7 @@ const GameScreen: FC = () => {
         {/*  type={BUTTON_TYPE.Warning}*/}
         {/*/>*/}
       </View>
+
       <WheelOfFortuneModal
         initialResult={initTowerStart}
         isVisible={initBuildTowerModalData.isVisible}
