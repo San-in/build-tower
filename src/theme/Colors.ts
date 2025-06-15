@@ -167,6 +167,12 @@ export const COLORS = {
   gradientGreen_4: 'rgb(110,221,115)',
   gradientGreen_5: 'rgb(178,230,180)',
 
+  gradientBlue_1: 'rgb(10,60,140)',
+  gradientBlue_2: 'rgb(10,85,170)',
+  gradientBlue_3: 'rgb(15,108,207)',
+  gradientBlue_4: 'rgb(40,150,220)',
+  gradientBlue_5: 'rgb(120,200,250)',
+
   gradientTerracotta_1: 'rgb(159,64,17)',
   gradientTerracotta_2: 'rgb(193,74,41)',
   gradientTerracotta_3: 'rgb(214,112,86)',

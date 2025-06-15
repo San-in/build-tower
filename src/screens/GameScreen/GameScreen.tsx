@@ -1,5 +1,10 @@
 import { BananasIcon } from '@assets/icons'
-import { Header, OptionModal, WheelOfFortuneModal } from '@components/ui'
+import {
+  Button,
+  Header,
+  OptionModal,
+  WheelOfFortuneModal,
+} from '@components/ui'
 import { CustomModal } from '@components/ui/Modal'
 import {
   BasicModalContent,
@@ -12,8 +17,8 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppDispatch } from '@store/hooks'
 import {
+  BUTTON_TYPE,
   GAME_MODAL_TYPE,
-  MARKET_PRODUCT,
   MODAL_TYPE,
   ModalState,
   MONKEY_ANIMATION_TYPE,
@@ -23,7 +28,14 @@ import {
   SCREENS,
   TOWER,
 } from '@types'
-import { getLevelBackground } from '@utils'
+import {
+  generateRandomNumber,
+  getLevelBackground,
+  getOptionNumberByOperator,
+  getOptionOperators,
+  getValidOptionNumber,
+  showIsUserNeedHelp,
+} from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -36,7 +48,6 @@ import {
 import { Easing } from 'react-native-reanimated'
 
 import MonkeyAnimation from '../../components/ui/MonkeyAnimation/MonkeyAnimation'
-import { marketService } from '../../services/marketService'
 import { BlockTowerCreator, BuildTowerSplash } from './components'
 
 const INITIAL_OPTION_STATE = { number: 0, operator: null }
@@ -67,7 +78,6 @@ const GameScreen: FC = () => {
 
   const {
     attempts,
-    difficulty,
     fistTower,
     secondTower,
     simpleOperators,
@@ -90,6 +100,7 @@ const GameScreen: FC = () => {
     useState(false)
   const [isScaledTower, setIsScaledTower] = useState(false)
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
+  const [isNextStepVisible, setIsNextStepVisible] = useState(false)
   const scrollViewRef = useRef<ScrollView>(null)
 
   // NEW
@@ -123,7 +134,7 @@ const GameScreen: FC = () => {
     setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
   }, [])
 
-  const dispatch = useAppDispatch()
+  // const dispatch = useAppDispatch()
 
   const monkeyAnimationConfig = {
     [MONKEY_ANIMATION_TYPE.RUN_AND_JUMP]: {
@@ -146,6 +157,7 @@ const GameScreen: FC = () => {
           isVisible: true,
           type: MONKEY_ANIMATION_TYPE.IDLE,
         })
+        setIsNextStepVisible(true)
       },
       speed: 4,
     },
@@ -347,6 +359,57 @@ const GameScreen: FC = () => {
     initTowerModalConfig
   // NEW END
 
+  const handleNextStepPress = () => {
+    if (step === attempts) {
+      setIsFinishRoundModalVisible(true)
+      return
+    }
+
+    const { help: isUserNeedHelp, strongHelp: isUserNeedStrongHelp } =
+      showIsUserNeedHelp(userBlockValue, initialBlockValue)
+
+    const [firstOperator, secondOperator] = getOptionOperators(
+      userBlockValue === 1,
+      isUserNeedHelp
+    )
+
+    const firstNumber = getOptionNumberByOperator({
+      operator: firstOperator,
+      simpleOperators,
+      multiplicativeOperators,
+    })
+    let secondNumber = getOptionNumberByOperator({
+      operator: secondOperator,
+      simpleOperators,
+      multiplicativeOperators,
+    })
+
+    if (isUserNeedHelp) {
+      secondNumber = generateRandomNumber({ min: 2, max: 3 })
+    }
+    if (isUserNeedStrongHelp) {
+      secondNumber = multiplicativeOperators.end
+    }
+
+    setFirstOptionCard({
+      number: getValidOptionNumber({
+        operator: firstOperator,
+        number: firstNumber,
+        totalNumbers: userBlockValue,
+      }),
+      operator: firstOperator,
+    })
+    setSecondOptionCard({
+      number: getValidOptionNumber({
+        operator: secondOperator,
+        number: secondNumber,
+        totalNumbers: userBlockValue,
+      }),
+      operator: secondOperator,
+    })
+    setIsModalOptionVisible(true)
+  }
+
   useEffect(() => {
     if (chosenOption) {
       const selectedCard =
@@ -409,14 +472,15 @@ const GameScreen: FC = () => {
       }
       Alert.alert(message)
       setIsFinishRoundModalVisible(false)
-      setStep(0)
-      setInitialBlockValue(0)
-      setUserBlockValue(0)
-      setChosenOption(null)
-      setSecondOptionCard(INITIAL_OPTION_STATE)
-      setFirstOptionCard(INITIAL_OPTION_STATE)
+
+      handleResetLevel()
     }
-  }, [initialBlockValue, isFinishRoundModalVisible, userBlockValue])
+  }, [
+    handleResetLevel,
+    initialBlockValue,
+    isFinishRoundModalVisible,
+    userBlockValue,
+  ])
 
   return (
     <>
@@ -563,7 +627,7 @@ const GameScreen: FC = () => {
           </View>
           <ImageBackground
             source={require('../../../assets/images/ground.png')}
-            style={{ backgroundColor: 'black', width: '100%', height: 80 }}
+            style={{ backgroundColor: 'black', width: '100%', height: 100 }}
           />
         </ScrollView>
       </ImageBackground>
@@ -581,92 +645,27 @@ const GameScreen: FC = () => {
 
       <View
         style={{
-          flexDirection: 'row',
-          gap: 30,
-          justifyContent: 'center',
-          flexWrap: 'wrap',
           position: 'absolute',
           bottom: 30,
+          top: '25%',
+          right: 30,
+          justifyContent: 'space-between',
         }}
       >
-        {/*<Button*/}
-        {/*  onPress={() => {*/}
-        {/*    if (step === 5) {*/}
-        {/*      setIsFinishRoundModalVisible(true)*/}
-        {/*      return*/}
-        {/*    }*/}
-        {/*    const isUserNeedHelp = userBlockValue - initialBlockValue > 8*/}
-        {/*    const isTheLastBlock = userBlockValue === 1*/}
-        {/*    const isUserNeedStrongHelp =*/}
-        {/*      userBlockValue - initialBlockValue > initialBlockValue*/}
-
-        {/*    const firstOperator = isTheLastBlock*/}
-        {/*      ? generateRandomOperator([OPERATOR.Minus, OPERATOR.Division])*/}
-        {/*      : generateRandomOperator()*/}
-        {/*    let secondOperator = isUserNeedHelp*/}
-        {/*      ? OPERATOR.Division*/}
-        {/*      : generateRandomOperator([firstOperator])*/}
-
-        {/*    if (isTheLastBlock) {*/}
-        {/*      secondOperator = generateRandomOperator([*/}
-        {/*        firstOperator,*/}
-        {/*        OPERATOR.Minus,*/}
-        {/*        OPERATOR.Division,*/}
-        {/*      ])*/}
-        {/*    }*/}
-        {/*    let firstNumber = OperatorType.isSimple(firstOperator)*/}
-        {/*      ? generateRandomNumber(1, 5)*/}
-        {/*      : generateRandomNumber(2, 3)*/}
-
-        {/*    let secondNumber = OperatorType.isSimple(secondOperator)*/}
-        {/*      ? generateRandomNumber(1, 5)*/}
-        {/*      : generateRandomNumber(2, 3)*/}
-
-        {/*    if (isUserNeedHelp) {*/}
-        {/*      secondNumber = generateRandomNumber(2, 3)*/}
-        {/*    }*/}
-        {/*    if (isUserNeedStrongHelp) {*/}
-        {/*      secondNumber = 3*/}
-        {/*      // TODO: if use 4 for multiplicativeOperators*/}
-        {/*      // secondNumber = generateRandomNumber(3, 4)*/}
-        {/*    }*/}
-        {/*    if (*/}
-        {/*      firstOperator === OPERATOR.Minus &&*/}
-        {/*      firstNumber > userBlockValue*/}
-        {/*    ) {*/}
-        {/*      firstNumber = userBlockValue - 1*/}
-        {/*    }*/}
-        {/*    if (*/}
-        {/*      secondOperator === OPERATOR.Minus &&*/}
-        {/*      secondNumber > userBlockValue*/}
-        {/*    ) {*/}
-        {/*      secondNumber = userBlockValue - 1*/}
-        {/*    }*/}
-
-        {/*    setFirstOptionCard({*/}
-        {/*      number: firstNumber,*/}
-        {/*      operator: firstOperator,*/}
-        {/*    })*/}
-        {/*    setSecondOptionCard({*/}
-        {/*      number: secondNumber,*/}
-        {/*      operator: secondOperator,*/}
-        {/*    })*/}
-        {/*    setIsModalOptionVisible(true)*/}
-        {/*  }}*/}
-        {/*  style={{ alignSelf: 'center' }}*/}
-        {/*  title={'Attempt'}*/}
-        {/*/>*/}
-
-        {/*<Button*/}
-        {/*  onPress={() => {*/}
-        {/*    setFocusedTower(TOWER.Second)*/}
-        {/*    setUserBlockValue(generateRandomNumber(1, 3))*/}
-        {/*    setStep(1)*/}
-        {/*  }}*/}
-        {/*  style={{ maxWidth: 170 }}*/}
-        {/*  title={'Build 2nd tower'}*/}
-        {/*  type={BUTTON_TYPE.Warning}*/}
-        {/*/>*/}
+        <MotiView
+          animate={{ opacity: isNextStepVisible ? 1 : 0 }}
+          from={{ opacity: 0 }}
+          style={{ marginTop: 'auto' }}
+          transition={{ type: 'timing', duration: 200, delay: 300 }}
+        >
+          <Button
+            buttonContainerStyle={{ paddingHorizontal: 14 }}
+            onPress={handleNextStepPress}
+            textSize={16}
+            title={'NEXT STEP →'}
+            type={BUTTON_TYPE.Warning}
+          />
+        </MotiView>
       </View>
 
       <WheelOfFortuneModal

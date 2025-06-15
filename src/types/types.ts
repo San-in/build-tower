@@ -23,7 +23,7 @@ type TowerConfig = {
   fortuneWheelData: Array<string>
 }
 
-type OperatorRange = {
+export type OperatorRange = {
   start: number
   end: number
 }

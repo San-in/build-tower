@@ -170,7 +170,8 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
           onPress={handleConfirmPress}
           style={styles.button}
           textSize={15}
-          title={'CONFIRM'}
+          title={'OK'}
+          type={BUTTON_TYPE.Warning}
         />
       </View>
     </CustomModal>

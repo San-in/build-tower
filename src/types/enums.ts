@@ -6,6 +6,7 @@ export enum BUTTON_TYPE {
   Success = 'Success',
   Warning = 'Warning',
   Error = 'Error',
+  Info = 'Info',
 }
 
 export enum LEVEL_DIFFICULTY {

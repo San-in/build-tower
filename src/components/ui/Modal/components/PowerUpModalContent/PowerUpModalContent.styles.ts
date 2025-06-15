@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   buttonContent: { paddingHorizontal: 5 },
   buttonsContainer: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 20,
     justifyContent: 'space-between',
     marginTop: 25,
     width: '100%',

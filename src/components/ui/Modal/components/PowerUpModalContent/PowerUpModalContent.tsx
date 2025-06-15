@@ -178,7 +178,8 @@ between 1 and 4 random blocks`,
           onPress={onConfirm}
           style={styles.button}
           textSize={15}
-          title={'CONFIRM'}
+          title={'OK'}
+          type={BUTTON_TYPE.Warning}
         />
       </View>
     </View>

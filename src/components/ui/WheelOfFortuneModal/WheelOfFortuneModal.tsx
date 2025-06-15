@@ -219,7 +219,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   onPress={handleOpenTryAgainModal}
                   style={styles.button}
                   title="TRY AGAIN"
-                  type={BUTTON_TYPE.Warning}
+                  type={BUTTON_TYPE.Info}
                 />
                 <Button
                   buttonContainerStyle={styles.buttonContent}
