@@ -39,6 +39,7 @@ export enum GAME_MODAL_TYPE {
   RemoveBlocks = 'RemoveBlocks',
   PowerUpWarning = 'PowerUpWarning',
   LevelConditions = 'LevelConditions',
+  LevelResult = 'LevelResult',
 }
 export enum MODAL_TYPE {
   Orange = 'Orange',
@@ -79,7 +80,20 @@ export enum BLOCK_TYPE {
 }
 
 export enum MONKEY_ANIMATION_TYPE {
-  RUN_AND_JUMP = 'run-and-jump',
-  LANDING = 'landing',
-  IDLE = 'idle',
+  RunAndJump = 'run-and-jump',
+  Landing = 'landing',
+  Idle = 'idle',
+  JumpToTop = 'jump-to-top',
+}
+export enum SELECTED_OPTION {
+  First = 'first',
+  Second = 'second',
+  None = 'none',
+}
+export enum LEVEL_RESULT {
+  TooHigh = 'tooHigh',
+  TooLow = 'tooLow',
+  GoldResult = 'goldResult',
+  SilverResult = 'silverResult',
+  BronzeResult = 'bronzeResult',
 }

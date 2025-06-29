@@ -1,1 +1,1 @@
-export { default as BasicModalContent } from './BasicModalContent'
+export { default as LevelResultModalContent } from './LevelResultModalContent'

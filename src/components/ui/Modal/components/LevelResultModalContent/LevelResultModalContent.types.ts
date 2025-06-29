@@ -1,7 +1,10 @@
-export type BasicModalContentProps = {
-  text: string
-  onCancel?: () => void
+export type LevelResultModalContentProps = {
+  onResetLevel: () => void
+  onGoHome: () => void
+  onContinueLevel: () => void
+  onMultipleResult: () => void
   onConfirm: () => void
-  confirmButtonText?: string
-  cancelButtonText?: string
+  initialBlockValue: number
+  userBlockValue: number
+  prize: number
 }

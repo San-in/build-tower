@@ -1,9 +1,12 @@
-import { CloseIcon } from '@assets/icons'
 import { styles } from '@components/ui/OptionModal/OptionModal.styles'
 import { OptionModalProps } from '@components/ui/OptionModal/OptionModal.types'
-import { GlobalStyles } from '@theme'
+import { OutlinedText } from '@components/ui/OutlinedText'
+import { COLORS, GlobalStyles } from '@theme'
+import { SELECTED_OPTION } from '@types'
 import { FC } from 'react'
-import { Modal, Pressable, Text, View } from 'react-native'
+import { Modal, Text, View } from 'react-native'
+
+import OptionCard from '../OptionCard/OptionCard'
 
 const OptionModal: FC<OptionModalProps> = ({
   modalVisible,
@@ -11,45 +14,71 @@ const OptionModal: FC<OptionModalProps> = ({
   firstOption,
   secondOption,
   changeOption,
+  step,
 }) => (
   <Modal
-    animationType="slide"
+    animationType="fade"
     onRequestClose={handleClose}
     transparent={true}
     visible={modalVisible}
   >
     <View style={[GlobalStyles.centeredContainer, styles.background]}>
       <View style={styles.container}>
-        <Pressable
-          onPress={handleClose}
-          style={({ pressed }: { pressed: boolean }) => [
-            styles.closeIcon,
-            pressed && styles.closeIconPressed,
-          ]}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <OutlinedText
+            color={COLORS.brown}
+            fontSize={25}
+            strokeColor={COLORS.yellow}
+          >
+            Step
+          </OutlinedText>
+          <OutlinedText
+            color={COLORS.brown}
+            fontSize={30}
+            strokeColor={COLORS.yellow}
+          >
+            {`${step}`}
+          </OutlinedText>
+        </View>
+
+        <OutlinedText
+          fontSize={40}
+          strokeColor={COLORS.brown}
+          style={{ marginBottom: 30 }}
         >
-          <CloseIcon />
-        </Pressable>
+          What’s your pick?
+        </OutlinedText>
         <View style={styles.contentContainer}>
-          <Pressable
-            onPress={() => {
-              handleClose()
-              changeOption(1)
-            }}
+          {firstOption.operator && (
+            <OptionCard
+              onPress={() => {
+                handleClose()
+                changeOption(SELECTED_OPTION.First)
+              }}
+              operator={firstOption.operator}
+              value={firstOption.number}
+            />
+          )}
+          {secondOption.operator && (
+            <OptionCard
+              onPress={() => {
+                handleClose()
+                changeOption(SELECTED_OPTION.Second)
+              }}
+              operator={secondOption.operator}
+              value={secondOption.number}
+            />
+          )}
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <OutlinedText
+            color={COLORS.brown}
+            fontSize={18}
+            strokeColor={COLORS.yellow}
           >
-            <Text>
-              {firstOption.operator} {firstOption.number}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              handleClose()
-              changeOption(2)
-            }}
-          >
-            <Text>
-              {secondOption.operator} {secondOption.number}
-            </Text>
-          </Pressable>
+            Bananas love brave monkeys!
+          </OutlinedText>
+          <Text style={{ fontSize: 30 }}>🙊</Text>
         </View>
       </View>
     </View>

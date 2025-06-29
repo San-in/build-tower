@@ -34,7 +34,9 @@ export const getOptionOperators = (
 ): [OPERATOR, OPERATOR] => {
   const first = isLastBlock
     ? generateRandomOperator([OPERATOR.Minus, OPERATOR.Division])
-    : generateRandomOperator()
+    : generateRandomOperator(
+        isNeedHelp && !isLastBlock ? [OPERATOR.Division] : null
+      )
 
   const second =
     [
@@ -55,7 +57,7 @@ export const getValidOptionNumber = ({
   number: number
   totalNumbers: number
 }): number => {
-  if (operator === OPERATOR.Minus && number > totalNumbers) {
+  if (operator === OPERATOR.Minus && number >= totalNumbers) {
     return totalNumbers - 1
   }
   return number

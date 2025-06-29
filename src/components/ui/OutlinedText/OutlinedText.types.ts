@@ -1,4 +1,4 @@
-import { TextStyle } from 'react-native'
+import { StyleProp, TextStyle } from 'react-native'
 
 export type OutlinedTextProps = {
   children: string
@@ -6,5 +6,5 @@ export type OutlinedTextProps = {
   color?: string
   strokeColor?: string
   offset?: number
-  style?: TextStyle
+  style?: StyleProp<TextStyle>
 }

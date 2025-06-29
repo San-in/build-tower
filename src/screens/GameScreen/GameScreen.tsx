@@ -16,6 +16,7 @@ import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppDispatch } from '@store/hooks'
+import { COLORS } from '@theme'
 import {
   BUTTON_TYPE,
   GAME_MODAL_TYPE,
@@ -26,6 +27,7 @@ import {
   OptionValue,
   POWER_UP_TYPE,
   SCREENS,
+  SELECTED_OPTION,
   TOWER,
 } from '@types'
 import {
@@ -39,7 +41,6 @@ import {
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Alert,
   ImageBackground,
   LayoutAnimation,
   ScrollView,
@@ -47,6 +48,7 @@ import {
 } from 'react-native'
 import { Easing } from 'react-native-reanimated'
 
+import LevelResultModalContent from '../../components/ui/Modal/components/LevelResultModalContent/LevelResultModalContent'
 import MonkeyAnimation from '../../components/ui/MonkeyAnimation/MonkeyAnimation'
 import { BlockTowerCreator, BuildTowerSplash } from './components'
 
@@ -63,11 +65,10 @@ const INITIAL_INIT_BUILD_TOWER_MODAL_STATE: ModalState<TOWER> = {
   isVisible: false,
   type: TOWER.First,
 }
-
 const INITIAL_MONKEY_ANIMATION_MODAL_STATE: ModalState<MONKEY_ANIMATION_TYPE> =
   {
     isVisible: false,
-    type: MONKEY_ANIMATION_TYPE.RUN_AND_JUMP,
+    type: MONKEY_ANIMATION_TYPE.RunAndJump,
   }
 
 const GameScreen: FC = () => {
@@ -93,11 +94,11 @@ const GameScreen: FC = () => {
     useState<OptionValue>(INITIAL_OPTION_STATE)
   const [secondOptionCard, setSecondOptionCard] =
     useState<OptionValue>(INITIAL_OPTION_STATE)
-  const [chosenOption, setChosenOption] = useState<1 | 2 | null>(null)
+  const [chosenOption, setChosenOption] = useState<SELECTED_OPTION>(
+    SELECTED_OPTION.None
+  )
   const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
 
-  const [isFinishRoundModalVisible, setIsFinishRoundModalVisible] =
-    useState(false)
   const [isScaledTower, setIsScaledTower] = useState(false)
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
   const [isNextStepVisible, setIsNextStepVisible] = useState(false)
@@ -118,54 +119,99 @@ const GameScreen: FC = () => {
   const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
   ${monkeyAnimationData.isVisible}`
 
+  const isOutOfAttempts = useMemo(() => step > attempts, [attempts, step])
+
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setFocusedTower(TOWER.First)
     setStep(0)
-    setInitialBlockValue(0)
-    setUserBlockValue(0)
-    setChosenOption(null)
+    setChosenOption(SELECTED_OPTION.None)
     setSecondOptionCard(INITIAL_OPTION_STATE)
     setFirstOptionCard(INITIAL_OPTION_STATE)
-    setBuildModalData(INITIAL_BUILD_MODAL_STATE)
-    setIsScaledTower(false)
     setIsPrizeVisible(false)
     setMonkeyAnimationData(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
     setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
+    setIsNextStepVisible(false)
+    setTimeout(() => {
+      setIsScaledTower(false)
+      setInitialBlockValue(0)
+      setUserBlockValue(0)
+      setBuildModalData(INITIAL_BUILD_MODAL_STATE)
+    }, 1500)
   }, [])
+
+  const userBlockManipulation = () => {
+    const selectedCard =
+      chosenOption === SELECTED_OPTION.First
+        ? firstOptionCard
+        : secondOptionCard
+    const { number, operator } = selectedCard
+
+    if (operator === OPERATOR.Plus) {
+      setUserBlockValue((prevState) => prevState + number)
+    }
+    if (operator === OPERATOR.Minus) {
+      setUserBlockValue((prevState) =>
+        prevState - number > 1 ? prevState - number : 1
+      )
+    }
+    if (operator === OPERATOR.Division) {
+      setUserBlockValue((prevState) =>
+        Math.round(prevState / number) > 1 ? Math.round(prevState / number) : 1
+      )
+    }
+    if (operator === OPERATOR.Multiply) {
+      setUserBlockValue((prevState) => prevState * number)
+    }
+    setStep((prevState) => prevState + 1)
+    setChosenOption(SELECTED_OPTION.None)
+    setFirstOptionCard(INITIAL_OPTION_STATE)
+    setSecondOptionCard(INITIAL_OPTION_STATE)
+    setMonkeyAnimationData((prevState) => ({ ...prevState, isVisible: false }))
+  }
 
   // const dispatch = useAppDispatch()
 
   const monkeyAnimationConfig = {
-    [MONKEY_ANIMATION_TYPE.RUN_AND_JUMP]: {
+    [MONKEY_ANIMATION_TYPE.RunAndJump]: {
       size: 400,
       loop: false,
       onFinishCalBack: () => {
+        console.log('LANDING')
         setMonkeyAnimationData({
           isVisible: true,
-          type: MONKEY_ANIMATION_TYPE.LANDING,
+          type: MONKEY_ANIMATION_TYPE.Landing,
         })
       },
       speed: 3,
     },
-
-    [MONKEY_ANIMATION_TYPE.LANDING]: {
+    [MONKEY_ANIMATION_TYPE.Landing]: {
       size: 100,
       loop: false,
       onFinishCalBack: () => {
+        if (isOutOfAttempts) {
+          handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
+          return
+        }
         setMonkeyAnimationData({
           isVisible: true,
-          type: MONKEY_ANIMATION_TYPE.IDLE,
+          type: MONKEY_ANIMATION_TYPE.Idle,
         })
         setIsNextStepVisible(true)
       },
       speed: 4,
     },
-    [MONKEY_ANIMATION_TYPE.IDLE]: {
+    [MONKEY_ANIMATION_TYPE.Idle]: {
       size: 100,
       loop: true,
       onFinishCalBack: () => {},
       speed: 3,
+    },
+    [MONKEY_ANIMATION_TYPE.JumpToTop]: {
+      size: 140,
+      loop: false,
+      onFinishCalBack: userBlockManipulation,
+      speed: 4,
     },
   }[monkeyAnimationData.type]
 
@@ -234,6 +280,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Orange,
           withCrossIcon: true,
+          onCrossIconPress: handleCLoseActionModal,
         },
         [GAME_MODAL_TYPE.Reset]: {
           actionModalHeader: 'Start over? Really?',
@@ -246,6 +293,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Orange,
           withCrossIcon: true,
+          onCrossIconPress: handleCLoseActionModal,
         },
         [GAME_MODAL_TYPE.AddBlocks]: {
           actionModalHeader: 'Let`s add some blocks?',
@@ -258,6 +306,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Green,
           withCrossIcon: true,
+          onCrossIconPress: handleCLoseActionModal,
         },
         [GAME_MODAL_TYPE.RemoveBlocks]: {
           actionModalHeader: 'Let`s remove some blocks?',
@@ -270,6 +319,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Green,
           withCrossIcon: true,
+          onCrossIconPress: handleCLoseActionModal,
         },
         [GAME_MODAL_TYPE.PowerUpWarning]: {
           actionModalHeader: 'Build both towers first',
@@ -284,6 +334,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Orange,
           withCrossIcon: true,
+          onCrossIconPress: handleCLoseActionModal,
         },
         [GAME_MODAL_TYPE.LevelConditions]: {
           actionModalContent: (
@@ -305,12 +356,30 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Purple,
           withCrossIcon: false,
+          onCrossIconPress: handleCLoseActionModal,
           actionModalStyles: {
             alignSelf: 'flex-end',
             maxWidth: '76%',
             minWidth: 275,
             transform: [{ translateY: '15%' }],
           },
+        },
+        [GAME_MODAL_TYPE.LevelResult]: {
+          actionModalContent: (
+            <LevelResultModalContent
+              initialBlockValue={initialBlockValue}
+              onConfirm={() => {}}
+              onContinueLevel={() => {}}
+              onGoHome={handleGoHome}
+              onMultipleResult={() => {}}
+              onResetLevel={handleResetPressed}
+              prize={prize}
+              userBlockValue={userBlockValue}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Blue,
+          withCrossIcon: false,
+          onCrossIconPress: handleGoHome,
         },
       })[actionModalData.type],
     [
@@ -319,6 +388,7 @@ const GameScreen: FC = () => {
       handleResetPressed,
       initialBlockValue,
       prize,
+      userBlockValue,
       actionModalData.type,
     ]
   )
@@ -353,6 +423,7 @@ const GameScreen: FC = () => {
     actionModalColor,
     actionModalStyles = {},
     withCrossIcon,
+    onCrossIconPress,
   } = actionModalConfig
 
   const { initTowerStart, initTowerSectors, initTowerCallBack } =
@@ -360,11 +431,14 @@ const GameScreen: FC = () => {
   // NEW END
 
   const handleNextStepPress = () => {
-    if (step === attempts) {
-      setIsFinishRoundModalVisible(true)
+    if (isOutOfAttempts) {
       return
     }
 
+    if (firstOptionCard.number && secondOptionCard.number) {
+      setIsModalOptionVisible(true)
+      return
+    }
     const { help: isUserNeedHelp, strongHelp: isUserNeedStrongHelp } =
       showIsUserNeedHelp(userBlockValue, initialBlockValue)
 
@@ -378,6 +452,7 @@ const GameScreen: FC = () => {
       simpleOperators,
       multiplicativeOperators,
     })
+
     let secondNumber = getOptionNumberByOperator({
       operator: secondOperator,
       simpleOperators,
@@ -411,32 +486,7 @@ const GameScreen: FC = () => {
   }
 
   useEffect(() => {
-    if (chosenOption) {
-      const selectedCard =
-        chosenOption === 1 ? firstOptionCard : secondOptionCard
-      const { number, operator } = selectedCard
-
-      if (operator === OPERATOR.Plus) {
-        setUserBlockValue((prevState) => prevState + number)
-      }
-      if (operator === OPERATOR.Minus) {
-        setUserBlockValue((prevState) =>
-          prevState - number > 1 ? prevState - number : 1
-        )
-      }
-      if (operator === OPERATOR.Division) {
-        setUserBlockValue((prevState) =>
-          Math.round(prevState / number) > 1
-            ? Math.round(prevState / number)
-            : 1
-        )
-      }
-
-      if (operator === OPERATOR.Multiply) {
-        setUserBlockValue((prevState) => prevState * number)
-      }
-      setStep((prevState) => prevState + 1)
-      setChosenOption(null)
+    if (chosenOption !== SELECTED_OPTION.None) {
     }
   }, [chosenOption, firstOptionCard, secondOptionCard])
 
@@ -455,32 +505,32 @@ const GameScreen: FC = () => {
     }, 100)
   }, [scrollViewRef, initialBlockValue, userBlockValue, focusedTower])
 
-  useEffect(() => {
-    if (isFinishRoundModalVisible) {
-      let message = 'You need higher tower'
-      if (initialBlockValue < userBlockValue) {
-        message = 'You lose!'
-      }
-      if (initialBlockValue === userBlockValue) {
-        message = 'Perfect'
-      }
-      if (initialBlockValue - userBlockValue === 1) {
-        message = 'Almost perfect'
-      }
-      if (initialBlockValue - userBlockValue === 2) {
-        message = 'Satisfy'
-      }
-      Alert.alert(message)
-      setIsFinishRoundModalVisible(false)
-
-      handleResetLevel()
-    }
-  }, [
-    handleResetLevel,
-    initialBlockValue,
-    isFinishRoundModalVisible,
-    userBlockValue,
-  ])
+  // useEffect(() => {
+  //   if (isFinishRoundModalVisible) {
+  //     let message = 'You need higher tower'
+  //     if (initialBlockValue < userBlockValue) {
+  //       message = 'You lose!'
+  //     }
+  //     if (initialBlockValue === userBlockValue) {
+  //       message = 'Perfect'
+  //     }
+  //     if (initialBlockValue - userBlockValue === 1) {
+  //       message = 'Almost perfect'
+  //     }
+  //     if (initialBlockValue - userBlockValue === 2) {
+  //       message = 'Satisfy'
+  //     }
+  //     Alert.alert(message)
+  //     setIsFinishRoundModalVisible(false)
+  //
+  //     handleResetLevel()
+  //   }
+  // }, [
+  //   handleResetLevel,
+  //   initialBlockValue,
+  //   isFinishRoundModalVisible,
+  //   userBlockValue,
+  // ])
 
   return (
     <>
@@ -492,7 +542,6 @@ const GameScreen: FC = () => {
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
         />
-
         <ScrollView
           alwaysBounceVertical={false}
           bounces={false}
@@ -508,7 +557,7 @@ const GameScreen: FC = () => {
               flexDirection: 'row',
               gap: 50,
               paddingHorizontal: 20,
-              paddingTop: 60,
+              paddingTop: 80,
               flex: 1,
               width: '100%',
               position: 'relative',
@@ -546,7 +595,6 @@ const GameScreen: FC = () => {
                     <BananasIcon height={50} width={50} />
                   </MotiView>
                 </MotiView>
-
                 <BlockTowerCreator
                   isScaled={isScaledTower}
                   quantity={initialBlockValue}
@@ -554,7 +602,6 @@ const GameScreen: FC = () => {
                 />
               </View>
             )}
-
             {!!userBlockValue && (
               <View
                 style={{
@@ -572,8 +619,9 @@ const GameScreen: FC = () => {
                   }}
                 >
                   {[
-                    MONKEY_ANIMATION_TYPE.IDLE,
-                    MONKEY_ANIMATION_TYPE.LANDING,
+                    MONKEY_ANIMATION_TYPE.Idle,
+                    MONKEY_ANIMATION_TYPE.Landing,
+                    MONKEY_ANIMATION_TYPE.JumpToTop,
                   ].includes(monkeyAnimationData.type) && (
                     <MonkeyAnimation
                       isVisible={monkeyAnimationData.isVisible}
@@ -591,12 +639,27 @@ const GameScreen: FC = () => {
                       step === 1 &&
                       !monkeyAnimationData.isVisible &&
                       monkeyAnimationData.type ===
-                        MONKEY_ANIMATION_TYPE.RUN_AND_JUMP
+                        MONKEY_ANIMATION_TYPE.RunAndJump
                     ) {
+                      console.log('RUN_AND_JUMP')
                       setMonkeyAnimationData({
                         isVisible: true,
-                        type: MONKEY_ANIMATION_TYPE.RUN_AND_JUMP,
+                        type: MONKEY_ANIMATION_TYPE.RunAndJump,
                       })
+                      return
+                    }
+                    if (
+                      !monkeyAnimationData.isVisible &&
+                      monkeyAnimationData.type ===
+                        MONKEY_ANIMATION_TYPE.JumpToTop
+                    ) {
+                      setTimeout(() => {
+                        console.log('LANDING_2')
+                        setMonkeyAnimationData({
+                          isVisible: true,
+                          type: MONKEY_ANIMATION_TYPE.Landing,
+                        })
+                      }, 150 * userBlockValue)
                     }
                   }}
                   quantity={userBlockValue}
@@ -613,8 +676,7 @@ const GameScreen: FC = () => {
               zIndex: 10,
             }}
           >
-            {monkeyAnimationData.type ===
-              MONKEY_ANIMATION_TYPE.RUN_AND_JUMP && (
+            {monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.RunAndJump && (
               <MonkeyAnimation
                 isVisible={monkeyAnimationData.isVisible}
                 loop={monkeyAnimationConfig.loop}
@@ -627,7 +689,11 @@ const GameScreen: FC = () => {
           </View>
           <ImageBackground
             source={require('../../../assets/images/ground.png')}
-            style={{ backgroundColor: 'black', width: '100%', height: 100 }}
+            style={{
+              backgroundColor: COLORS.codeGrey,
+              width: '100%',
+              height: 100,
+            }}
           />
         </ScrollView>
       </ImageBackground>
@@ -660,9 +726,10 @@ const GameScreen: FC = () => {
         >
           <Button
             buttonContainerStyle={{ paddingHorizontal: 14 }}
+            isDisabled={isOutOfAttempts}
             onPress={handleNextStepPress}
             textSize={16}
-            title={'NEXT STEP →'}
+            title={'NEXT STEP  →'}
             type={BUTTON_TYPE.Warning}
           />
         </MotiView>
@@ -676,17 +743,25 @@ const GameScreen: FC = () => {
         setIsVisible={setInitBuildTowerModalData}
       />
       <OptionModal
-        changeOption={(option) => {
-          setChosenOption(option)
+        changeOption={(newOption) => {
+          if (!isOutOfAttempts) {
+            console.log('JUMP_TO_TOP')
+            setMonkeyAnimationData({
+              isVisible: true,
+              type: MONKEY_ANIMATION_TYPE.JumpToTop,
+            })
+          }
+          setChosenOption(newOption)
         }}
         firstOption={firstOptionCard}
         handleClose={() => setIsModalOptionVisible(false)}
         modalVisible={isModalOptionVisible}
         secondOption={secondOptionCard}
+        step={step}
       />
       <CustomModal
         containerStyles={actionModalStyles}
-        handleClose={handleCLoseActionModal}
+        handleClose={onCrossIconPress}
         modalVisible={actionModalData.isVisible}
         title={actionModalHeader}
         type={actionModalColor}

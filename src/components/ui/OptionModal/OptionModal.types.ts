@@ -1,4 +1,4 @@
-import { OptionValue } from '@types'
+import { OptionValue, SELECTED_OPTION } from '@types'
 import { Dispatch, SetStateAction } from 'react'
 
 export type OptionModalProps = {
@@ -6,5 +6,6 @@ export type OptionModalProps = {
   handleClose: () => void
   firstOption: OptionValue
   secondOption: OptionValue
-  changeOption: Dispatch<SetStateAction<2 | 1 | null>>
+  changeOption: Dispatch<SetStateAction<SELECTED_OPTION>>
+  step: number
 }

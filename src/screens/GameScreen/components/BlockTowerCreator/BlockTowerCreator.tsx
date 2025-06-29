@@ -14,8 +14,10 @@ const ANIMATION_DELAY = 80
 const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
   ({ quantity, onAnimatedEnd, isScaled = true }) => {
     const [blocks, setBlocks] = useState<Array<number>>([])
+    const [isAnimatedEndRun, setIsAnimatedEndRun] = useState(false)
 
     useEffect(() => {
+      setIsAnimatedEndRun(false)
       if (quantity > blocks.length) {
         const toAdd = quantity - blocks.length
         setBlocks((prev) => [
@@ -59,7 +61,12 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
                 }}
                 key={id}
                 onDidAnimate={() => {
-                  if (index + 1 === blocks.length && onAnimatedEnd) {
+                  if (
+                    index + 1 === blocks.length &&
+                    onAnimatedEnd &&
+                    !isAnimatedEndRun
+                  ) {
+                    setIsAnimatedEndRun(true)
                     onAnimatedEnd()
                   }
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)

@@ -19,9 +19,10 @@ export const MonkeyAnimation: FC<MonkeyAnimationProps> = ({
   }
 
   const animationSource = {
-    [MONKEY_ANIMATION_TYPE.RUN_AND_JUMP]: require('@assets/icons/animations/run-and-jump.json'),
-    [MONKEY_ANIMATION_TYPE.LANDING]: require('@assets/icons/animations/landing.json'),
-    [MONKEY_ANIMATION_TYPE.IDLE]: require('@assets/icons/animations/idle.json'),
+    [MONKEY_ANIMATION_TYPE.RunAndJump]: require('@assets/icons/animations/run-and-jump.json'),
+    [MONKEY_ANIMATION_TYPE.Landing]: require('@assets/icons/animations/landing.json'),
+    [MONKEY_ANIMATION_TYPE.Idle]: require('@assets/icons/animations/idle.json'),
+    [MONKEY_ANIMATION_TYPE.JumpToTop]: require('@assets/icons/animations/jump-top.json'),
   }[type]
 
   return (

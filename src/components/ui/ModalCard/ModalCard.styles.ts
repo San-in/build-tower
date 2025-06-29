@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     height: 100,
     padding: 10,
   },
-  container: { position: 'relative', width: '40%' },
+  container: { position: 'relative', width: '35%' },
   overlay: {
     backgroundColor: COLORS.codeGrey70,
     borderRadius: 10,

@@ -101,7 +101,6 @@ const Header: FC<HeaderProps> = ({
             </Pressable>
           </View>
         </View>
-
         <View style={styles.actionButtonsContainer}>
           <IconButton
             icon={<RestartIcon height={36} width={36} />}

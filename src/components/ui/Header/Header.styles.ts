@@ -27,11 +27,16 @@ export const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'flex-end',
+    elevation: 3,
     flexDirection: 'row',
-    gap: 5,
+    gap: 10,
     justifyContent: 'flex-start',
     marginTop: -5,
     paddingHorizontal: 16,
+    shadowColor: COLORS.codeGrey,
+    shadowOffset: { width: 5, height: 3 },
+    shadowOpacity: 0.55,
+    shadowRadius: 3.84,
     width: '100%',
   },
   contentContainer: {
