@@ -284,22 +284,30 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         </OutlinedText>
         <View style={styles.buttonsContainer}>
           <IconButton
-            icon={<RestartIcon height={36} width={36} />}
+            icon={<CardsIcon height={30} width={30} />}
+            isDisabled={true}
+            label={'Double'}
+            onPress={() => {}}
+            style={[styles.iconContainer]}
+          />
+          <IconButton
+            icon={<RestartIcon height={30} width={30} />}
             label={'Restart'}
             labelStyles={styles.buttonLabel}
             onPress={onResetLevel}
             style={styles.iconContainer}
           />
           <IconButton
-            icon={<BuyIcon height={36} width={36} />}
+            icon={<BuyIcon height={30} width={30} />}
             label={'Reset Steps'}
             labelStyles={styles.buttonLabel}
             onPress={onContinueLevel}
             style={[styles.iconContainer, styles.priorityIcon]}
           />
           <IconButton
-            icon={<ReceiveIcon height={36} width={36} />}
+            icon={<ReceiveIcon height={30} width={30} />}
             label={'Get Prize'}
+            labelStyles={styles.buttonLabel}
             onPress={onContinueLevel}
             style={styles.iconContainer}
           />
@@ -366,7 +374,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         </View>
       </View>
     ),
-  }[levelResult]
+  }[LEVEL_RESULT.SilverResult]
 }
 
 export default LevelResultModalContent

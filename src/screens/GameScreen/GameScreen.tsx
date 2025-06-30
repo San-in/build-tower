@@ -3,6 +3,7 @@ import {
   Button,
   Header,
   OptionModal,
+  UnlockOptionModal,
   WheelOfFortuneModal,
 } from '@components/ui'
 import { CustomModal } from '@components/ui/Modal'
@@ -11,11 +12,15 @@ import {
   LevelConditionsModalContent,
   PowerUpModalContent,
 } from '@components/ui/Modal/components'
+import optionCard from '@components/ui/OptionCard/OptionCard'
+import { OutlinedText } from '@components/ui/OutlinedText'
 import { BLOCK_DIMENSION, LEVEL_CONFIG } from '@constants'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
-import { useAppDispatch } from '@store/hooks'
+import { bananasService } from '@services'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { getLevelById, Level } from '@store/slices/levelsSlice'
 import { COLORS } from '@theme'
 import {
   BUTTON_TYPE,
@@ -53,6 +58,7 @@ import MonkeyAnimation from '../../components/ui/MonkeyAnimation/MonkeyAnimation
 import { BlockTowerCreator, BuildTowerSplash } from './components'
 
 const INITIAL_OPTION_STATE = { number: 0, operator: null }
+const INITIAL_RESET_STEPS_MODAL_STATE = { isVisible: false, attempt: 3 }
 const INITIAL_MODAL_STATE: ModalState<GAME_MODAL_TYPE> = {
   isVisible: false,
   type: GAME_MODAL_TYPE.Home,
@@ -86,6 +92,10 @@ const GameScreen: FC = () => {
     prize,
   } = LEVEL_CONFIG[level]
 
+  const { isAvailable, stars, difficulty } = useAppSelector(
+    getLevelById(level)
+  ) as Level
+
   const [step, setStep] = useState(0)
   const [initialBlockValue, setInitialBlockValue] = useState(0)
   const [userBlockValue, setUserBlockValue] = useState(0)
@@ -116,6 +126,10 @@ const GameScreen: FC = () => {
   const [monkeyAnimationData, setMonkeyAnimationData] = useState<
     ModalState<MONKEY_ANIMATION_TYPE>
   >(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
+  const [resetStepsModalData, setResetStepsModalData] = useState(
+    INITIAL_RESET_STEPS_MODAL_STATE
+  )
+
   const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
   ${monkeyAnimationData.isVisible}`
 
@@ -170,14 +184,13 @@ const GameScreen: FC = () => {
     setMonkeyAnimationData((prevState) => ({ ...prevState, isVisible: false }))
   }
 
-  // const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch()
 
   const monkeyAnimationConfig = {
     [MONKEY_ANIMATION_TYPE.RunAndJump]: {
       size: 400,
       loop: false,
       onFinishCalBack: () => {
-        console.log('LANDING')
         setMonkeyAnimationData({
           isVisible: true,
           type: MONKEY_ANIMATION_TYPE.Landing,
@@ -219,6 +232,10 @@ const GameScreen: FC = () => {
   //   await marketService.increment(dispatch, type)
   // }
 
+  // const handleAddBananas = async (quantity: number) => {
+  //   await bananasService.addBananas(dispatch, quantity)
+  // }
+
   const handleCLoseActionModal = useCallback(() => {
     setActionModalData((prevState) => ({ ...prevState, isVisible: false }))
   }, [])
@@ -235,6 +252,11 @@ const GameScreen: FC = () => {
     handleResetLevel()
     handleCLoseActionModal()
   }, [handleCLoseActionModal, handleResetLevel])
+
+  const handleResetSteps = useCallback(() => {
+    handleCLoseActionModal()
+    setResetStepsModalData((prevState) => ({ ...prevState, isVisible: true }))
+  }, [handleCLoseActionModal])
 
   const handleInitFirstTowerCallBack = useCallback((number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -352,6 +374,7 @@ const GameScreen: FC = () => {
                 }, 1500)
               }}
               prize={prize}
+              stars={stars}
             />
           ),
           actionModalColor: MODAL_TYPE.Purple,
@@ -369,7 +392,7 @@ const GameScreen: FC = () => {
             <LevelResultModalContent
               initialBlockValue={initialBlockValue}
               onConfirm={() => {}}
-              onContinueLevel={() => {}}
+              onContinueLevel={handleResetSteps}
               onGoHome={handleGoHome}
               onMultipleResult={() => {}}
               onResetLevel={handleResetPressed}
@@ -388,6 +411,7 @@ const GameScreen: FC = () => {
       handleResetPressed,
       initialBlockValue,
       prize,
+      handleResetSteps,
       userBlockValue,
       actionModalData.type,
     ]
@@ -542,6 +566,10 @@ const GameScreen: FC = () => {
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
         />
+        <View style={{ alignItems: 'center' }}>
+          <OutlinedText>{`${step}`}</OutlinedText>
+        </View>
+
         <ScrollView
           alwaysBounceVertical={false}
           bounces={false}
@@ -641,7 +669,6 @@ const GameScreen: FC = () => {
                       monkeyAnimationData.type ===
                         MONKEY_ANIMATION_TYPE.RunAndJump
                     ) {
-                      console.log('RUN_AND_JUMP')
                       setMonkeyAnimationData({
                         isVisible: true,
                         type: MONKEY_ANIMATION_TYPE.RunAndJump,
@@ -654,12 +681,11 @@ const GameScreen: FC = () => {
                         MONKEY_ANIMATION_TYPE.JumpToTop
                     ) {
                       setTimeout(() => {
-                        console.log('LANDING_2')
                         setMonkeyAnimationData({
                           isVisible: true,
                           type: MONKEY_ANIMATION_TYPE.Landing,
                         })
-                      }, 150 * userBlockValue)
+                      }, 1000)
                     }
                   }}
                   quantity={userBlockValue}
@@ -745,7 +771,6 @@ const GameScreen: FC = () => {
       <OptionModal
         changeOption={(newOption) => {
           if (!isOutOfAttempts) {
-            console.log('JUMP_TO_TOP')
             setMonkeyAnimationData({
               isVisible: true,
               type: MONKEY_ANIMATION_TYPE.JumpToTop,
@@ -769,6 +794,21 @@ const GameScreen: FC = () => {
       >
         {actionModalContent}
       </CustomModal>
+      <UnlockOptionModal
+        attempt={resetStepsModalData.attempt}
+        initialPrice={prize * 0.25}
+        onClose={() => {
+          setResetStepsModalData((prevState) => ({
+            ...prevState,
+            isVisible: false,
+          }))
+          handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
+        }}
+        onConfirm={() => {
+          console.log('RESET STEPS')
+        }}
+        visible={resetStepsModalData.isVisible}
+      />
     </>
   )
 }

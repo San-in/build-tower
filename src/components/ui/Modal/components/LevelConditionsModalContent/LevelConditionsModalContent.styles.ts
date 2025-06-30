@@ -3,10 +3,9 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   button: { flex: 0.5 },
   buttonContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
-    width: '100%',
+    justifyContent: 'center',
   },
   buttonContent: { paddingHorizontal: 5 },
   container: { alignItems: 'center', gap: 15 },
@@ -14,7 +13,9 @@ export const styles = StyleSheet.create({
   failureCaseDescription: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 5,
+    justifyContent: 'center',
     marginTop: 20,
   },
   failureCaseQuestionSign: { marginLeft: -2 },

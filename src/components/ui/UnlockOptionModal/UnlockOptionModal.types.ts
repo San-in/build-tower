@@ -3,6 +3,6 @@ export type UnlockOptionModalProps = {
   onConfirm: () => void
   visible?: boolean
   text?: string
-  spinCounter: number
+  attempt: number
   initialPrice: number
 }

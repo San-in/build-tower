@@ -8,7 +8,6 @@ export type Level = {
   isAvailable: boolean
   difficulty: LEVEL_DIFFICULTY
 }
-
 interface LevelsState {
   levels: Array<Level>
 }

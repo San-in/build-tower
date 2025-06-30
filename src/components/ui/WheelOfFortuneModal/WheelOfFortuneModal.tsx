@@ -62,6 +62,11 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     [wheelWinnerSector, initialResult]
   )
 
+  const handleClose = () => {
+    setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
+    setShouldReset(true)
+  }
+
   const handleTryAgain = async () => {
     setWinnerIndex((prevState) =>
       generateRandomNumber({
@@ -72,10 +77,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     )
     setWheelWinnerSector('')
     setShouldSpinWheel(true)
-  }
-  const handleClose = () => {
-    setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
-    setShouldReset(true)
+    handleCloseTryAgainModal()
   }
 
   const handleReset = useCallback(() => {
@@ -241,10 +243,10 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           </View>
         </MotiView>
         <UnlockOptionModal
+          attempt={spinCounter}
           initialPrice={additionalAttemptCost}
           onClose={handleCloseTryAgainModal}
           onConfirm={handleTryAgain}
-          spinCounter={spinCounter}
           visible={tryAgainModalVisible}
         />
       </View>

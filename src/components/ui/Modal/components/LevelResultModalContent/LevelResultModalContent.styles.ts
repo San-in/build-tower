@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 5,
+    marginHorizontal: 5,
   },
   blockCounter: {
     alignItems: 'center',
@@ -15,11 +16,13 @@ export const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 
-  buttonLabel: { flexWrap: 'wrap', maxWidth: 70 },
+  buttonLabel: { flexWrap: 'wrap', width: 50 },
   buttonsContainer: {
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 30,
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'space-between',
     marginTop: 20,
   },
   container: { alignItems: 'center', justifyContent: 'center' },

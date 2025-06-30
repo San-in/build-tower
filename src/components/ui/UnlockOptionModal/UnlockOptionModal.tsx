@@ -23,11 +23,11 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   onClose,
   onConfirm,
   text = '',
-  spinCounter,
+  attempt,
   initialPrice,
 }) => {
   const [selectedOption, setSelectedOption] =
-    useState<BONUS_OPTION_TYPE | null>(null)
+    useState<BONUS_OPTION_TYPE | null>(BONUS_OPTION_TYPE.Bananas)
   const bananas = useAppSelector((state) => state.bananas.bananas)
 
   const enabledBananasText = useMemo(
@@ -36,14 +36,14 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         [3]: '- sounds like a fair deal!',
         [2]: '- still a pretty good price',
         [1]: '- not cheap... but worth it',
-      })[spinCounter],
-    [spinCounter]
+      })[attempt],
+    [attempt]
   )
 
   const price = useMemo(() => {
-    const remainAttempts = INITIAL_SPIN_QUANTITY - spinCounter
+    const remainAttempts = INITIAL_SPIN_QUANTITY - attempt
     return initialPrice * remainAttempts
-  }, [initialPrice, spinCounter])
+  }, [initialPrice, attempt])
 
   const dispatch = useAppDispatch()
 
@@ -119,7 +119,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
       await bananasService.removeBananas(dispatch, price)
-      handleClose()
+      setSelectedOption(null)
       onConfirm()
     }
   }
@@ -134,6 +134,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
       <View style={styles.optionsContainer}>
         {Object.values(BONUS_OPTION_TYPE).map((option) => {
           const isDisabled = option === BONUS_OPTION_TYPE.Ad || bananas < price
+
           return (
             <ModalCard
               isDisabled={isDisabled}
@@ -171,7 +172,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
           style={styles.button}
           textSize={15}
           title={'OK'}
-          type={BUTTON_TYPE.Warning}
+          type={BUTTON_TYPE.Info}
         />
       </View>
     </CustomModal>
