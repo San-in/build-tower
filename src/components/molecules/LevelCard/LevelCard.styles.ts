@@ -42,6 +42,11 @@ export const styles = StyleSheet.create({
   greyShadow: { shadowColor: COLORS.swirl },
   image: { borderRadius: 5, height: '100%', width: '100%' },
   imageContainer: { height: '65%', paddingHorizontal: 15, paddingTop: 15 },
+  infoMessageContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    maxWidth: 200,
+  },
   labelContainer: {
     alignItems: 'center',
     justifyContent: 'center',

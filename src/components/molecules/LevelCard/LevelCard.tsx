@@ -1,5 +1,10 @@
 import { StarIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
+import {
+  containerBorderMap,
+  containerGradientMap,
+  containerShadowMap,
+} from '@components/molecules/LevelCard/gradientMap'
 import { LevelCardProps } from '@components/molecules/LevelCard/LevelCard.types'
 import { LEVEL_NAMES } from '@constants'
 import { useAppSelector } from '@store/hooks'
@@ -8,7 +13,7 @@ import { COLORS, GlobalStyles } from '@theme'
 import { LEVEL_DIFFICULTY } from '@types'
 import { getLevelIcon } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Image } from 'moti'
+import { Image, MotiView } from 'moti'
 import { FC, memo } from 'react'
 import { Pressable, View } from 'react-native'
 
@@ -20,41 +25,17 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
     getLevelById(level)
   ) as Level
 
-  const containerGradient: readonly [string, string, ...Array<string>] = {
-    [LEVEL_DIFFICULTY.Easy]: [
-      COLORS.gradientGreen_2,
-      COLORS.gradientGreen_3,
-      COLORS.gradientGreen_1,
-      COLORS.gradientGreen_3,
-      COLORS.gradientGreen_2,
-    ],
-    [LEVEL_DIFFICULTY.Medium]: [
-      COLORS.gradientTerracotta_1,
-      COLORS.gradientTerracotta_4,
-      COLORS.gradientTerracotta_2,
-      COLORS.gradientTerracotta_4,
-      COLORS.gradientTerracotta_1,
-    ],
-    [LEVEL_DIFFICULTY.Hard]: [
-      COLORS.gradientPurple_1,
-      COLORS.gradientPurple_4,
-      COLORS.gradientPurple_2,
-      COLORS.gradientPurple_4,
-      COLORS.gradientPurple_1,
-    ],
-  }[difficulty] as [string, string, ...Array<string>]
-
-  const containerShadow = {
-    [LEVEL_DIFFICULTY.Easy]: styles.greenShadow,
-    [LEVEL_DIFFICULTY.Medium]: styles.orangeShadow,
-    [LEVEL_DIFFICULTY.Hard]: styles.purpleShadow,
+  const infoMessage = {
+    [LEVEL_DIFFICULTY.Easy]: 'Complete all previous levels to unlock!',
+    [LEVEL_DIFFICULTY.Medium]: 'Earn at least 2 stars on every previous level!',
+    [LEVEL_DIFFICULTY.Hard]:
+      'Master all previous levels with 3  stars to proceed!',
   }[difficulty]
 
-  const containerBorder = {
-    [LEVEL_DIFFICULTY.Easy]: styles.greenBorder,
-    [LEVEL_DIFFICULTY.Medium]: styles.orangeBorder,
-    [LEVEL_DIFFICULTY.Hard]: styles.purpleBorder,
-  }[difficulty]
+  const containerGradient: readonly [string, string, ...Array<string>] =
+    containerGradientMap[difficulty] as [string, string, ...Array<string>]
+  const containerShadow = containerShadowMap[difficulty]
+  const containerBorder = containerBorderMap[difficulty]
 
   const containerStyles = [
     styles.container,
@@ -65,57 +46,83 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
   ].filter(Boolean)
 
   return (
-    <View
-      style={[
-        styles.wrapper,
-        isSelectedLevel && isAvailable && styles.selectedWrapper,
-      ]}
-    >
-      <Pressable onPress={onPress} style={containerStyles}>
-        <View
-          style={[
-            styles.cardContainer,
-            isAvailable && styles.cardContainerAvailable,
-          ]}
-        />
-        <LinearGradient
-          colors={containerGradient}
-          end={{ x: 1, y: 0 }}
-          start={{ x: 0, y: 0 }}
-          style={styles.gradientContainer}
+    <View>
+      <MotiView
+        animate={{
+          translateX: isSelectedLevel ? [0, -6, 6, -4, 4, -2, 2, 0] : 0,
+        }}
+        from={{ translateX: 0 }}
+        style={[
+          styles.wrapper,
+          isSelectedLevel && isAvailable && styles.selectedWrapper,
+        ]}
+        transition={{ type: 'timing', duration: 150 }}
+      >
+        <Pressable onPress={onPress} style={containerStyles}>
+          <View
+            style={[
+              styles.cardContainer,
+              isAvailable && styles.cardContainerAvailable,
+            ]}
+          />
+          <LinearGradient
+            colors={containerGradient}
+            end={{ x: 1, y: 0 }}
+            start={{ x: 0, y: 0 }}
+            style={styles.gradientContainer}
+          >
+            <View style={styles.labelContainer}>
+              <OutlinedText
+                fontSize={20}
+                style={
+                  !isAvailable ? GlobalStyles.invisible : GlobalStyles.visible
+                }
+              >
+                {LEVEL_NAMES[level]}
+              </OutlinedText>
+            </View>
+            <View style={styles.imageContainer}>
+              <Image
+                resizeMode={'cover'}
+                source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
+                style={styles.image}
+              />
+            </View>
+            <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
+              <OutlinedText
+                fontSize={stars ? 25 : 32}
+                style={styles.levelLabel}
+              >{`Level ${level}`}</OutlinedText>
+              {isAvailable && (
+                <View style={styles.ratingContainer}>
+                  {Array.from({ length: stars }, (_, i) => i).map((item) => (
+                    <StarIcon height={25} key={item} width={25} />
+                  ))}
+                </View>
+              )}
+            </View>
+          </LinearGradient>
+        </Pressable>
+      </MotiView>
+      <MotiView
+        animate={{
+          opacity: isSelectedLevel && !isAvailable ? 1 : 0,
+        }}
+        style={styles.infoMessageContainer}
+        transition={{
+          type: 'timing',
+          duration: 100,
+          delay: 0,
+        }}
+      >
+        <OutlinedText
+          color={COLORS.white50}
+          fontSize={14}
+          strokeColor={COLORS.gradientGrey_2}
         >
-          <View style={styles.labelContainer}>
-            <OutlinedText
-              fontSize={20}
-              style={
-                !isAvailable ? GlobalStyles.invisible : GlobalStyles.visible
-              }
-            >
-              {LEVEL_NAMES[level]}
-            </OutlinedText>
-          </View>
-          <View style={styles.imageContainer}>
-            <Image
-              resizeMode={'cover'}
-              source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
-              style={styles.image}
-            />
-          </View>
-          <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
-            <OutlinedText
-              fontSize={stars ? 25 : 32}
-              style={styles.levelLabel}
-            >{`Level ${level}`}</OutlinedText>
-            {isAvailable && (
-              <View style={styles.ratingContainer}>
-                {Array.from({ length: stars }, (_, i) => i).map((item) => (
-                  <StarIcon height={25} key={item} width={25} />
-                ))}
-              </View>
-            )}
-          </View>
-        </LinearGradient>
-      </Pressable>
+          {infoMessage}
+        </OutlinedText>
+      </MotiView>
     </View>
   )
 }
