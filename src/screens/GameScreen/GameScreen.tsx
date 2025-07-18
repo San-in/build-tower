@@ -1,30 +1,29 @@
-import { BananasIcon } from '@assets/icons'
+import { Header, MonkeyAnimation } from '@components/molecules'
 import {
-  Button,
-  Header,
+  CustomModal,
   OptionModal,
   UnlockOptionModal,
   WheelOfFortuneModal,
-} from '@components/ui'
-import { CustomModal } from '@components/ui/Modal'
+} from '@components/organisms'
 import {
   BasicModalContent,
   LevelConditionsModalContent,
+  LevelResultModalContent,
   PowerUpModalContent,
-} from '@components/ui/Modal/components'
-import optionCard from '@components/ui/OptionCard/OptionCard'
-import { OutlinedText } from '@components/ui/OutlinedText'
-import { BLOCK_DIMENSION, LEVEL_CONFIG } from '@constants'
+} from '@components/organisms/CustomModal/components'
+import { EdgeGlowOverlay } from '@components/wrappers'
+import { BLOCK_DIMENSION, EMPTY_FUNCTION, LEVEL_CONFIG } from '@constants'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
-import { bananasService } from '@services'
+import { bananasService, levelService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { getLevelById, Level } from '@store/slices/levelsSlice'
-import { COLORS } from '@theme'
 import {
-  BUTTON_TYPE,
+  EDGE_GLOW_OVERLAY_TYPE,
   GAME_MODAL_TYPE,
+  GAME_SCREEN_SUCCESS_ACTION,
+  LevelId,
   MODAL_TYPE,
   ModalState,
   MONKEY_ANIMATION_TYPE,
@@ -33,6 +32,7 @@ import {
   POWER_UP_TYPE,
   SCREENS,
   SELECTED_OPTION,
+  Star,
   TOWER,
 } from '@types'
 import {
@@ -51,55 +51,42 @@ import {
   ScrollView,
   View,
 } from 'react-native'
-import { Easing } from 'react-native-reanimated'
 
-import LevelResultModalContent from '../../components/ui/Modal/components/LevelResultModalContent/LevelResultModalContent'
-import MonkeyAnimation from '../../components/ui/MonkeyAnimation/MonkeyAnimation'
-import { BlockTowerCreator, BuildTowerSplash } from './components'
-
-const INITIAL_OPTION_STATE = { number: 0, operator: null }
-const INITIAL_RESET_STEPS_MODAL_STATE = { isVisible: false, attempt: 3 }
-const INITIAL_MODAL_STATE: ModalState<GAME_MODAL_TYPE> = {
-  isVisible: false,
-  type: GAME_MODAL_TYPE.Home,
-}
-const INITIAL_BUILD_MODAL_STATE: ModalState<TOWER> = {
-  isVisible: true,
-  type: TOWER.First,
-}
-const INITIAL_INIT_BUILD_TOWER_MODAL_STATE: ModalState<TOWER> = {
-  isVisible: false,
-  type: TOWER.First,
-}
-const INITIAL_MONKEY_ANIMATION_MODAL_STATE: ModalState<MONKEY_ANIMATION_TYPE> =
-  {
-    isVisible: false,
-    type: MONKEY_ANIMATION_TYPE.RunAndJump,
-  }
+import {
+  BlockTowerCreator,
+  BuildTowerSplash,
+  NextButton,
+  PrizeSection,
+  ResetStepsModal,
+  YouWinBanner,
+} from './components'
+import {
+  INITIAL_BUILD_MODAL_STATE,
+  INITIAL_INIT_BUILD_TOWER_MODAL_STATE,
+  INITIAL_MODAL_STATE,
+  INITIAL_MONKEY_ANIMATION_MODAL_STATE,
+  INITIAL_OPTION_STATE,
+  INITIAL_RESET_STEPS_MODAL_STATE,
+  INITIAL_SUCCESS_ACTION_MODAL_STATE,
+} from './constants'
+import { styles } from './GameScreen.styles'
 
 const GameScreen: FC = () => {
+  // HOOKS
   const {
     params: { level },
   } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
+  const scrollViewRef = useRef<ScrollView>(null)
+  const { stars } = useAppSelector(getLevelById(level)) as Level
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
+  const dispatch = useAppDispatch()
 
-  const {
-    attempts,
-    fistTower,
-    secondTower,
-    simpleOperators,
-    multiplicativeOperators,
-    prize,
-  } = LEVEL_CONFIG[level]
-
-  const { isAvailable, stars, difficulty } = useAppSelector(
-    getLevelById(level)
-  ) as Level
-
+  // STATES
   const [step, setStep] = useState(0)
   const [initialBlockValue, setInitialBlockValue] = useState(0)
   const [userBlockValue, setUserBlockValue] = useState(0)
   const [focusedTower, setFocusedTower] = useState<TOWER>(TOWER.First)
+  const [isScaledTower, setIsScaledTower] = useState(false)
   const [firstOptionCard, setFirstOptionCard] =
     useState<OptionValue>(INITIAL_OPTION_STATE)
   const [secondOptionCard, setSecondOptionCard] =
@@ -107,14 +94,11 @@ const GameScreen: FC = () => {
   const [chosenOption, setChosenOption] = useState<SELECTED_OPTION>(
     SELECTED_OPTION.None
   )
-  const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
-
-  const [isScaledTower, setIsScaledTower] = useState(false)
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
   const [isNextStepVisible, setIsNextStepVisible] = useState(false)
-  const scrollViewRef = useRef<ScrollView>(null)
+  const [isLevelFinished, setIsLevelFinished] = useState(false)
 
-  // NEW
+  const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
   const [actionModalData, setActionModalData] =
     useState<ModalState<GAME_MODAL_TYPE>>(INITIAL_MODAL_STATE)
   const [initBuildTowerModalData, setInitBuildTowerModalData] = useState<
@@ -129,12 +113,27 @@ const GameScreen: FC = () => {
   const [resetStepsModalData, setResetStepsModalData] = useState(
     INITIAL_RESET_STEPS_MODAL_STATE
   )
+  const [successActionInfoModalData, setSuccessActionInfoModalData] = useState<
+    ModalState<GAME_SCREEN_SUCCESS_ACTION>
+  >(INITIAL_SUCCESS_ACTION_MODAL_STATE)
+
+  const [isTowerBuilding, setIsTowerBuilding] = useState(false)
+
+  // LOCAL CONSTANT
+  const {
+    attempts,
+    fistTower,
+    secondTower,
+    simpleOperators,
+    multiplicativeOperators,
+    prize,
+  } = LEVEL_CONFIG[level]
 
   const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
   ${monkeyAnimationData.isVisible}`
-
   const isOutOfAttempts = useMemo(() => step > attempts, [attempts, step])
 
+  // CALLBACKS WITHOUT DEPENDENCIES
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setFocusedTower(TOWER.First)
@@ -146,15 +145,114 @@ const GameScreen: FC = () => {
     setMonkeyAnimationData(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
     setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
     setIsNextStepVisible(false)
+    setIsLevelFinished(false)
+
     setTimeout(() => {
+      setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
+      setResetStepsModalData(INITIAL_RESET_STEPS_MODAL_STATE)
       setIsScaledTower(false)
       setInitialBlockValue(0)
       setUserBlockValue(0)
       setBuildModalData(INITIAL_BUILD_MODAL_STATE)
+      setIsTowerBuilding(false)
     }, 1500)
   }, [])
 
-  const userBlockManipulation = () => {
+  const handleCloseMonkeyAnimation = () => {
+    setMonkeyAnimationData((prevState) => ({ ...prevState, isVisible: false }))
+  }
+
+  const handleOpenMonkeyAnimation = (type: MONKEY_ANIMATION_TYPE) => {
+    setMonkeyAnimationData({
+      isVisible: true,
+      type,
+    })
+  }
+
+  const handleCloseActionModal = useCallback(() => {
+    setActionModalData((prevState) => ({ ...prevState, isVisible: false }))
+  }, [])
+
+  const handleOpenActionModal = (type: GAME_MODAL_TYPE) => {
+    setActionModalData({ isVisible: true, type })
+  }
+
+  const handleInitSecondTowerCallBack = (number: number) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setFocusedTower(TOWER.Second)
+    setUserBlockValue(number)
+    setStep(1)
+    setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
+  }
+
+  const handleGetPrizeAndUnlockLevel = useCallback(
+    async ({
+      prize,
+      earnedStars,
+      isDoublePrize = false,
+      level,
+    }: {
+      prize: number
+      earnedStars: Star
+      isDoublePrize?: boolean
+      level: LevelId
+    }) => {
+      const calculatedPrize = isDoublePrize ? prize * 2 : prize
+      await levelService.updateLevelRatingAndUnlockNext(
+        dispatch,
+        level,
+        earnedStars
+      )
+      await bananasService.addBananas(dispatch, calculatedPrize)
+    },
+    [dispatch]
+  )
+
+  const handleCloseSuccessActionModal = () =>
+    setSuccessActionInfoModalData((prevState) => ({
+      ...prevState,
+      isVisible: false,
+    }))
+
+  const handleCloseResetStepsModal = () => () => {
+    setResetStepsModalData((prevState) => ({
+      ...prevState,
+      isVisible: false,
+    }))
+  }
+
+  const handlePressBuildTowerSplash = () => {
+    setInitBuildTowerModalData({
+      isVisible: true,
+      type: buildModalData.type,
+    })
+  }
+
+  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
+  //   await marketService.increment(dispatch, type)
+  // }
+
+  // const handleAddBananas = async (quantity: number) => {
+  //   await bananasService.addBananas(dispatch, quantity)
+  // }
+
+  // CALLBACKS WITH DEPENDENCIES
+  const handleGoHome = useCallback(async () => {
+    navigation.navigate(SCREENS.WelcomeScreen)
+    handleCloseActionModal()
+  }, [handleCloseActionModal, navigation])
+
+  const handleResetLevelPressed = useCallback(() => {
+    handleResetLevel()
+    handleCloseActionModal()
+  }, [handleCloseActionModal, handleResetLevel])
+
+  const handleResetSteps = useCallback(() => {
+    handleCloseActionModal()
+    setResetStepsModalData((prevState) => ({ ...prevState, isVisible: true }))
+  }, [handleCloseActionModal])
+
+  const userBlockManipulation = useCallback(() => {
     const selectedCard =
       chosenOption === SELECTED_OPTION.First
         ? firstOptionCard
@@ -181,82 +279,8 @@ const GameScreen: FC = () => {
     setChosenOption(SELECTED_OPTION.None)
     setFirstOptionCard(INITIAL_OPTION_STATE)
     setSecondOptionCard(INITIAL_OPTION_STATE)
-    setMonkeyAnimationData((prevState) => ({ ...prevState, isVisible: false }))
-  }
-
-  const dispatch = useAppDispatch()
-
-  const monkeyAnimationConfig = {
-    [MONKEY_ANIMATION_TYPE.RunAndJump]: {
-      size: 400,
-      loop: false,
-      onFinishCalBack: () => {
-        setMonkeyAnimationData({
-          isVisible: true,
-          type: MONKEY_ANIMATION_TYPE.Landing,
-        })
-      },
-      speed: 3,
-    },
-    [MONKEY_ANIMATION_TYPE.Landing]: {
-      size: 100,
-      loop: false,
-      onFinishCalBack: () => {
-        if (isOutOfAttempts) {
-          handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
-          return
-        }
-        setMonkeyAnimationData({
-          isVisible: true,
-          type: MONKEY_ANIMATION_TYPE.Idle,
-        })
-        setIsNextStepVisible(true)
-      },
-      speed: 4,
-    },
-    [MONKEY_ANIMATION_TYPE.Idle]: {
-      size: 100,
-      loop: true,
-      onFinishCalBack: () => {},
-      speed: 3,
-    },
-    [MONKEY_ANIMATION_TYPE.JumpToTop]: {
-      size: 140,
-      loop: false,
-      onFinishCalBack: userBlockManipulation,
-      speed: 4,
-    },
-  }[monkeyAnimationData.type]
-
-  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
-  //   await marketService.increment(dispatch, type)
-  // }
-
-  // const handleAddBananas = async (quantity: number) => {
-  //   await bananasService.addBananas(dispatch, quantity)
-  // }
-
-  const handleCLoseActionModal = useCallback(() => {
-    setActionModalData((prevState) => ({ ...prevState, isVisible: false }))
-  }, [])
-
-  const handleOpenActionModal = (type: GAME_MODAL_TYPE) => {
-    setActionModalData({ isVisible: true, type })
-  }
-  const handleGoHome = useCallback(async () => {
-    navigation.navigate(SCREENS.WelcomeScreen)
-    handleCLoseActionModal()
-  }, [handleCLoseActionModal, navigation])
-
-  const handleResetPressed = useCallback(() => {
-    handleResetLevel()
-    handleCLoseActionModal()
-  }, [handleCLoseActionModal, handleResetLevel])
-
-  const handleResetSteps = useCallback(() => {
-    handleCLoseActionModal()
-    setResetStepsModalData((prevState) => ({ ...prevState, isVisible: true }))
-  }, [handleCLoseActionModal])
+    handleCloseMonkeyAnimation()
+  }, [chosenOption, firstOptionCard, secondOptionCard])
 
   const handleInitFirstTowerCallBack = useCallback((number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -268,14 +292,6 @@ const GameScreen: FC = () => {
     }, 1500)
   }, [])
 
-  const handleInitSecondTowerCallBack = (number: number) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setFocusedTower(TOWER.Second)
-    setUserBlockValue(number)
-    setStep(1)
-    setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
-  }
-
   const handleRandomAddBlockPress = () =>
     userBlockValue
       ? handleOpenActionModal(GAME_MODAL_TYPE.AddBlocks)
@@ -286,175 +302,87 @@ const GameScreen: FC = () => {
       ? handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocks)
       : handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
 
-  const actionModalConfig = useMemo(
-    () =>
-      ({
-        [GAME_MODAL_TYPE.Home]: {
-          actionModalHeader: 'Wanna go home?',
-          actionModalContent: (
-            <BasicModalContent
-              onCancel={handleCLoseActionModal}
-              onConfirm={handleGoHome}
-              text={
-                'Hold on! If you leave now, your progress will poof — disappear!'
-              }
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Orange,
-          withCrossIcon: true,
-          onCrossIconPress: handleCLoseActionModal,
-        },
-        [GAME_MODAL_TYPE.Reset]: {
-          actionModalHeader: 'Start over? Really?',
-          actionModalContent: (
-            <BasicModalContent
-              onCancel={handleCLoseActionModal}
-              onConfirm={handleResetPressed}
-              text={'If you restart now, all your progress will go bye-bye!'}
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Orange,
-          withCrossIcon: true,
-          onCrossIconPress: handleCLoseActionModal,
-        },
-        [GAME_MODAL_TYPE.AddBlocks]: {
-          actionModalHeader: 'Let`s add some blocks?',
-          actionModalContent: (
-            <PowerUpModalContent
-              onCancel={handleCLoseActionModal}
-              onConfirm={() => {}}
-              type={POWER_UP_TYPE.Plus}
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Green,
-          withCrossIcon: true,
-          onCrossIconPress: handleCLoseActionModal,
-        },
-        [GAME_MODAL_TYPE.RemoveBlocks]: {
-          actionModalHeader: 'Let`s remove some blocks?',
-          actionModalContent: (
-            <PowerUpModalContent
-              onCancel={handleCLoseActionModal}
-              onConfirm={() => {}}
-              type={POWER_UP_TYPE.Minus}
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Green,
-          withCrossIcon: true,
-          onCrossIconPress: handleCLoseActionModal,
-        },
-        [GAME_MODAL_TYPE.PowerUpWarning]: {
-          actionModalHeader: 'Build both towers first',
-          actionModalContent: (
-            <BasicModalContent
-              confirmButtonText={'OK'}
-              onConfirm={handleCLoseActionModal}
-              text={
-                'You’ll unlock this power-up once both towers are completed.'
-              }
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Orange,
-          withCrossIcon: true,
-          onCrossIconPress: handleCLoseActionModal,
-        },
-        [GAME_MODAL_TYPE.LevelConditions]: {
-          actionModalContent: (
-            <LevelConditionsModalContent
-              initialBlocksQuantity={initialBlockValue}
-              onConfirm={() => {
-                setIsPrizeVisible(true)
-                setIsScaledTower(true)
-                handleCLoseActionModal()
-                setTimeout(() => {
-                  LayoutAnimation.configureNext(
-                    LayoutAnimation.Presets.easeInEaseOut
-                  )
-                  setBuildModalData({ isVisible: true, type: TOWER.Second })
-                }, 1500)
-              }}
-              prize={prize}
-              stars={stars}
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Purple,
-          withCrossIcon: false,
-          onCrossIconPress: handleCLoseActionModal,
-          actionModalStyles: {
-            alignSelf: 'flex-end',
-            maxWidth: '76%',
-            minWidth: 275,
-            transform: [{ translateY: '15%' }],
-          },
-        },
-        [GAME_MODAL_TYPE.LevelResult]: {
-          actionModalContent: (
-            <LevelResultModalContent
-              initialBlockValue={initialBlockValue}
-              onConfirm={() => {}}
-              onContinueLevel={handleResetSteps}
-              onGoHome={handleGoHome}
-              onMultipleResult={() => {}}
-              onResetLevel={handleResetPressed}
-              prize={prize}
-              userBlockValue={userBlockValue}
-            />
-          ),
-          actionModalColor: MODAL_TYPE.Blue,
-          withCrossIcon: false,
-          onCrossIconPress: handleGoHome,
-        },
-      })[actionModalData.type],
+  const handleLevelResultGetPrizePressed = useCallback(
+    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+      handleCloseActionModal()
+      await handleGetPrizeAndUnlockLevel({
+        prize,
+        earnedStars,
+        level,
+      })
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setIsLevelFinished(true)
+      setIsPrizeVisible(false)
+      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
+    },
+    [handleCloseActionModal, handleGetPrizeAndUnlockLevel, level]
+  )
+
+  const handleLevelResultDoublePrizePressed = useCallback(
+    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+      // TODO: add watching adds logic
+      await handleLevelResultGetPrizePressed({ prize, stars: earnedStars })
+    },
+    [handleLevelResultGetPrizePressed]
+  )
+
+  const handleLevelResultResetLevelPressed = useCallback(
+    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+      if (prize) {
+        await handleGetPrizeAndUnlockLevel({
+          prize,
+          earnedStars,
+          level,
+        })
+      }
+      handleCloseActionModal()
+      handleResetLevelPressed()
+    },
     [
-      handleCLoseActionModal,
-      handleGoHome,
-      handleResetPressed,
-      initialBlockValue,
-      prize,
-      handleResetSteps,
-      userBlockValue,
-      actionModalData.type,
+      handleCloseActionModal,
+      handleGetPrizeAndUnlockLevel,
+      handleResetLevelPressed,
+      level,
     ]
   )
 
-  const initTowerModalConfig = useMemo(
+  const handleLevelConditionsConfirm = useCallback(() => {
+    setIsPrizeVisible(true)
+    setIsScaledTower(true)
+    handleCloseActionModal()
+    setTimeout(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      setBuildModalData({ isVisible: true, type: TOWER.Second })
+    }, 1500)
+  }, [handleCloseActionModal])
+
+  const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
+    handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
+  }, [])
+
+  const handleMonkeyAnimationLandingFinished = useCallback(() => {
+    if (isOutOfAttempts) {
+      setTimeout(() => handleOpenActionModal(GAME_MODAL_TYPE.LevelResult), 800)
+      return
+    }
+    handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Idle)
+    setIsNextStepVisible(true)
+  }, [isOutOfAttempts])
+
+  const handleMonkeyAnimationJumpToTopFinished = useCallback(
     () =>
-      ({
-        [TOWER.First]: {
-          initTowerStart: fistTower.start,
-          initTowerSectors: fistTower.fortuneWheelData,
-          initTowerCallBack: handleInitFirstTowerCallBack,
-        },
-        [TOWER.Second]: {
-          initTowerStart: secondTower.start,
-          initTowerSectors: secondTower.fortuneWheelData,
-          initTowerCallBack: handleInitSecondTowerCallBack,
-        },
-      })[initBuildTowerModalData.type],
-    [
-      fistTower.start,
-      fistTower.fortuneWheelData,
-      handleInitFirstTowerCallBack,
-      secondTower.start,
-      secondTower.fortuneWheelData,
-      initBuildTowerModalData.type,
-    ]
+      isLevelFinished
+        ? () =>
+            setTimeout(
+              () =>
+                handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration),
+              800
+            )
+        : userBlockManipulation(),
+    [isLevelFinished, userBlockManipulation]
   )
 
-  const {
-    actionModalHeader,
-    actionModalContent,
-    actionModalColor,
-    actionModalStyles = {},
-    withCrossIcon,
-    onCrossIconPress,
-  } = actionModalConfig
-
-  const { initTowerStart, initTowerSectors, initTowerCallBack } =
-    initTowerModalConfig
-  // NEW END
-
-  const handleNextStepPress = () => {
+  const handleNextStepPress = useCallback(() => {
     if (isOutOfAttempts) {
       return
     }
@@ -507,13 +435,262 @@ const GameScreen: FC = () => {
       operator: secondOperator,
     })
     setIsModalOptionVisible(true)
+  }, [
+    firstOptionCard.number,
+    initialBlockValue,
+    isOutOfAttempts,
+    multiplicativeOperators,
+    secondOptionCard.number,
+    simpleOperators,
+    userBlockValue,
+  ])
+
+  const handleConfirmResetStepsModal = useCallback(() => {
+    handleCloseActionModal()
+    setStep(1)
+    handleCloseResetStepsModal()
+    setSuccessActionInfoModalData({
+      isVisible: true,
+      type: GAME_SCREEN_SUCCESS_ACTION.ResetSteps,
+    })
+    setTimeout(() => {
+      setResetStepsModalData((prevState) => ({
+        ...prevState,
+        attempt: prevState.attempt - 1,
+      }))
+    }, 1000)
+  }, [handleCloseActionModal])
+
+  const handlePressCloseResetStepsModal = () => () => {
+    handleCloseResetStepsModal()
+    handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
   }
 
-  useEffect(() => {
-    if (chosenOption !== SELECTED_OPTION.None) {
+  const handleChangeOption = (newOption: SELECTED_OPTION) => {
+    if (!isOutOfAttempts) {
+      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
     }
-  }, [chosenOption, firstOptionCard, secondOptionCard])
+    setChosenOption(newOption)
+    setIsTowerBuilding(true)
+  }
 
+  const handleBlockTowerCreatingEnd = () => {
+    if (
+      step === 1 &&
+      !monkeyAnimationData.isVisible &&
+      monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.RunAndJump
+    ) {
+      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.RunAndJump)
+      return
+    }
+    if (
+      !monkeyAnimationData.isVisible &&
+      monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.JumpToTop
+    ) {
+      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
+      setIsTowerBuilding(false)
+    }
+  }
+
+  // CONFIGS
+  const monkeyAnimationConfig = {
+    [MONKEY_ANIMATION_TYPE.RunAndJump]: {
+      size: 400,
+      loop: false,
+      onFinishCalBack: handleMonkeyAnimationRunAndJumpFinished,
+      speed: 3,
+    },
+    [MONKEY_ANIMATION_TYPE.Landing]: {
+      size: 100,
+      loop: false,
+      onFinishCalBack: handleMonkeyAnimationLandingFinished,
+      speed: 4,
+    },
+    [MONKEY_ANIMATION_TYPE.Idle]: {
+      size: 100,
+      loop: true,
+      onFinishCalBack: EMPTY_FUNCTION,
+      speed: 3,
+    },
+    [MONKEY_ANIMATION_TYPE.JumpToTop]: {
+      size: 140,
+      loop: false,
+      onFinishCalBack: handleMonkeyAnimationJumpToTopFinished,
+      speed: 4,
+    },
+    [MONKEY_ANIMATION_TYPE.Celebration]: {
+      size: 100,
+      loop: false,
+      onFinishCalBack: EMPTY_FUNCTION,
+      speed: 3,
+    },
+  }[monkeyAnimationData.type]
+  const {
+    size: monkeyAnimationSize,
+    speed: monkeyAnimationSpeed,
+    loop: monkeyAnimationLoop,
+    onFinishCalBack: monkeyAnimationCallback,
+  } = monkeyAnimationConfig
+
+  const initTowerModalConfig = useMemo(
+    () =>
+      ({
+        [TOWER.First]: {
+          initTowerStart: fistTower.start,
+          initTowerSectors: fistTower.fortuneWheelData,
+          initTowerCallBack: handleInitFirstTowerCallBack,
+        },
+        [TOWER.Second]: {
+          initTowerStart: secondTower.start,
+          initTowerSectors: secondTower.fortuneWheelData,
+          initTowerCallBack: handleInitSecondTowerCallBack,
+        },
+      })[initBuildTowerModalData.type],
+    [
+      fistTower.start,
+      fistTower.fortuneWheelData,
+      handleInitFirstTowerCallBack,
+      secondTower.start,
+      secondTower.fortuneWheelData,
+      initBuildTowerModalData.type,
+    ]
+  )
+  const { initTowerStart, initTowerSectors, initTowerCallBack } =
+    initTowerModalConfig
+
+  const actionModalConfig = useMemo(
+    () =>
+      ({
+        [GAME_MODAL_TYPE.Home]: {
+          actionModalHeader: 'Wanna go home?',
+          actionModalContent: (
+            <BasicModalContent
+              onCancel={handleCloseActionModal}
+              onConfirm={handleGoHome}
+              text={
+                'Hold on! If you leave now, your progress will poof — disappear!'
+              }
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
+        [GAME_MODAL_TYPE.Reset]: {
+          actionModalHeader: 'Start over? Really?',
+          actionModalContent: (
+            <BasicModalContent
+              onCancel={handleCloseActionModal}
+              onConfirm={handleResetLevelPressed}
+              text={'If you restart now, all your progress will go bye-bye!'}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
+        [GAME_MODAL_TYPE.AddBlocks]: {
+          actionModalHeader: 'Let`s add some blocks?',
+          actionModalContent: (
+            <PowerUpModalContent
+              onCancel={handleCloseActionModal}
+              onConfirm={EMPTY_FUNCTION}
+              type={POWER_UP_TYPE.Plus}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Green,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
+        [GAME_MODAL_TYPE.RemoveBlocks]: {
+          actionModalHeader: 'Let`s remove some blocks?',
+          actionModalContent: (
+            <PowerUpModalContent
+              onCancel={handleCloseActionModal}
+              onConfirm={EMPTY_FUNCTION}
+              type={POWER_UP_TYPE.Minus}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Green,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
+        [GAME_MODAL_TYPE.PowerUpWarning]: {
+          actionModalHeader: 'Build both towers first',
+          actionModalContent: (
+            <BasicModalContent
+              confirmButtonText={'OK'}
+              onConfirm={handleCloseActionModal}
+              text={
+                'You’ll unlock this power-up once both towers are completed.'
+              }
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Orange,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
+        [GAME_MODAL_TYPE.LevelConditions]: {
+          actionModalContent: (
+            <LevelConditionsModalContent
+              initialBlocksQuantity={initialBlockValue}
+              onConfirm={handleLevelConditionsConfirm}
+              prize={prize}
+              stars={stars}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Purple,
+          withCrossIcon: false,
+          onCrossIconPress: handleCloseActionModal,
+          actionModalStyles: styles.levelConditionModalContainer,
+        },
+        [GAME_MODAL_TYPE.LevelResult]: {
+          actionModalContent: (
+            <LevelResultModalContent
+              initialBlockValue={initialBlockValue}
+              isResetStepsDisabled={!resetStepsModalData.attempt}
+              onGetDoublePrize={handleLevelResultDoublePrizePressed}
+              onGetPrize={handleLevelResultGetPrizePressed}
+              onGoHome={handleGoHome}
+              onResetSteps={handleResetSteps}
+              onRestartLevel={handleLevelResultResetLevelPressed}
+              prize={prize}
+              stars={stars}
+              userBlockValue={userBlockValue}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Blue,
+          withCrossIcon: false,
+          onCrossIconPress: handleGoHome,
+        },
+      })[actionModalData.type],
+    [
+      handleCloseActionModal,
+      handleGoHome,
+      handleResetLevelPressed,
+      initialBlockValue,
+      handleLevelConditionsConfirm,
+      prize,
+      stars,
+      resetStepsModalData.attempt,
+      handleLevelResultDoublePrizePressed,
+      handleLevelResultGetPrizePressed,
+      handleResetSteps,
+      handleLevelResultResetLevelPressed,
+      userBlockValue,
+      actionModalData.type,
+    ]
+  )
+  const {
+    actionModalHeader,
+    actionModalContent,
+    actionModalColor,
+    actionModalStyles = {},
+    withCrossIcon,
+    onCrossIconPress,
+  } = actionModalConfig
+
+  // useEffects
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setTimeout(() => {
@@ -529,36 +706,21 @@ const GameScreen: FC = () => {
     }, 100)
   }, [scrollViewRef, initialBlockValue, userBlockValue, focusedTower])
 
-  // useEffect(() => {
-  //   if (isFinishRoundModalVisible) {
-  //     let message = 'You need higher tower'
-  //     if (initialBlockValue < userBlockValue) {
-  //       message = 'You lose!'
-  //     }
-  //     if (initialBlockValue === userBlockValue) {
-  //       message = 'Perfect'
-  //     }
-  //     if (initialBlockValue - userBlockValue === 1) {
-  //       message = 'Almost perfect'
-  //     }
-  //     if (initialBlockValue - userBlockValue === 2) {
-  //       message = 'Satisfy'
-  //     }
-  //     Alert.alert(message)
-  //     setIsFinishRoundModalVisible(false)
-  //
-  //     handleResetLevel()
-  //   }
-  // }, [
-  //   handleResetLevel,
-  //   initialBlockValue,
-  //   isFinishRoundModalVisible,
-  //   userBlockValue,
-  // ])
-
   return (
     <>
-      <ImageBackground source={getLevelBackground(level)} style={{ flex: 1 }}>
+      <ImageBackground
+        source={getLevelBackground(level)}
+        style={styles.backgroundContainer}
+      >
+        {isLevelFinished && (
+          <>
+            <EdgeGlowOverlay
+              onPress={handleGoHome}
+              sides={EDGE_GLOW_OVERLAY_TYPE.Sides}
+            />
+            <YouWinBanner />
+          </>
+        )}
         <Header
           level={level}
           onHomePress={() => handleOpenActionModal(GAME_MODAL_TYPE.Home)}
@@ -566,63 +728,44 @@ const GameScreen: FC = () => {
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
         />
-        <View style={{ alignItems: 'center' }}>
-          <OutlinedText>{`${step}`}</OutlinedText>
-        </View>
-
+        {/*<View style={{ alignItems: 'center' }}>*/}
+        {/*  <OutlinedText>{`${step}`}</OutlinedText>*/}
+        {/*</View>*/}
         <ScrollView
           alwaysBounceVertical={false}
           bounces={false}
-          contentContainerStyle={{
-            flexGrow: 1,
-            alignItems: 'flex-end',
-            position: 'relative',
-          }}
+          contentContainerStyle={styles.towersScrollWrapperContainer}
           ref={scrollViewRef}
         >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 50,
-              paddingHorizontal: 20,
-              paddingTop: 80,
-              flex: 1,
-              width: '100%',
-              position: 'relative',
-            }}
-          >
+          <View style={styles.towersContainer}>
             {!!initialBlockValue && (
-              <View
-                style={{
-                  justifyContent: 'flex-end',
-                  marginBottom: -2,
-                }}
-              >
-                <MotiView
-                  animate={{
-                    translateX: isPrizeVisible ? 0 : -200,
-                  }}
-                >
-                  <MotiView
-                    animate={{ scale: isPrizeVisible ? 1.2 : 1 }}
-                    from={{ scale: 1 }}
-                    key={animationRestartKey}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: 5,
-                    }}
-                    transition={{
-                      loop: isPrizeVisible,
-                      type: 'timing',
-                      duration: 2000,
-                      easing: Easing.inOut(Easing.ease),
-                      delay: 1000,
-                    }}
-                  >
-                    <BananasIcon height={50} width={50} />
-                  </MotiView>
-                </MotiView>
+              <View style={styles.initialBlockTowerContainer}>
+                <PrizeSection
+                  animationKey={animationRestartKey}
+                  isVisible={isPrizeVisible}
+                />
+                {isLevelFinished && (
+                  <View style={styles.monkeyStageInitTowerContainer}>
+                    <MotiView
+                      animate={{
+                        opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
+                      }}
+                      from={{ opacity: 0 }}
+                      style={styles.monkeyStageInitTower}
+                      transition={{ type: 'timing', duration: 200, delay: 300 }}
+                    >
+                      <MonkeyAnimation
+                        isVisible={monkeyAnimationData.isVisible}
+                        loop={monkeyAnimationLoop}
+                        onFinish={monkeyAnimationCallback}
+                        size={monkeyAnimationSize}
+                        speed={monkeyAnimationSpeed}
+                        type={monkeyAnimationData.type}
+                      />
+                    </MotiView>
+                  </View>
+                )}
+
                 <BlockTowerCreator
                   isScaled={isScaledTower}
                   quantity={initialBlockValue}
@@ -631,20 +774,14 @@ const GameScreen: FC = () => {
               </View>
             )}
             {!!userBlockValue && (
-              <View
-                style={{
-                  justifyContent: 'flex-end',
-                  marginBottom: 2,
-                  position: 'relative',
-                }}
-              >
+              <View style={styles.userBlockTowerContainer}>
                 <View
-                  style={{
-                    position: 'absolute',
-                    bottom: userBlockValue * BLOCK_DIMENSION - 12,
-                    zIndex: 10,
-                    right: -15,
-                  }}
+                  style={[
+                    styles.monkeyStageUserTowerContainer,
+                    {
+                      bottom: userBlockValue * BLOCK_DIMENSION - 12,
+                    },
+                  ]}
                 >
                   {[
                     MONKEY_ANIMATION_TYPE.Idle,
@@ -653,114 +790,52 @@ const GameScreen: FC = () => {
                   ].includes(monkeyAnimationData.type) && (
                     <MonkeyAnimation
                       isVisible={monkeyAnimationData.isVisible}
-                      loop={monkeyAnimationConfig.loop}
-                      onFinish={monkeyAnimationConfig.onFinishCalBack}
-                      size={monkeyAnimationConfig.size}
-                      speed={monkeyAnimationConfig.speed}
+                      loop={monkeyAnimationLoop}
+                      onFinish={monkeyAnimationCallback}
+                      size={monkeyAnimationSize}
+                      speed={monkeyAnimationSpeed}
                       type={monkeyAnimationData.type}
                     />
                   )}
                 </View>
                 <BlockTowerCreator
-                  onAnimatedEnd={() => {
-                    if (
-                      step === 1 &&
-                      !monkeyAnimationData.isVisible &&
-                      monkeyAnimationData.type ===
-                        MONKEY_ANIMATION_TYPE.RunAndJump
-                    ) {
-                      setMonkeyAnimationData({
-                        isVisible: true,
-                        type: MONKEY_ANIMATION_TYPE.RunAndJump,
-                      })
-                      return
-                    }
-                    if (
-                      !monkeyAnimationData.isVisible &&
-                      monkeyAnimationData.type ===
-                        MONKEY_ANIMATION_TYPE.JumpToTop
-                    ) {
-                      setTimeout(() => {
-                        setMonkeyAnimationData({
-                          isVisible: true,
-                          type: MONKEY_ANIMATION_TYPE.Landing,
-                        })
-                      }, 1000)
-                    }
-                  }}
+                  onAnimatedEnd={handleBlockTowerCreatingEnd}
                   quantity={userBlockValue}
                   type={TOWER.Second}
                 />
               </View>
             )}
           </View>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: -30,
-              right: -180,
-              zIndex: 10,
-            }}
-          >
+          <View style={styles.monkeyStageGroundContainer}>
             {monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.RunAndJump && (
               <MonkeyAnimation
                 isVisible={monkeyAnimationData.isVisible}
-                loop={monkeyAnimationConfig.loop}
-                onFinish={monkeyAnimationConfig.onFinishCalBack}
-                size={monkeyAnimationConfig.size}
-                speed={monkeyAnimationConfig.speed}
+                loop={monkeyAnimationLoop}
+                onFinish={monkeyAnimationCallback}
+                size={monkeyAnimationSize}
+                speed={monkeyAnimationSpeed}
                 type={monkeyAnimationData.type}
               />
             )}
           </View>
           <ImageBackground
             source={require('../../../assets/images/ground.png')}
-            style={{
-              backgroundColor: COLORS.codeGrey,
-              width: '100%',
-              height: 100,
-            }}
+            style={styles.bottomGround}
           />
         </ScrollView>
       </ImageBackground>
       {buildModalData.isVisible && (
         <BuildTowerSplash
-          onPress={() => {
-            setInitBuildTowerModalData({
-              isVisible: true,
-              type: buildModalData.type,
-            })
-          }}
+          onPress={handlePressBuildTowerSplash}
           tower={buildModalData.type}
         />
       )}
-
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 30,
-          top: '25%',
-          right: 30,
-          justifyContent: 'space-between',
-        }}
-      >
-        <MotiView
-          animate={{ opacity: isNextStepVisible ? 1 : 0 }}
-          from={{ opacity: 0 }}
-          style={{ marginTop: 'auto' }}
-          transition={{ type: 'timing', duration: 200, delay: 300 }}
-        >
-          <Button
-            buttonContainerStyle={{ paddingHorizontal: 14 }}
-            isDisabled={isOutOfAttempts}
-            onPress={handleNextStepPress}
-            textSize={16}
-            title={'NEXT STEP  →'}
-            type={BUTTON_TYPE.Warning}
-          />
-        </MotiView>
-      </View>
-
+      <NextButton
+        isDisabled={isOutOfAttempts || isTowerBuilding}
+        isLoading={isTowerBuilding}
+        isVisible={isNextStepVisible}
+        onPress={handleNextStepPress}
+      />
       <WheelOfFortuneModal
         initialResult={initTowerStart}
         isVisible={initBuildTowerModalData.isVisible}
@@ -769,15 +844,7 @@ const GameScreen: FC = () => {
         setIsVisible={setInitBuildTowerModalData}
       />
       <OptionModal
-        changeOption={(newOption) => {
-          if (!isOutOfAttempts) {
-            setMonkeyAnimationData({
-              isVisible: true,
-              type: MONKEY_ANIMATION_TYPE.JumpToTop,
-            })
-          }
-          setChosenOption(newOption)
-        }}
+        changeOption={handleChangeOption}
         firstOption={firstOptionCard}
         handleClose={() => setIsModalOptionVisible(false)}
         modalVisible={isModalOptionVisible}
@@ -796,18 +863,14 @@ const GameScreen: FC = () => {
       </CustomModal>
       <UnlockOptionModal
         attempt={resetStepsModalData.attempt}
-        initialPrice={prize * 0.25}
-        onClose={() => {
-          setResetStepsModalData((prevState) => ({
-            ...prevState,
-            isVisible: false,
-          }))
-          handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
-        }}
-        onConfirm={() => {
-          console.log('RESET STEPS')
-        }}
+        initialPrice={Math.round(prize * 0.25)}
+        onClose={handlePressCloseResetStepsModal}
+        onConfirm={handleConfirmResetStepsModal}
         visible={resetStepsModalData.isVisible}
+      />
+      <ResetStepsModal
+        isVisible={successActionInfoModalData.isVisible}
+        onPress={handleCloseSuccessActionModal}
       />
     </>
   )

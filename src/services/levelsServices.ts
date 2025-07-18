@@ -7,6 +7,7 @@ import {
   resetLevels,
   setAllLevels,
 } from '@store/slices/levelsSlice'
+import { Star } from '@types'
 import { calculateIsLevelAvailable, generateInitialLevels } from '@utils'
 
 const STORAGE_KEY = 'levels_progress'
@@ -34,7 +35,7 @@ export const levelService = {
   async updateLevelRatingAndUnlockNext(
     dispatch: AppDispatch,
     levelId: number,
-    stars: 0 | 1 | 2 | 3
+    stars: Star
   ) {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
     let levels: Array<Level> = raw ? JSON.parse(raw) : generateInitialLevels()

@@ -7,6 +7,7 @@ export { generateRandomNumber } from './generateRandomNumber'
 export { generateRandomOperator } from './generateRandomOperator'
 export { getLevelBackground } from './getLevelBackground'
 export { getLevelIcon } from './getLevelIcon'
+export { getLevelResult } from './getLevelResult'
 export {
   getOptionNumberByOperator,
   getOptionOperators,

@@ -1,10 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LEVEL_DIFFICULTY, LevelId } from '@types'
+import { LEVEL_DIFFICULTY, LevelId, Star } from '@types'
 import { generateInitialLevels } from '@utils'
 
 export type Level = {
   id: LevelId
-  stars: 0 | 1 | 2 | 3
+  stars: Star
   isAvailable: boolean
   difficulty: LEVEL_DIFFICULTY
 }
@@ -26,7 +26,7 @@ const levelsSlice = createSlice({
         payload,
       }: PayloadAction<{
         id: number
-        stars: 0 | 1 | 2 | 3
+        stars: Star
       }>
     ) => {
       const { id, stars } = payload

@@ -947,3 +947,5 @@ export const COUNTRY_LIST: Array<Country> = [
     flag: CAFlagIcon,
   },
 ]
+
+export const EMPTY_FUNCTION = () => {}

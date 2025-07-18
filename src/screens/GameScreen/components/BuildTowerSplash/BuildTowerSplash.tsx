@@ -1,8 +1,8 @@
-import { Button } from '@components/ui'
+import { Button } from '@components/atoms'
 import { ShadowWrapper } from '@components/wrappers'
 import { BUTTON_TYPE, TOWER } from '@types'
 import { Image } from 'moti'
-import { FC, useState } from 'react'
+import { FC, memo, useState } from 'react'
 import { LayoutAnimation } from 'react-native'
 
 import { styles } from './BuildTowerSplash.styles'
@@ -47,4 +47,4 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
     </ShadowWrapper>
   )
 }
-export default BuildTowerSplash
+export default memo(BuildTowerSplash)

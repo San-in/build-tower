@@ -70,6 +70,9 @@ export enum TOWER {
   Second = 'Second',
 }
 
+export enum GAME_SCREEN_SUCCESS_ACTION {
+  ResetSteps = 'ResetSteps',
+}
 export enum BONUS_OPTION_TYPE {
   Ad = 'ad',
   Bananas = 'bananas',
@@ -84,6 +87,7 @@ export enum MONKEY_ANIMATION_TYPE {
   Landing = 'landing',
   Idle = 'idle',
   JumpToTop = 'jump-to-top',
+  Celebration = 'celebration',
 }
 export enum SELECTED_OPTION {
   First = 'first',
@@ -96,4 +100,13 @@ export enum LEVEL_RESULT {
   GoldResult = 'goldResult',
   SilverResult = 'silverResult',
   BronzeResult = 'bronzeResult',
+}
+export enum BLOCK_CREATOR_OPERATION {
+  Add = 'add',
+  Remove = 'remove',
+}
+
+export enum EDGE_GLOW_OVERLAY_TYPE {
+  Sides = 'sides',
+  All = 'all',
 }

@@ -43,6 +43,8 @@ export type ModalState<T> = {
   type: T
 }
 
+export type Star = 0 | 1 | 2 | 3
+
 export type LevelId =
   | 1
   | 2

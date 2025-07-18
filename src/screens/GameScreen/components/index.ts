@@ -1,2 +1,6 @@
 export * from './BlockTowerCreator'
 export * from './BuildTowerSplash'
+export * from './NextButton'
+export * from './PrizeSection'
+export * from './ResetStepsModal'
+export * from './YouWinBanner'

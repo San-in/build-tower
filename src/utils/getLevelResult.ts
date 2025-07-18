@@ -19,10 +19,10 @@ export const getLevelResult = ({
   if (userBlockValue === goldResult) {
     return LEVEL_RESULT.GoldResult
   }
-  if (userBlockValue === silverResult) {
+  if (userBlockValue >= silverResult && userBlockValue < goldResult) {
     return LEVEL_RESULT.SilverResult
   }
-  if (userBlockValue === bronzeResult) {
+  if (userBlockValue >= bronzeResult && userBlockValue < silverResult) {
     return LEVEL_RESULT.BronzeResult
   }
   return LEVEL_RESULT.TooLow

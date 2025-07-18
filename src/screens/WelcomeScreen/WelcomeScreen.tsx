@@ -1,8 +1,12 @@
 import { BackColorIcon, BananasIcon, SettingsIcon } from '@assets/icons'
-import { Button, LevelCard } from '@components/ui'
-import IconButton from '@components/ui/IconButton/IconButton'
-import { OutlinedText } from '@components/ui/OutlinedText'
-import { LEVEL_CARD_GAP, LEVEL_CARD_WIDTH, TOTAL_LEVELS } from '@constants'
+import { Button, IconButton, OutlinedText } from '@components/atoms'
+import { LevelCard } from '@components/molecules'
+import {
+  EMPTY_FUNCTION,
+  LEVEL_CARD_GAP,
+  LEVEL_CARD_WIDTH,
+  TOTAL_LEVELS,
+} from '@constants'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
@@ -106,7 +110,7 @@ const WelcomeScreen = () => {
       >
         <IconButton
           icon={<SettingsIcon height={30} width={30} />}
-          onPress={() => {}}
+          onPress={EMPTY_FUNCTION}
         />
       </MotiView>
       <SafeAreaView style={GlobalStyles.centeredContainer}>
