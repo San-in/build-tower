@@ -45,7 +45,7 @@ const PulsingGlow: FC<PulsingGlowProps> = ({ children, delay = 0 }) => {
 
 const EdgeGlowOverlay: FC<EdgeGlowOverlayProps> = ({
   sides = EDGE_GLOW_OVERLAY_TYPE.All,
-  color = COLORS.yellow80,
+  color = COLORS.yellow60,
   onPress,
 }) => {
   const edges: Array<{

@@ -22,7 +22,7 @@ const PrizeSection: FC<PrizeSectionProps> = ({ isVisible, animationKey }) => (
         type: 'timing',
         duration: 2000,
         easing: Easing.inOut(Easing.ease),
-        delay: 1000,
+        delay: 2000,
       }}
     >
       <BananasIcon height={50} width={50} />

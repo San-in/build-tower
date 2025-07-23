@@ -44,17 +44,26 @@ export const levelService = {
       level.id === levelId ? { ...level, stars } : level
     )
 
-    const nextLevelId = levelId + 1
-    const canUnlockNext = calculateIsLevelAvailable(levels, nextLevelId)
+    const nextClosedLevel = levels.find((level) => !level.isAvailable)
 
-    if (canUnlockNext) {
-      levels = levels.map((level) =>
-        level.id === nextLevelId ? { ...level, isAvailable: true } : level
-      )
-      dispatch(makeLevelAvailable({ id: nextLevelId }))
+    if (nextClosedLevel) {
+      const canUnlock = calculateIsLevelAvailable(levels, nextClosedLevel.id)
+      if (canUnlock) {
+        levels = levels.map((level) =>
+          level.id === nextClosedLevel.id
+            ? { ...level, isAvailable: true }
+            : level
+        )
+      }
     }
 
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(levels))
     dispatch(changeLevelRatingById({ id: levelId, stars }))
+    if (
+      nextClosedLevel &&
+      calculateIsLevelAvailable(levels, nextClosedLevel.id)
+    ) {
+      dispatch(makeLevelAvailable({ id: nextClosedLevel.id }))
+    }
   },
 }

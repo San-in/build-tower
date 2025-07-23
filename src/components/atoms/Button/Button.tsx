@@ -1,4 +1,4 @@
-import { gradientsMap } from '@components/atoms/Button/gradinents'
+import { gradientsMap } from '@components/atoms/Button/gradinentsMap'
 import { OutlinedText } from '@components/atoms/OutlinedText'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'

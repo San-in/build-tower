@@ -40,18 +40,20 @@ export const styles = StyleSheet.create({
     right: -15,
     zIndex: 10,
   },
+  progressBadgeContainer: { position: 'absolute', right: 10, top: 250 },
   towersContainer: {
     flexDirection: 'row',
     flex: 1,
     gap: 50,
     paddingHorizontal: 20,
-    paddingTop: 100,
+    paddingTop: 150,
     position: 'relative',
     width: '100%',
   },
   towersScrollWrapperContainer: {
     alignItems: 'flex-end',
     flexGrow: 1,
+    minHeight: '100%',
     position: 'relative',
   },
   userBlockTowerContainer: {

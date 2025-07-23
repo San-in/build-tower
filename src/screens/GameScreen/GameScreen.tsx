@@ -57,6 +57,7 @@ import {
   BuildTowerSplash,
   NextButton,
   PrizeSection,
+  ProgressBadge,
   ResetStepsModal,
   YouWinBanner,
 } from './components'
@@ -95,7 +96,7 @@ const GameScreen: FC = () => {
     SELECTED_OPTION.None
   )
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
-  const [isNextStepVisible, setIsNextStepVisible] = useState(false)
+  const [isInterfacesVisible, setIsInterfacesVisible] = useState(false)
   const [isLevelFinished, setIsLevelFinished] = useState(false)
 
   const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
@@ -144,7 +145,7 @@ const GameScreen: FC = () => {
     setIsPrizeVisible(false)
     setMonkeyAnimationData(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
     setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
-    setIsNextStepVisible(false)
+    setIsInterfacesVisible(false)
     setIsLevelFinished(false)
 
     setTimeout(() => {
@@ -366,18 +367,15 @@ const GameScreen: FC = () => {
       return
     }
     handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Idle)
-    setIsNextStepVisible(true)
+    setIsInterfacesVisible(true)
   }, [isOutOfAttempts])
 
   const handleMonkeyAnimationJumpToTopFinished = useCallback(
     () =>
       isLevelFinished
-        ? () =>
-            setTimeout(
-              () =>
-                handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration),
-              800
-            )
+        ? setTimeout(() => {
+            handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
+          }, 800)
         : userBlockManipulation(),
     [isLevelFinished, userBlockManipulation]
   )
@@ -412,10 +410,9 @@ const GameScreen: FC = () => {
     })
 
     if (isUserNeedHelp) {
-      secondNumber = generateRandomNumber({ min: 2, max: 3 })
-    }
-    if (isUserNeedStrongHelp) {
-      secondNumber = multiplicativeOperators.end
+      secondNumber = isUserNeedStrongHelp
+        ? multiplicativeOperators.end
+        : generateRandomNumber({ min: 2, max: 3 })
     }
 
     setFirstOptionCard({
@@ -448,7 +445,10 @@ const GameScreen: FC = () => {
   const handleConfirmResetStepsModal = useCallback(() => {
     handleCloseActionModal()
     setStep(1)
-    handleCloseResetStepsModal()
+    setResetStepsModalData((prevState) => ({
+      ...prevState,
+      isVisible: false,
+    }))
     setSuccessActionInfoModalData({
       isVisible: true,
       type: GAME_SCREEN_SUCCESS_ACTION.ResetSteps,
@@ -706,6 +706,18 @@ const GameScreen: FC = () => {
     }, 100)
   }, [scrollViewRef, initialBlockValue, userBlockValue, focusedTower])
 
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+
+    if (
+      scrollViewRef?.current &&
+      initialBlockValue &&
+      focusedTower === TOWER.First
+    ) {
+      scrollViewRef.current.scrollToEnd()
+    }
+  }, [focusedTower, initialBlockValue])
+
   return (
     <>
       <ImageBackground
@@ -728,9 +740,16 @@ const GameScreen: FC = () => {
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
         />
-        {/*<View style={{ alignItems: 'center' }}>*/}
-        {/*  <OutlinedText>{`${step}`}</OutlinedText>*/}
-        {/*</View>*/}
+        {isInterfacesVisible && (
+          <View style={styles.progressBadgeContainer}>
+            <ProgressBadge
+              animationKey={animationRestartKey}
+              initialValue={initialBlockValue}
+              isTowerBuilding={isTowerBuilding}
+              userValue={userBlockValue}
+            />
+          </View>
+        )}
         <ScrollView
           alwaysBounceVertical={false}
           bounces={false}
@@ -833,7 +852,7 @@ const GameScreen: FC = () => {
       <NextButton
         isDisabled={isOutOfAttempts || isTowerBuilding}
         isLoading={isTowerBuilding}
-        isVisible={isNextStepVisible}
+        isVisible={isInterfacesVisible}
         onPress={handleNextStepPress}
       />
       <WheelOfFortuneModal

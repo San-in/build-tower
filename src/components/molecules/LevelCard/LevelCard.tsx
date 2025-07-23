@@ -4,7 +4,7 @@ import {
   containerBorderMap,
   containerGradientMap,
   containerShadowMap,
-} from '@components/molecules/LevelCard/gradientMap'
+} from '@components/molecules/LevelCard/colorsMap'
 import { LevelCardProps } from '@components/molecules/LevelCard/LevelCard.types'
 import { LEVEL_NAMES } from '@constants'
 import { useAppSelector } from '@store/hooks'

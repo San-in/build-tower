@@ -237,14 +237,14 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
               <BlockWithValue
                 strokeColor={COLORS.brown}
                 textColor={COLORS.gradientGold_1}
-                value={goldResult}
+                value={bronzeResult}
               />
             </View>
           </>
         )}
       </View>
     ),
-    [goldResult, isTooHigh, userBlockValue]
+    [bronzeResult, goldResult, isTooHigh, userBlockValue]
   )
 
   return (

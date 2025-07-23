@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
   },
   prizeBlock: {
     flex: 1,
+    marginLeft: -2,
   },
   prizeContainer: {
     alignItems: 'center',

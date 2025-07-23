@@ -53,8 +53,25 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
             You can still get
           </OutlinedText>
         )}
+
         {Array.from({ length: 3 - stars }, (_, index) => index).map((item) => (
           <View key={`${item} - ${prizes}`} style={styles.rewardsLine}>
+            <OutlinedText
+              color={COLORS.gradientGold_1}
+              fontSize={25}
+              strokeColor={COLORS.brown}
+              style={styles.rewardsPrize}
+            >
+              {stars
+                ? `${-((prizes.at(-1) ?? 0) - (prizes[item] ?? 0))}`
+                : `${prizes[item]}`}
+            </OutlinedText>
+            <BananasIcon height={25} width={25} />
+
+            <OutlinedText fontSize={20} style={styles.rewardsPrizeContainer}>
+              for
+            </OutlinedText>
+
             <View style={styles.rewardsBlocksQuantity}>
               <OutlinedText
                 color={COLORS.gradientGold_1}
@@ -65,23 +82,9 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
               </OutlinedText>
               <BlockIcon size={20} />
             </View>
-
-            <OutlinedText fontSize={20} style={styles.rewardsPrizeContainer}>
-              - prize
-            </OutlinedText>
-            <OutlinedText
-              color={COLORS.gradientGold_1}
-              fontSize={20}
-              strokeColor={COLORS.brown}
-              style={styles.rewardsPrize}
-            >
-              {stars
-                ? `${-((prizes.at(-1) ?? 0) - (prizes[item] ?? 0))}`
-                : `${prizes[item]}`}
-            </OutlinedText>
-            <BananasIcon height={25} width={25} />
           </View>
         ))}
+
         {isLevelCompletedWithThreeStars ? (
           <View style={styles.completedLevelText}>
             <OutlinedText fontSize={12}>
