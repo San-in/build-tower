@@ -61,6 +61,7 @@ import {
   ResetStepsModal,
   YouWinBanner,
 } from './components'
+import StepBar from './components/StepBar/StepBar'
 import {
   INITIAL_BUILD_MODAL_STATE,
   INITIAL_INIT_BUILD_TOWER_MODAL_STATE,
@@ -740,8 +741,13 @@ const GameScreen: FC = () => {
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
         />
-        {isInterfacesVisible && (
+        {isInterfacesVisible && !isOutOfAttempts && (
           <View style={styles.progressBadgeContainer}>
+            <StepBar
+              animationKey={animationRestartKey}
+              currentStep={step}
+              totalSteps={attempts}
+            />
             <ProgressBadge
               animationKey={animationRestartKey}
               initialValue={initialBlockValue}

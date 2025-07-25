@@ -158,6 +158,8 @@ export const COLORS = {
   vividPurple: 'rgb(211,5,243)',
   lightGreen: 'rgb(66,246,0)',
   aqua: 'rgb(2,251,214)',
+  collar: 'rgb(255,80,80)',
+  collar20: 'rgba(255,80,80, 0.2)',
 
   gradientBronze_1: 'rgb(205,127,50)',
   gradientBronze_2: 'rgb(216,136,72)',

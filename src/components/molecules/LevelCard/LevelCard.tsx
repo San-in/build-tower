@@ -49,14 +49,14 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
     <View>
       <MotiView
         animate={{
-          translateX: isSelectedLevel ? [0, -6, 6, -4, 4, -2, 2, 0] : 0,
+          translateX: isSelectedLevel ? [0, -4, 4, -2, 2, 0] : 0,
         }}
         from={{ translateX: 0 }}
         style={[
           styles.wrapper,
           isSelectedLevel && isAvailable && styles.selectedWrapper,
         ]}
-        transition={{ type: 'timing', duration: 150 }}
+        transition={{ type: 'timing', duration: 100 }}
       >
         <Pressable onPress={onPress} style={containerStyles}>
           <View

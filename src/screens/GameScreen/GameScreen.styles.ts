@@ -40,7 +40,13 @@ export const styles = StyleSheet.create({
     right: -15,
     zIndex: 10,
   },
-  progressBadgeContainer: { position: 'absolute', right: 10, top: 250 },
+  progressBadgeContainer: {
+    alignItems: 'flex-end',
+    gap: 100,
+    position: 'absolute',
+    right: 25,
+    top: 120,
+  },
   towersContainer: {
     flexDirection: 'row',
     flex: 1,
