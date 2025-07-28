@@ -1,7 +1,7 @@
 import { BananasIcon, HomeIcon, RestartIcon } from '@assets/icons'
 import { IconButton, OutlinedText } from '@components/atoms'
 import { HeaderProps } from '@components/molecules/Header/Header.types'
-import { useAppSelector } from '@store/hooks'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 import {
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
@@ -25,6 +25,13 @@ const Header: FC<HeaderProps> = ({
     selectTotalRemoveRandomBlocks
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
+  const addExtraStepPowerUps = useAppSelector(
+    (state) => state.market?.addExtraStep
+  )
+
+  const dispatch = useAppDispatch()
+
+  console.log(addExtraStepPowerUps)
   const levelTitle = `Level ${String(level)}`
 
   return (
@@ -95,6 +102,48 @@ const Header: FC<HeaderProps> = ({
                 <View style={styles.powerUpCounter}>
                   <OutlinedText fontSize={13}>
                     {`${totalRemoveBlocksPowerUps}`}
+                  </OutlinedText>
+                </View>
+              )}
+            </Pressable>
+            <Pressable
+              onPress={() => {}}
+              style={({ pressed }) => [
+                styles.powerUp,
+                pressed && styles.powerUpPressed,
+              ]}
+            >
+              <LinearGradient
+                colors={[
+                  COLORS.gradientBronze_1,
+                  COLORS.gradientGold_2,
+                  COLORS.gradientBronze_2,
+                  COLORS.gradientGold_1,
+                ]}
+                end={{ x: 1, y: 0 }}
+                start={{ x: 0, y: 0 }}
+                style={styles.gradientContainer}
+              >
+                <View
+                  style={[
+                    styles.powerUpContent,
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bottom: 0,
+                      top: 0,
+                    },
+                  ]}
+                >
+                  <OutlinedText fontSize={12}>+</OutlinedText>
+                  <OutlinedText fontSize={16}>1</OutlinedText>
+                </View>
+              </LinearGradient>
+              {!!addExtraStepPowerUps && (
+                <View style={styles.powerUpCounter}>
+                  <OutlinedText fontSize={13}>
+                    {`${addExtraStepPowerUps}`}
                   </OutlinedText>
                 </View>
               )}

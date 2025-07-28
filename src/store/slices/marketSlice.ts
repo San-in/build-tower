@@ -11,6 +11,7 @@ export const initialState: MarketState = {
   [MARKET_PRODUCT.RemoveRandomBlocks_Bronze]: 0,
   [MARKET_PRODUCT.RemoveRandomBlocks_Silver]: 0,
   [MARKET_PRODUCT.RemoveRandomBlocks_Gold]: 0,
+  [MARKET_PRODUCT.AddExtraStep]: 0,
 }
 
 const marketSlice = createSlice({

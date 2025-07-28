@@ -49,7 +49,9 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.roseWhite,
     borderRadius: 15,
     borderWidth: 2,
+    height: '100%',
     justifyContent: 'center',
+    width: '100%',
   },
   powerUp: {
     borderColor: COLORS.codeGrey,
