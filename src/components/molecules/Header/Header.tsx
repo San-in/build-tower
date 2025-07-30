@@ -1,7 +1,7 @@
 import { BananasIcon, HomeIcon, RestartIcon } from '@assets/icons'
 import { IconButton, OutlinedText } from '@components/atoms'
 import { HeaderProps } from '@components/molecules/Header/Header.types'
-import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { useAppSelector } from '@store/hooks'
 import {
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
@@ -18,6 +18,7 @@ const Header: FC<HeaderProps> = ({
   onHomePress,
   onRandomAddBlockPress,
   onRandomRemoveBlockPress,
+  onAddExtraStepPress,
   level,
 }) => {
   const bananas = useAppSelector((state) => state.bananas.bananas)
@@ -29,9 +30,6 @@ const Header: FC<HeaderProps> = ({
     (state) => state.market?.addExtraStep
   )
 
-  const dispatch = useAppDispatch()
-
-  console.log(addExtraStepPowerUps)
   const levelTitle = `Level ${String(level)}`
 
   return (
@@ -107,7 +105,7 @@ const Header: FC<HeaderProps> = ({
               )}
             </Pressable>
             <Pressable
-              onPress={() => {}}
+              onPress={onAddExtraStepPress}
               style={({ pressed }) => [
                 styles.powerUp,
                 pressed && styles.powerUpPressed,
@@ -125,16 +123,7 @@ const Header: FC<HeaderProps> = ({
                 style={styles.gradientContainer}
               >
                 <View
-                  style={[
-                    styles.powerUpContent,
-                    {
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bottom: 0,
-                      top: 0,
-                    },
-                  ]}
+                  style={[styles.powerUpContent, styles.addExtraStepPowerUp]}
                 >
                   <OutlinedText fontSize={12}>+</OutlinedText>
                   <OutlinedText fontSize={16}>1</OutlinedText>

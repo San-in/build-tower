@@ -1,3 +1,4 @@
+export { AddExtraStepModalContent } from './AddExtraStepModalContent'
 export { BasicModalContent } from './BasicModalContent'
 export { LevelConditionsModalContent } from './LevelConditionsModalContent'
 export { LevelResultModalContent } from './LevelResultModalContent'

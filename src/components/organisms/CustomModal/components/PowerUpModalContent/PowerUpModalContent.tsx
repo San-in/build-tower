@@ -66,7 +66,7 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
 
     if (!isSelectedPowerUpAvailable) {
       return `You don't have any ${powerUp.toUpperCase()} cards. 
-Get some in the MARKET.`
+Get some in the MonkeyMarket.`
     }
 
     return {
@@ -179,7 +179,7 @@ between 1 and 4 random blocks`,
           style={styles.button}
           textSize={15}
           title={'OK'}
-          type={BUTTON_TYPE.Warning}
+          type={BUTTON_TYPE.Info}
         />
       </View>
     </View>

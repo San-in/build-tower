@@ -41,6 +41,7 @@ export enum GAME_MODAL_TYPE {
   PowerUpWarning = 'PowerUpWarning',
   LevelConditions = 'LevelConditions',
   LevelResult = 'LevelResult',
+  AddExtraStep = 'AddExtraStep',
 }
 export enum MODAL_TYPE {
   Orange = 'Orange',

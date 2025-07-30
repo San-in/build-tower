@@ -8,6 +8,13 @@ export const styles = StyleSheet.create({
     gap: 5,
     marginLeft: 'auto',
   },
+  addExtraStepPowerUp: {
+    alignItems: 'center',
+    bottom: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    top: 0,
+  },
   bananasContainer: {
     alignItems: 'center',
     borderColor: COLORS.yellow,
