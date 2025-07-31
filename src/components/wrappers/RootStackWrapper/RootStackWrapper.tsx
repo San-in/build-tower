@@ -3,8 +3,9 @@ import { bananasService, levelService } from '@services'
 import { useAppDispatch } from '@store/hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import * as Font from 'expo-font'
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 import { marketService } from '../../../services/marketService'
 import { styles } from './RootStackWrapper.styles'
@@ -55,6 +56,7 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
       />
 
       {children}
+      <Toast />
     </View>
   )
 }

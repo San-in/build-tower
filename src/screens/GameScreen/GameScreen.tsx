@@ -57,6 +57,7 @@ import {
   ScrollView,
   View,
 } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 import { marketService } from '../../services/marketService'
 import {
@@ -252,9 +253,9 @@ const GameScreen: FC = () => {
     [dispatch]
   )
 
-  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
-  //   await marketService.increment(dispatch, type)
-  // }
+  const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
+    await marketService.increment(dispatch, type)
+  }
 
   // const handleAddBananas = async (quantity: number) => {
   //   await bananasService.addBananas(dispatch, quantity)
@@ -277,9 +278,16 @@ const GameScreen: FC = () => {
   }, [handleCloseActionModal])
 
   const handleUseAddExtraPowerUp = useCallback(async () => {
-    setStep((prevState) => Math.max(prevState - 1, 1))
-    await handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
     handleCloseActionModal()
+
+    await handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
+    setImmediate(() => {
+      setStep((prevState) => Math.max(prevState - 1, 1))
+      Toast.show({
+        type: 'success',
+        text1: 'Moved one step back!',
+      })
+    })
   }, [handleCloseActionModal, handleRemovePowerUp])
 
   const userBlockManipulation = useCallback(() => {
@@ -357,9 +365,19 @@ const GameScreen: FC = () => {
     handleOpenActionModal(GAME_MODAL_TYPE.AddExtraStep)
   }
 
-  const handleLevelResultGetPrizePressed = useCallback(
+  const handleScrollToTop = () => {
+    if (scrollViewRef?.current) {
+      scrollViewRef.current.scrollTo({
+        x: 0,
+        y: 0,
+        animated: true,
+      })
+    }
+  }
+
+  const handleLevelFinished = useCallback(
     async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
-      handleCloseActionModal()
+      handleScrollToTop()
       await handleGetPrizeAndUnlockLevel({
         prize,
         earnedStars,
@@ -368,9 +386,18 @@ const GameScreen: FC = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setIsLevelFinished(true)
       setIsPrizeVisible(false)
+      setIsInterfacesVisible(false)
       handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
     },
-    [handleCloseActionModal, handleGetPrizeAndUnlockLevel, level]
+    [handleGetPrizeAndUnlockLevel, level]
+  )
+
+  const handleLevelResultGetPrizePressed = useCallback(
+    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+      handleCloseActionModal()
+      await handleLevelFinished({ prize, stars: earnedStars })
+    },
+    [handleCloseActionModal, handleLevelFinished]
   )
 
   const handleLevelResultDoublePrizePressed = useCallback(
@@ -435,7 +462,6 @@ const GameScreen: FC = () => {
   )
 
   const handleNextStepPress = useCallback(() => {
-    // handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)
     if (isOutOfAttempts) {
       return
     }
@@ -648,7 +674,9 @@ const GameScreen: FC = () => {
         },
         [GAME_MODAL_TYPE.AddExtraStep]: {
           actionModalHeader:
-            step === 1 ? "You're already at the first step!" : 'Out of steps?',
+            step === 1
+              ? "You're already at the first step!"
+              : 'Need an extra step?',
           actionModalContent: (
             <AddExtraStepModalContent
               isAtTheFirstStep={step === 1}
@@ -762,6 +790,27 @@ const GameScreen: FC = () => {
   } = actionModalConfig
 
   // useEffects
+
+  useEffect(() => {
+    if (
+      initialBlockValue &&
+      userBlockValue === initialBlockValue &&
+      !isOutOfAttempts &&
+      !isTowerBuilding
+    ) {
+      setTimeout(async () => {
+        await handleLevelFinished({ prize, stars: 3 })
+      }, 500)
+    }
+  }, [
+    handleLevelFinished,
+    initialBlockValue,
+    isOutOfAttempts,
+    isTowerBuilding,
+    prize,
+    userBlockValue,
+  ])
+
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setTimeout(() => {
@@ -807,7 +856,7 @@ const GameScreen: FC = () => {
         <Header
           level={level}
           onAddExtraStepPress={handleAddExtraStepPress}
-          onHomePress={() => handleOpenActionModal(GAME_MODAL_TYPE.Home)}
+          onHomePress={() => handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)}
           onRandomAddBlockPress={handleRandomAddBlockPress}
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}

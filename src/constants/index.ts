@@ -36,7 +36,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 20,
-    attempts: 5,
+    attempts: 6,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   2: {
@@ -67,7 +67,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 22,
-    attempts: 5,
+    attempts: 6,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   3: {
@@ -98,7 +98,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 24,
-    attempts: 5,
+    attempts: 6,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   4: {
@@ -119,7 +119,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 26,
-    attempts: 5,
+    attempts: 6,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   5: {
@@ -150,7 +150,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 28,
-    attempts: 5,
+    attempts: 6,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   6: {
@@ -192,7 +192,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 28,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   8: {
@@ -223,7 +223,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 30,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   9: {
@@ -244,7 +244,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 32,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   10: {
@@ -275,7 +275,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 34,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   11: {
@@ -430,7 +430,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 44,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   16: {
@@ -461,7 +461,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 46,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   17: {
@@ -492,7 +492,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 48,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   18: {
@@ -523,7 +523,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 50,
-    attempts: 6,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   19: {
@@ -554,7 +554,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 52,
-    attempts: 6,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   20: {
@@ -585,7 +585,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 54,
-    attempts: 6,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   21: {
@@ -616,7 +616,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 56,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   22: {
@@ -647,7 +647,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 58,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   23: {
@@ -678,7 +678,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 60,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   24: {
@@ -709,7 +709,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 62,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   25: {
@@ -740,7 +740,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 64,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   26: {
@@ -771,7 +771,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 66,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   27: {
@@ -802,7 +802,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 68,
-    attempts: 6,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   28: {
@@ -833,7 +833,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 70,
-    attempts: 7,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   29: {
@@ -864,7 +864,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 4,
     },
     prize: 72,
-    attempts: 7,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   30: {
@@ -895,7 +895,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 5,
     },
     prize: 75,
-    attempts: 7,
+    attempts: 4,
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
 }

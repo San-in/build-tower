@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
   },
   progressBadgeContainer: {
     alignItems: 'flex-end',
-    gap: 100,
+    gap: 80,
     position: 'absolute',
     right: 25,
     top: 120,

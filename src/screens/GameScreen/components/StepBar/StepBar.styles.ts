@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   stepLabel: {
     alignItems: 'flex-end',
     position: 'absolute',
-    top: 26,
+    top: 24,
     width: '100%',
   },
 })
