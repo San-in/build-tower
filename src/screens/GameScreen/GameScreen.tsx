@@ -20,10 +20,10 @@ import { NavigationProp } from '@react-navigation/native'
 import { bananasService, levelService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { getLevelById, Level } from '@store/slices/levelsSlice'
-// import {
-//   selectTotalAddRandomBlocks,
-//   selectTotalRemoveRandomBlocks,
-// } from '@store/slices/marketSlice'
+import {
+  selectTotalAddRandomBlocks,
+  selectTotalRemoveRandomBlocks,
+} from '@store/slices/marketSlice'
 import {
   EDGE_GLOW_OVERLAY_TYPE,
   GAME_MODAL_TYPE,
@@ -87,10 +87,10 @@ const GameScreen: FC = () => {
   } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
   const scrollViewRef = useRef<ScrollView>(null)
   const { stars } = useAppSelector(getLevelById(level)) as Level
-  // const totalRemoveBlocksPowerUps = useAppSelector(
-  //   selectTotalRemoveRandomBlocks
-  // )
-  // const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
+  const totalRemoveBlocksPowerUps = useAppSelector(
+    selectTotalRemoveRandomBlocks
+  )
+  const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
     (state) => state.market?.addExtraStep
   )
@@ -322,20 +322,40 @@ const GameScreen: FC = () => {
     }, 1500)
   }, [])
 
-  const handleRandomAddBlockPress = () =>
-    userBlockValue
-      ? handleOpenActionModal(GAME_MODAL_TYPE.AddBlocks)
-      : handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+  const handleRandomAddBlockPress = () => {
+    if (!userBlockValue) {
+      return
+    }
+    if (!totalAddBlocksPowerUps) {
+      handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+      return
+    }
 
-  const handleRandomRemoveBlockPress = () =>
-    userBlockValue
-      ? handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocks)
-      : handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+    handleOpenActionModal(GAME_MODAL_TYPE.AddBlocks)
+  }
 
-  const handleAddExtraStepPress = () =>
-    userBlockValue
-      ? handleOpenActionModal(GAME_MODAL_TYPE.AddExtraStep)
-      : handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+  const handleRandomRemoveBlockPress = () => {
+    if (!userBlockValue) {
+      return
+    }
+    if (!totalRemoveBlocksPowerUps) {
+      handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+      return
+    }
+
+    handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocks)
+  }
+
+  const handleAddExtraStepPress = () => {
+    if (!userBlockValue) {
+      return
+    }
+    if (!addExtraStepPowerUps) {
+      handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+      return
+    }
+    handleOpenActionModal(GAME_MODAL_TYPE.AddExtraStep)
+  }
 
   const handleLevelResultGetPrizePressed = useCallback(
     async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
@@ -595,16 +615,6 @@ const GameScreen: FC = () => {
   const { initTowerStart, initTowerSectors, initTowerCallBack } =
     initTowerModalConfig
 
-  const addExtraStepModalTitle = useMemo(
-    () =>
-      [
-        !addExtraStepPowerUps && 'No power-ups left!',
-        step === 1 && "You're already at the first step!",
-      ].filter(Boolean)[0] || 'Out of steps?',
-
-    [addExtraStepPowerUps, step]
-  )
-
   const actionModalConfig = useMemo(
     () =>
       ({
@@ -637,16 +647,16 @@ const GameScreen: FC = () => {
           onCrossIconPress: handleCloseActionModal,
         },
         [GAME_MODAL_TYPE.AddExtraStep]: {
-          actionModalHeader: addExtraStepModalTitle,
+          actionModalHeader:
+            step === 1 ? "You're already at the first step!" : 'Out of steps?',
           actionModalContent: (
             <AddExtraStepModalContent
               isAtTheFirstStep={step === 1}
-              isOutOfPowerUps={!Boolean(addExtraStepPowerUps)}
               onCancel={handleCloseActionModal}
               onConfirm={handleUseAddExtraPowerUp}
             />
           ),
-          actionModalColor: MODAL_TYPE.Green,
+          actionModalColor: step === 1 ? MODAL_TYPE.Orange : MODAL_TYPE.Green,
           withCrossIcon: true,
           onCrossIconPress: handleCloseActionModal,
         },
@@ -677,14 +687,12 @@ const GameScreen: FC = () => {
           onCrossIconPress: handleCloseActionModal,
         },
         [GAME_MODAL_TYPE.PowerUpWarning]: {
-          actionModalHeader: 'Build both towers first',
+          actionModalHeader: 'No power-ups left!',
           actionModalContent: (
             <BasicModalContent
               confirmButtonText={'OK'}
               onConfirm={handleCloseActionModal}
-              text={
-                'You’ll unlock this power-up once both towers are completed.'
-              }
+              text={'Visit the MonkeyMarket to grab more and keep climbing'}
             />
           ),
           actionModalColor: MODAL_TYPE.Orange,
@@ -729,9 +737,7 @@ const GameScreen: FC = () => {
       handleCloseActionModal,
       handleGoHome,
       handleResetLevelPressed,
-      addExtraStepModalTitle,
       step,
-      addExtraStepPowerUps,
       handleUseAddExtraPowerUp,
       initialBlockValue,
       handleLevelConditionsConfirm,

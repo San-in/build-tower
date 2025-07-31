@@ -39,7 +39,7 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
   const fontSize = useMemo(() => {
     const maxNumber = Math.max(userValue, initialValue)
     return (
-      [maxNumber > 999 && 12, maxNumber > 99 && 16].filter(Boolean)[0] || 24
+      [maxNumber > 999 && 12, maxNumber > 99 && 16].filter(Boolean)[0] || 22
     )
   }, [initialValue, userValue])
 
