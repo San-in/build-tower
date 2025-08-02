@@ -27,7 +27,7 @@ const Header: FC<HeaderProps> = ({
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market?.addExtraStep
+    (state) => state.market?.AddExtraStep
   )
 
   const levelTitle = `Level ${String(level)}`

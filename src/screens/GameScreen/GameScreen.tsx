@@ -13,7 +13,12 @@ import {
   PowerUpModalContent,
 } from '@components/organisms/CustomModal/components'
 import { EdgeGlowOverlay } from '@components/wrappers'
-import { BLOCK_DIMENSION, EMPTY_FUNCTION, LEVEL_CONFIG } from '@constants'
+import {
+  BLOCK_DIMENSION,
+  EMPTY_FUNCTION,
+  LEVEL_CONFIG,
+  POWER_UP_BLOCK_MANIPULATION_LIMITS,
+} from '@constants'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
@@ -26,6 +31,7 @@ import {
 } from '@store/slices/marketSlice'
 import {
   EDGE_GLOW_OVERLAY_TYPE,
+  FortuneWheelModalState,
   GAME_MODAL_TYPE,
   GAME_SCREEN_SUCCESS_ACTION,
   LevelId,
@@ -35,7 +41,9 @@ import {
   MONKEY_ANIMATION_TYPE,
   OPERATOR,
   OptionValue,
+  POWER_UP_GRADE,
   POWER_UP_TYPE,
+  PowerUpActiveActionModalState,
   SCREENS,
   SELECTED_OPTION,
   Star,
@@ -44,6 +52,7 @@ import {
 import {
   generateRandomNumber,
   getLevelBackground,
+  getMarketProductByPowerUp,
   getOptionNumberByOperator,
   getOptionOperators,
   getValidOptionNumber,
@@ -72,10 +81,11 @@ import {
 import StepBar from './components/StepBar/StepBar'
 import {
   INITIAL_BUILD_MODAL_STATE,
-  INITIAL_INIT_BUILD_TOWER_MODAL_STATE,
+  INITIAL_FORTUNE_WHEEL_MODAL_STATE,
   INITIAL_MODAL_STATE,
   INITIAL_MONKEY_ANIMATION_MODAL_STATE,
   INITIAL_OPTION_STATE,
+  INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE,
   INITIAL_RESET_STEPS_MODAL_STATE,
   INITIAL_SUCCESS_ACTION_MODAL_STATE,
 } from './constants'
@@ -93,7 +103,7 @@ const GameScreen: FC = () => {
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market?.addExtraStep
+    (state) => state.market?.AddExtraStep
   )
 
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
@@ -103,7 +113,7 @@ const GameScreen: FC = () => {
   const [step, setStep] = useState(0)
   const [initialBlockValue, setInitialBlockValue] = useState(0)
   const [userBlockValue, setUserBlockValue] = useState(0)
-  const [focusedTower, setFocusedTower] = useState<TOWER>(TOWER.First)
+  const [focusedTower, setFocusedTower] = useState<TOWER>(TOWER.FirstTower)
   const [isScaledTower, setIsScaledTower] = useState(false)
   const [firstOptionCard, setFirstOptionCard] =
     useState<OptionValue>(INITIAL_OPTION_STATE)
@@ -119,9 +129,8 @@ const GameScreen: FC = () => {
   const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
   const [actionModalData, setActionModalData] =
     useState<ModalState<GAME_MODAL_TYPE>>(INITIAL_MODAL_STATE)
-  const [initBuildTowerModalData, setInitBuildTowerModalData] = useState<
-    ModalState<TOWER>
-  >(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
+  const [fortuneWheelModalData, setFortuneWheelModalData] =
+    useState<FortuneWheelModalState>(INITIAL_FORTUNE_WHEEL_MODAL_STATE)
   const [buildModalData, setBuildModalData] = useState<ModalState<TOWER>>(
     INITIAL_BUILD_MODAL_STATE
   )
@@ -134,6 +143,11 @@ const GameScreen: FC = () => {
   const [successActionInfoModalData, setSuccessActionInfoModalData] = useState<
     ModalState<GAME_SCREEN_SUCCESS_ACTION>
   >(INITIAL_SUCCESS_ACTION_MODAL_STATE)
+
+  const [powerUpActiveAction, setPowerUpActiveAction] =
+    useState<PowerUpActiveActionModalState>(
+      INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE
+    )
 
   const [isTowerBuilding, setIsTowerBuilding] = useState(false)
 
@@ -154,16 +168,17 @@ const GameScreen: FC = () => {
   // CALLBACKS WITHOUT DEPENDENCIES
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setFocusedTower(TOWER.First)
+    setFocusedTower(TOWER.FirstTower)
     setStep(0)
     setChosenOption(SELECTED_OPTION.None)
     setSecondOptionCard(INITIAL_OPTION_STATE)
     setFirstOptionCard(INITIAL_OPTION_STATE)
     setIsPrizeVisible(false)
     setMonkeyAnimationData(INITIAL_MONKEY_ANIMATION_MODAL_STATE)
-    setInitBuildTowerModalData(INITIAL_INIT_BUILD_TOWER_MODAL_STATE)
+    setFortuneWheelModalData(INITIAL_FORTUNE_WHEEL_MODAL_STATE)
     setIsInterfacesVisible(false)
     setIsLevelFinished(false)
+    setPowerUpActiveAction(INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE)
 
     setTimeout(() => {
       setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
@@ -197,7 +212,7 @@ const GameScreen: FC = () => {
 
   const handleInitSecondTowerCallBack = (number: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setFocusedTower(TOWER.Second)
+    setFocusedTower(TOWER.SecondTower)
     setUserBlockValue(number)
     setStep(1)
     setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
@@ -240,9 +255,14 @@ const GameScreen: FC = () => {
   }
 
   const handlePressBuildTowerSplash = () => {
-    setInitBuildTowerModalData({
+    const isFirstTower = buildModalData.type === TOWER.FirstTower
+    setFortuneWheelModalData({
       isVisible: true,
       type: buildModalData.type,
+      sectors: isFirstTower
+        ? fistTower.fortuneWheelData
+        : secondTower.fortuneWheelData,
+      start: isFirstTower ? fistTower.start : secondTower.start,
     })
   }
 
@@ -253,13 +273,30 @@ const GameScreen: FC = () => {
     [dispatch]
   )
 
-  const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
-    await marketService.increment(dispatch, type)
-  }
+  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
+  //   await marketService.increment(dispatch, type)
+  // }
 
   // const handleAddBananas = async (quantity: number) => {
   //   await bananasService.addBananas(dispatch, quantity)
   // }
+
+  const handleRemoveUserBlocks = (number: number) => {
+    setUserBlockValue((prevState) =>
+      prevState - number > 1 ? prevState - number : 1
+    )
+  }
+  const handleAddUserBlocks = (number: number) => {
+    setUserBlockValue((prevState) => prevState + number)
+  }
+  const handleDivisionUserBlocks = (number: number) => {
+    setUserBlockValue((prevState) =>
+      Math.round(prevState / number) > 1 ? Math.round(prevState / number) : 1
+    )
+  }
+  const handleMultiplyUserBlocks = (number: number) => {
+    setUserBlockValue((prevState) => prevState * number)
+  }
 
   // CALLBACKS WITH DEPENDENCIES
   const handleGoHome = useCallback(async () => {
@@ -298,20 +335,16 @@ const GameScreen: FC = () => {
     const { number, operator } = selectedCard
 
     if (operator === OPERATOR.Plus) {
-      setUserBlockValue((prevState) => prevState + number)
+      handleAddUserBlocks(number)
     }
     if (operator === OPERATOR.Minus) {
-      setUserBlockValue((prevState) =>
-        prevState - number > 1 ? prevState - number : 1
-      )
+      handleRemoveUserBlocks(number)
     }
     if (operator === OPERATOR.Division) {
-      setUserBlockValue((prevState) =>
-        Math.round(prevState / number) > 1 ? Math.round(prevState / number) : 1
-      )
+      handleDivisionUserBlocks(number)
     }
     if (operator === OPERATOR.Multiply) {
-      setUserBlockValue((prevState) => prevState * number)
+      handleMultiplyUserBlocks(number)
     }
     setStep((prevState) => prevState + 1)
     setChosenOption(SELECTED_OPTION.None)
@@ -343,7 +376,14 @@ const GameScreen: FC = () => {
   }
 
   const handleRandomRemoveBlockPress = () => {
-    if (!userBlockValue) {
+    if (!userBlockValue || userBlockValue <= 1) {
+      if (userBlockValue <= 1) {
+        Toast.show({
+          type: 'info',
+          text1: "Just 1 block left — can't remove more!",
+        })
+      }
+
       return
     }
     if (!totalRemoveBlocksPowerUps) {
@@ -360,6 +400,13 @@ const GameScreen: FC = () => {
     }
     if (!addExtraStepPowerUps) {
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
+      return
+    }
+    if (step === 1) {
+      Toast.show({
+        type: 'info',
+        text1: "You're already at the first step!",
+      })
       return
     }
     handleOpenActionModal(GAME_MODAL_TYPE.AddExtraStep)
@@ -434,7 +481,7 @@ const GameScreen: FC = () => {
     handleCloseActionModal()
     setTimeout(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      setBuildModalData({ isVisible: true, type: TOWER.Second })
+      setBuildModalData({ isVisible: true, type: TOWER.SecondTower })
     }, 1500)
   }, [handleCloseActionModal])
 
@@ -451,15 +498,29 @@ const GameScreen: FC = () => {
     setIsInterfacesVisible(true)
   }, [isOutOfAttempts])
 
-  const handleMonkeyAnimationJumpToTopFinished = useCallback(
-    () =>
-      isLevelFinished
-        ? setTimeout(() => {
-            handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
-          }, 800)
-        : userBlockManipulation(),
-    [isLevelFinished, userBlockManipulation]
-  )
+  const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
+    if (isLevelFinished) {
+      setTimeout(() => {
+        handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
+      }, 800)
+      return
+    }
+    const { type, number } = powerUpActiveAction
+    if (type === POWER_UP_TYPE.AddRandomBlocks) {
+      handleAddUserBlocks(number)
+      handleCloseMonkeyAnimation()
+      setPowerUpActiveAction(INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE)
+      return
+    }
+    if (type === POWER_UP_TYPE.RemoveRandomBlocks) {
+      handleRemoveUserBlocks(number)
+      handleCloseMonkeyAnimation()
+      setPowerUpActiveAction(INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE)
+      return
+    }
+
+    userBlockManipulation()
+  }, [isLevelFinished, powerUpActiveAction, userBlockManipulation])
 
   const handleNextStepPress = useCallback(() => {
     if (isOutOfAttempts) {
@@ -573,6 +634,37 @@ const GameScreen: FC = () => {
     }
   }
 
+  const handleChangeBlocksValuePowerUpPressed = useCallback(
+    ({
+      grade,
+      type,
+    }: {
+      grade: POWER_UP_GRADE | null
+      type: POWER_UP_TYPE
+    }) => {
+      if (grade) {
+        const sectors = Array.from({
+          length: POWER_UP_BLOCK_MANIPULATION_LIMITS[grade].max,
+        }).map((_, index) => `${index + 1}`)
+
+        setFortuneWheelModalData({
+          isVisible: true,
+          start: POWER_UP_BLOCK_MANIPULATION_LIMITS[grade].min,
+          sectors,
+          type,
+        })
+        const marketProduct = getMarketProductByPowerUp(type, grade)
+        handleCloseActionModal()
+        if (marketProduct) {
+          setTimeout(async () => {
+            await handleRemovePowerUp(marketProduct)
+          }, 1000)
+        }
+      }
+    },
+    [handleCloseActionModal, handleRemovePowerUp]
+  )
+
   // CONFIGS
   const monkeyAnimationConfig = {
     [MONKEY_ANIMATION_TYPE.RunAndJump]: {
@@ -614,32 +706,43 @@ const GameScreen: FC = () => {
     onFinishCalBack: monkeyAnimationCallback,
   } = monkeyAnimationConfig
 
-  const initTowerModalConfig = useMemo(
+  const fortuneWheelModalCallbacks = useMemo(
     () =>
       ({
-        [TOWER.First]: {
-          initTowerStart: fistTower.start,
-          initTowerSectors: fistTower.fortuneWheelData,
-          initTowerCallBack: handleInitFirstTowerCallBack,
+        [TOWER.FirstTower]: {
+          fortuneWheelCallBack: handleInitFirstTowerCallBack,
         },
-        [TOWER.Second]: {
-          initTowerStart: secondTower.start,
-          initTowerSectors: secondTower.fortuneWheelData,
-          initTowerCallBack: handleInitSecondTowerCallBack,
+        [TOWER.SecondTower]: {
+          fortuneWheelCallBack: handleInitSecondTowerCallBack,
         },
-      })[initBuildTowerModalData.type],
-    [
-      fistTower.start,
-      fistTower.fortuneWheelData,
-      handleInitFirstTowerCallBack,
-      secondTower.start,
-      secondTower.fortuneWheelData,
-      initBuildTowerModalData.type,
-    ]
+        [POWER_UP_TYPE.AddRandomBlocks]: {
+          fortuneWheelCallBack: (number: number) => {
+            setPowerUpActiveAction({
+              type: POWER_UP_TYPE.AddRandomBlocks,
+              number,
+            })
+            handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
+          },
+        },
+        [POWER_UP_TYPE.RemoveRandomBlocks]: {
+          fortuneWheelCallBack: (number: number) => {
+            setPowerUpActiveAction({
+              type: POWER_UP_TYPE.RemoveRandomBlocks,
+              number,
+            })
+            if (number >= userBlockValue) {
+              handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocksWarning)
+              return
+            }
+
+            handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
+          },
+        },
+      })[fortuneWheelModalData.type],
+    [handleInitFirstTowerCallBack, fortuneWheelModalData.type, userBlockValue]
   )
 
-  const { initTowerStart, initTowerSectors, initTowerCallBack } =
-    initTowerModalConfig
+  const { fortuneWheelCallBack } = fortuneWheelModalCallbacks
 
   const actionModalConfig = useMemo(
     () =>
@@ -659,6 +762,23 @@ const GameScreen: FC = () => {
           withCrossIcon: true,
           onCrossIconPress: handleCloseActionModal,
         },
+        [GAME_MODAL_TYPE.RemoveBlocksWarning]: {
+          actionModalHeader: 'Heads up!',
+          actionModalContent: (
+            <BasicModalContent
+              confirmButtonText={'Understand'}
+              onConfirm={() => {
+                handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
+                handleCloseActionModal()
+              }}
+              /* eslint-disable-next-line max-len */
+              text={`Your tower is short... We’ll remove max ${userBlockValue - 1} block${userBlockValue === 1 ? '' : 's'} to leave at least 1 standing.`}
+            />
+          ),
+          actionModalColor: MODAL_TYPE.Blue,
+          withCrossIcon: true,
+          onCrossIconPress: handleCloseActionModal,
+        },
         [GAME_MODAL_TYPE.Reset]: {
           actionModalHeader: 'Start over? Really?',
           actionModalContent: (
@@ -673,13 +793,9 @@ const GameScreen: FC = () => {
           onCrossIconPress: handleCloseActionModal,
         },
         [GAME_MODAL_TYPE.AddExtraStep]: {
-          actionModalHeader:
-            step === 1
-              ? "You're already at the first step!"
-              : 'Need an extra step?',
+          actionModalHeader: 'Need an extra step?',
           actionModalContent: (
             <AddExtraStepModalContent
-              isAtTheFirstStep={step === 1}
               onCancel={handleCloseActionModal}
               onConfirm={handleUseAddExtraPowerUp}
             />
@@ -693,8 +809,8 @@ const GameScreen: FC = () => {
           actionModalContent: (
             <PowerUpModalContent
               onCancel={handleCloseActionModal}
-              onConfirm={EMPTY_FUNCTION}
-              type={POWER_UP_TYPE.Plus}
+              onConfirm={handleChangeBlocksValuePowerUpPressed}
+              type={POWER_UP_TYPE.AddRandomBlocks}
             />
           ),
           actionModalColor: MODAL_TYPE.Green,
@@ -706,8 +822,8 @@ const GameScreen: FC = () => {
           actionModalContent: (
             <PowerUpModalContent
               onCancel={handleCloseActionModal}
-              onConfirm={EMPTY_FUNCTION}
-              type={POWER_UP_TYPE.Minus}
+              onConfirm={handleChangeBlocksValuePowerUpPressed}
+              type={POWER_UP_TYPE.RemoveRandomBlocks}
             />
           ),
           actionModalColor: MODAL_TYPE.Green,
@@ -767,6 +883,7 @@ const GameScreen: FC = () => {
       handleResetLevelPressed,
       step,
       handleUseAddExtraPowerUp,
+      handleChangeBlocksValuePowerUpPressed,
       initialBlockValue,
       handleLevelConditionsConfirm,
       prize,
@@ -814,7 +931,7 @@ const GameScreen: FC = () => {
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setTimeout(() => {
-      if (scrollViewRef?.current && focusedTower === TOWER.Second) {
+      if (scrollViewRef?.current && focusedTower === TOWER.SecondTower) {
         const scrolledPosition =
           (initialBlockValue - userBlockValue) * BLOCK_DIMENSION
         scrollViewRef.current.scrollTo({
@@ -832,7 +949,7 @@ const GameScreen: FC = () => {
     if (
       scrollViewRef?.current &&
       initialBlockValue &&
-      focusedTower === TOWER.First
+      focusedTower === TOWER.FirstTower
     ) {
       scrollViewRef.current.scrollToEnd()
     }
@@ -856,7 +973,7 @@ const GameScreen: FC = () => {
         <Header
           level={level}
           onAddExtraStepPress={handleAddExtraStepPress}
-          onHomePress={() => handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)}
+          onHomePress={() => handleOpenActionModal(GAME_MODAL_TYPE.Home)}
           onRandomAddBlockPress={handleRandomAddBlockPress}
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
           onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
@@ -914,7 +1031,7 @@ const GameScreen: FC = () => {
                 <BlockTowerCreator
                   isScaled={isScaledTower}
                   quantity={initialBlockValue}
-                  type={TOWER.First}
+                  type={TOWER.FirstTower}
                 />
               </View>
             )}
@@ -946,7 +1063,7 @@ const GameScreen: FC = () => {
                 <BlockTowerCreator
                   onAnimatedEnd={handleBlockTowerCreatingEnd}
                   quantity={userBlockValue}
-                  type={TOWER.Second}
+                  type={TOWER.SecondTower}
                 />
               </View>
             )}
@@ -982,11 +1099,12 @@ const GameScreen: FC = () => {
         onPress={handleNextStepPress}
       />
       <WheelOfFortuneModal
-        initialResult={initTowerStart}
-        isVisible={initBuildTowerModalData.isVisible}
-        onFinish={initTowerCallBack}
-        sectors={initTowerSectors}
-        setIsVisible={setInitBuildTowerModalData}
+        initialResult={fortuneWheelModalData.start}
+        isVisible={fortuneWheelModalData.isVisible}
+        onFinish={fortuneWheelCallBack}
+        sectors={fortuneWheelModalData.sectors}
+        setIsVisible={setFortuneWheelModalData}
+        type={fortuneWheelModalData.type}
       />
       <OptionModal
         changeOption={handleChangeOption}

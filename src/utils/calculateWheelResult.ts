@@ -1,11 +1,16 @@
 import { OPERATOR } from '@types'
 
-export const calculateWheelResult = (
-  value: number,
+export const calculateWheelResult = ({
+  value,
+  operation,
+  defaultOperation = false,
+}: {
+  value: number
   operation: string
-): number => {
-  const operator = operation.charAt(0) as OPERATOR
-  const operand = parseFloat(operation.slice(1))
+  defaultOperation?: OPERATOR | false
+}): number => {
+  const operator = defaultOperation || (operation.charAt(0) as OPERATOR)
+  const operand = parseFloat(defaultOperation ? operation : operation.slice(1))
 
   switch (operator) {
     case OPERATOR.Plus:

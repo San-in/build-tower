@@ -1,5 +1,6 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { PowerUpIcon } from '@components/molecules/PowerUpIcon'
+import { POWER_UP_BLOCK_MANIPULATION_LIMITS } from '@constants'
 import { useAppSelector } from '@store/hooks'
 import { COLORS } from '@theme'
 import {
@@ -30,7 +31,7 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
   const [powerUp, setPowerUp] = useState<POWER_UP_GRADE | null>(null)
 
   const availablePowerUps = {
-    [POWER_UP_TYPE.Plus]: {
+    [POWER_UP_TYPE.AddRandomBlocks]: {
       [POWER_UP_GRADE.Bronze]: useAppSelector(
         ({ market }) => market[MARKET_PRODUCT.AddRandomBlocks_Bronze]
       ),
@@ -41,7 +42,7 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
         ({ market }) => market[MARKET_PRODUCT.AddRandomBlocks_Gold]
       ),
     },
-    [POWER_UP_TYPE.Minus]: {
+    [POWER_UP_TYPE.RemoveRandomBlocks]: {
       [POWER_UP_GRADE.Bronze]: useAppSelector(
         ({ market }) => market[MARKET_PRODUCT.RemoveRandomBlocks_Bronze]
       ),
@@ -69,14 +70,8 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
 Get some in the MonkeyMarket.`
     }
 
-    return {
-      [POWER_UP_GRADE.Bronze]: `Bronze card will ${type === POWER_UP_TYPE.Plus ? 'ADD' : 'REMOVE'} 
-between 1 and 10 random blocks`,
-      [POWER_UP_GRADE.Silver]: `Silver card will ${type === POWER_UP_TYPE.Plus ? 'ADD' : 'REMOVE'} 
-between 1 and 7 random blocks`,
-      [POWER_UP_GRADE.Gold]: `Gold card will ${type === POWER_UP_TYPE.Plus ? 'ADD' : 'REMOVE'} 
-between 1 and 4 random blocks`,
-    }[powerUp]
+    return `${powerUp} card will ${type === POWER_UP_TYPE.AddRandomBlocks ? 'ADD' : 'REMOVE'} 
+    ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].max} random blocks`
   }
 
   const getHeaderBackground = (
@@ -175,7 +170,7 @@ between 1 and 4 random blocks`,
         <Button
           buttonContainerStyle={styles.buttonContent}
           isDisabled={!isSelectedPowerUpAvailable}
-          onPress={onConfirm}
+          onPress={() => onConfirm({ grade: powerUp, type })}
           style={styles.button}
           textSize={15}
           title={'OK'}

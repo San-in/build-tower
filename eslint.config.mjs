@@ -102,7 +102,7 @@ export default defineConfig([
       'arrow-body-style': ['error', 'as-needed'],
       'max-len': [
         'error',
-        { 'code': 100, 'ignoreUrls': true, 'ignorePattern': '^import\\s.+\\sfrom\\s.+;$' },
+        { 'code': 140, 'ignoreUrls': true, 'ignorePattern': '^import\\s.+\\sfrom\\s.+;$' },
       ],  
       '@typescript-eslint/member-ordering': ['error'],  
       'no-nested-ternary': 'error',  

@@ -1,6 +1,11 @@
 import { FC, SVGProps } from 'react'
 
-import { LEVEL_DIFFICULTY, OPERATOR } from './enums'
+import {
+  FORTUNE_WHEEL_MODAL_TYPE,
+  LEVEL_DIFFICULTY,
+  OPERATOR,
+  POWER_UP_TYPE,
+} from './enums'
 
 export const isKeyOfEnum = <T extends Record<string, string>>(
   key: string,
@@ -17,6 +22,18 @@ export type Country = {
 export type OptionValue = {
   number: number
   operator: OPERATOR | null
+}
+
+export type PowerUpActiveActionModalState = {
+  number: number
+  type: POWER_UP_TYPE | null
+}
+
+export type FortuneWheelModalState = {
+  type: FORTUNE_WHEEL_MODAL_TYPE
+  isVisible: boolean
+  sectors: Array<string>
+  start: number
 }
 type TowerConfig = {
   start: number

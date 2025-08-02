@@ -44,6 +44,7 @@ const INITIAL_COLORS = [
   COLORS.gradientRed_1,
   COLORS.lightGreen,
   COLORS.aqua,
+  COLORS.collar,
 ]
 
 const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(

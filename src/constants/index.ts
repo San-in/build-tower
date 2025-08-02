@@ -1,5 +1,11 @@
 import { CAFlagIcon, USAFlagIcon } from '@assets/icons/flags'
-import { Country, LEVEL_DIFFICULTY, LevelConfig, LevelId } from '@types'
+import {
+  Country,
+  LEVEL_DIFFICULTY,
+  LevelConfig,
+  LevelId,
+  POWER_UP_GRADE,
+} from '@types'
 
 export const TOTAL_LEVELS = 30
 export const LEVEL_CARD_WIDTH = 200
@@ -949,3 +955,18 @@ export const COUNTRY_LIST: Array<Country> = [
 ]
 
 export const EMPTY_FUNCTION = () => {}
+
+export const POWER_UP_BLOCK_MANIPULATION_LIMITS = {
+  [POWER_UP_GRADE.Gold]: {
+    min: 1,
+    max: 10,
+  },
+  [POWER_UP_GRADE.Silver]: {
+    min: 1,
+    max: 7,
+  },
+  [POWER_UP_GRADE.Bronze]: {
+    min: 1,
+    max: 4,
+  },
+}

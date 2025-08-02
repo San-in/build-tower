@@ -4,7 +4,7 @@ import { WheelOfFortune } from '@components/organisms/WheelOfFortune'
 import { WheelOfFortuneRef } from '@components/organisms/WheelOfFortune/WheelOfFortune.types'
 import { INITIAL_SPIN_QUANTITY } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
-import { BUTTON_TYPE } from '@types'
+import { BUTTON_TYPE, OPERATOR, POWER_UP_TYPE, TOWER } from '@types'
 import { calculateWheelResult, generateRandomNumber } from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -21,6 +21,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   initialResult,
   sectors,
   additionalAttemptCost = 5,
+  type,
 }) => {
   const wheelRef = useRef<WheelOfFortuneRef>(null)
   const [spinCounter, setSpinCounter] = useState<number>(INITIAL_SPIN_QUANTITY)
@@ -37,29 +38,29 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     () => spinCounter < INITIAL_SPIN_QUANTITY && spinCounter,
     [spinCounter]
   )
+  const isTowerManipulationType = useMemo(
+    () => type === TOWER.FirstTower || type === TOWER.SecondTower,
+    [type]
+  )
 
-  useEffect(() => {
-    setWinnerIndex((prevState) =>
-      generateRandomNumber({
-        min: 0,
-        max: sectors.length - 1,
-        exceptions: prevState !== null ? [prevState] : [],
-      })
-    )
-  }, [sectors.length])
-
-  useEffect(() => {
-    if (shouldSpinWheel && winnerIndex !== null) {
-      wheelRef.current?.spin()
-    }
-  }, [shouldSpinWheel, winnerIndex])
+  const initialPrice = useMemo(
+    () =>
+      isTowerManipulationType
+        ? additionalAttemptCost
+        : additionalAttemptCost * 2,
+    [additionalAttemptCost, isTowerManipulationType]
+  )
 
   const wheelResult = useMemo(
     () =>
       wheelWinnerSector && initialResult
-        ? calculateWheelResult(initialResult, wheelWinnerSector)
+        ? calculateWheelResult({
+            value: initialResult,
+            operation: wheelWinnerSector,
+            defaultOperation: !isTowerManipulationType && OPERATOR.Multiply,
+          })
         : 0,
-    [wheelWinnerSector, initialResult]
+    [wheelWinnerSector, initialResult, isTowerManipulationType]
   )
 
   const handleClose = () => {
@@ -121,11 +122,69 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setIsFirstSpinFinished(true)
   }
 
+  const renderTitle = useCallback(
+    () =>
+      isTowerManipulationType ? (
+        <>
+          <View style={styles.headerContent}>
+            <View style={styles.initialResultContainer}>
+              <OutlinedText fontSize={25}>You start from</OutlinedText>
+              <OutlinedText
+                color={COLORS.gradientGold_1}
+                fontSize={45}
+                strokeColor={COLORS.gradientBronze_1}
+              >{`${initialResult}`}</OutlinedText>
+            </View>
+            <BlockIcon />
+          </View>
+          <OutlinedText fontSize={25}>Spin for building tower</OutlinedText>
+        </>
+      ) : (
+        <>
+          <View style={styles.headerContent}>
+            <OutlinedText fontSize={25}>Spin the wheel</OutlinedText>
+          </View>
+          <OutlinedText fontSize={25}>to find how many blocks to</OutlinedText>
+          <View style={styles.headerPowerUpContainer}>
+            <OutlinedText
+              color={COLORS.gradientGold_1}
+              fontSize={45}
+              strokeColor={COLORS.gradientBronze_1}
+            >{`${type === POWER_UP_TYPE.RemoveRandomBlocks ? 'REMOVE' : 'ADD'}`}</OutlinedText>
+            <BlockIcon />
+          </View>
+          {type === POWER_UP_TYPE.RemoveRandomBlocks && (
+            <OutlinedText fontSize={14}>
+              (at least 1 block will remain)
+            </OutlinedText>
+          )}
+        </>
+      ),
+
+    [initialResult, isTowerManipulationType, type]
+  )
+
   useEffect(() => {
     if (shouldReset) {
       setTimeout(handleReset, 1000)
     }
   }, [handleReset, shouldReset])
+
+  useEffect(() => {
+    if (shouldSpinWheel && winnerIndex !== null) {
+      wheelRef.current?.spin()
+    }
+  }, [shouldSpinWheel, winnerIndex])
+
+  useEffect(() => {
+    setWinnerIndex((prevState) =>
+      generateRandomNumber({
+        min: 0,
+        max: sectors.length - 1,
+        exceptions: prevState !== null ? [prevState] : [],
+      })
+    )
+  }, [sectors.length])
 
   return (
     <Modal
@@ -157,28 +216,16 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           style={styles.header}
           transition={{ type: 'timing', duration: 500 }}
         >
-          <View style={styles.headerContentContainer}>
-            <View style={styles.headerContent}>
-              {initialResult && (
-                <View style={styles.initialResultContainer}>
-                  <OutlinedText fontSize={25}>You start from</OutlinedText>
-                  <OutlinedText
-                    color={COLORS.gradientGold_1}
-                    fontSize={45}
-                    strokeColor={COLORS.gradientBronze_1}
-                  >{`${initialResult}`}</OutlinedText>
-                </View>
-              )}
-              <BlockIcon />
-            </View>
-            <OutlinedText fontSize={25}>Spin for building tower</OutlinedText>
-          </View>
+          <View style={styles.headerContentContainer}>{renderTitle()}</View>
           {winnerIndex !== null && (
             <WheelOfFortune
               onFinish={handleWheelFortuneFinish}
               ref={wheelRef}
               result={wheelResult}
               sectors={sectors}
+              {...(!isTowerManipulationType && {
+                textStyle: styles.increasedSectorValues,
+              })}
               winnerIndex={winnerIndex}
             />
           )}
@@ -202,7 +249,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
               <View style={styles.buttonsContainer}>
                 <Button
                   buttonContainerStyle={styles.buttonContent}
-                  isDisabled={!spinCounter}
+                  isDisabled={!spinCounter || !wheelWinnerSector}
                   onPress={handleOpenTryAgainModal}
                   style={styles.button}
                   title="TRY AGAIN"
@@ -229,7 +276,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
         </MotiView>
         <UnlockOptionModal
           attempt={spinCounter}
-          initialPrice={additionalAttemptCost}
+          initialPrice={initialPrice}
           onClose={handleCloseTryAgainModal}
           onConfirm={handleTryAgain}
           visible={tryAgainModalVisible}

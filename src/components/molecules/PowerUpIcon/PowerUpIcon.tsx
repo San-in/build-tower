@@ -15,8 +15,8 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
   textSize = 40,
 }) => {
   const powerUpType = {
-    [POWER_UP_TYPE.Plus]: '+',
-    [POWER_UP_TYPE.Minus]: '-',
+    [POWER_UP_TYPE.AddRandomBlocks]: '+',
+    [POWER_UP_TYPE.RemoveRandomBlocks]: '-',
   }[type]
 
   const borderColor = {
@@ -26,13 +26,13 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
   }[color]
 
   const containerGradient: readonly [string, string, ...Array<string>] = {
-    [POWER_UP_TYPE.Plus]: [
+    [POWER_UP_TYPE.AddRandomBlocks]: [
       COLORS.gradientGreen_1,
       COLORS.gradientGreen_2,
       COLORS.gradientGreen_3,
       COLORS.gradientGreen_1,
     ],
-    [POWER_UP_TYPE.Minus]: [
+    [POWER_UP_TYPE.RemoveRandomBlocks]: [
       COLORS.gradientRed_1,
       COLORS.gradientRed_2,
       COLORS.gradientRed_3,

@@ -16,13 +16,13 @@ export enum LEVEL_DIFFICULTY {
 }
 
 export enum MARKET_PRODUCT {
-  AddExtraStep = 'addExtraStep',
-  AddRandomBlocks_Bronze = 'addRandomBlocks_bronze',
-  AddRandomBlocks_Silver = 'addRandomBlocks_silver',
-  AddRandomBlocks_Gold = 'addRandomBlocks_gold',
-  RemoveRandomBlocks_Bronze = 'removeRandomBlocks_bronze',
-  RemoveRandomBlocks_Silver = 'removeRandomBlocks_silver',
-  RemoveRandomBlocks_Gold = 'removeRandomBlocks_gold',
+  AddExtraStep = 'AddExtraStep',
+  AddRandomBlocks_Bronze = 'AddRandomBlocks_bronze',
+  AddRandomBlocks_Silver = 'AddRandomBlocks_silver',
+  AddRandomBlocks_Gold = 'AddRandomBlocks_gold',
+  RemoveRandomBlocks_Bronze = 'RemoveRandomBlocks_bronze',
+  RemoveRandomBlocks_Silver = 'RemoveRandomBlocks_silver',
+  RemoveRandomBlocks_Gold = 'RemoveRandomBlocks_gold',
 }
 
 export enum INFO_UNLOCK_OPTION_MODAL_KEY {
@@ -38,6 +38,7 @@ export enum GAME_MODAL_TYPE {
   Reset = 'Reset ',
   AddBlocks = 'AddBlocks',
   RemoveBlocks = 'RemoveBlocks',
+  RemoveBlocksWarning = 'RemoveBlocksWarning',
   PowerUpWarning = 'PowerUpWarning',
   LevelConditions = 'LevelConditions',
   LevelResult = 'LevelResult',
@@ -56,8 +57,8 @@ export enum POWER_UP_GRADE {
 }
 
 export enum POWER_UP_TYPE {
-  Plus = 'Plus',
-  Minus = 'Minus',
+  AddRandomBlocks = 'AddRandomBlocks',
+  RemoveRandomBlocks = 'RemoveRandomBlocks',
 }
 
 export enum OPERATOR {
@@ -68,9 +69,11 @@ export enum OPERATOR {
 }
 
 export enum TOWER {
-  First = 'First',
-  Second = 'Second',
+  FirstTower = 'First',
+  SecondTower = 'Second',
 }
+
+export type FORTUNE_WHEEL_MODAL_TYPE = TOWER | POWER_UP_TYPE
 
 export enum GAME_SCREEN_SUCCESS_ACTION {
   ResetSteps = 'ResetSteps',

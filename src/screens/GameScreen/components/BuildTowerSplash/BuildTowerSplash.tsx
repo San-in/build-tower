@@ -17,13 +17,13 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
   }
 
   const buttonLabel = {
-    [TOWER.First]: 'BUILD 1ST TOWER',
-    [TOWER.Second]: 'BUILD 2ND TOWER',
+    [TOWER.FirstTower]: 'BUILD 1ST TOWER',
+    [TOWER.SecondTower]: 'BUILD 2ND TOWER',
   }[tower]
 
   const imageSource = {
-    [TOWER.First]: require('../../../../../assets/images/monkey-constructor-1.png'),
-    [TOWER.Second]: require('../../../../../assets/images/monkey-constructor-2.png'),
+    [TOWER.FirstTower]: require('../../../../../assets/images/monkey-constructor-1.png'),
+    [TOWER.SecondTower]: require('../../../../../assets/images/monkey-constructor-2.png'),
   }[tower]
 
   return (
@@ -34,7 +34,7 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
         style={[
           styles.image,
           {
-            transform: [{ translateY: tower === TOWER.First ? 65 : 75 }],
+            transform: [{ translateY: tower === TOWER.FirstTower ? 65 : 75 }],
           },
         ]}
       />
@@ -42,7 +42,9 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
         onPress={handlePressButton}
         style={styles.button}
         title={buttonLabel}
-        type={tower === TOWER.First ? BUTTON_TYPE.Warning : BUTTON_TYPE.Success}
+        type={
+          tower === TOWER.FirstTower ? BUTTON_TYPE.Warning : BUTTON_TYPE.Success
+        }
       />
     </ShadowWrapper>
   )

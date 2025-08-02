@@ -27,11 +27,19 @@ export const styles = StyleSheet.create({
   },
   headerContent: { alignItems: 'center', flexDirection: 'row' },
   headerContentContainer: { alignItems: 'center', gap: 10, marginBottom: 30 },
+  headerPowerUpContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+  },
   imageContainer: {
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center',
     width: '100%',
+  },
+  increasedSectorValues: {
+    fontSize: 32,
   },
   initialResultContainer: {
     alignItems: 'center',
