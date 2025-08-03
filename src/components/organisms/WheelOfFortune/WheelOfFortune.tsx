@@ -117,7 +117,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
       Animated.timing(angle, {
         toValue: finalRotation,
-        duration: 6000,
+        duration: 3000,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }).start(() => {

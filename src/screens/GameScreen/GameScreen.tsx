@@ -916,6 +916,7 @@ const GameScreen: FC = () => {
       !isTowerBuilding
     ) {
       setTimeout(async () => {
+        setIsInterfacesVisible(false)
         await handleLevelFinished({ prize, stars: 3 })
       }, 500)
     }
