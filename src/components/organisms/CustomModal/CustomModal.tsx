@@ -3,8 +3,8 @@ import { OutlinedText } from '@components/atoms'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Image } from 'moti'
-import { FC } from 'react'
+import { Image, MotiView } from 'moti'
+import { FC, useEffect, useState } from 'react'
 import { ImageBackground, Modal, Pressable, View } from 'react-native'
 
 import { styles } from './CustomModal.styles'
@@ -19,6 +19,22 @@ const CustomModal: FC<CustomModalProps> = ({
   containerStyles = {},
   withCrossIcon = true,
 }) => {
+  const [isModalShacked, setIsModalShacked] = useState(false)
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+
+    if (modalVisible) {
+      timeout = setTimeout(() => {
+        setIsModalShacked(true)
+      }, 800)
+    } else {
+      setIsModalShacked(false)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [modalVisible])
+
   const backgroundImage = {
     [MODAL_TYPE.Orange]: require('../../../../assets/images/modal-border-orange.png'),
     [MODAL_TYPE.Green]: require('../../../../assets/images/modal-border-green.png'),
@@ -69,7 +85,18 @@ const CustomModal: FC<CustomModalProps> = ({
       visible={modalVisible}
     >
       <View style={[GlobalStyles.centeredContainer, styles.background]}>
-        <View style={[styles.container, containerStyles]}>
+        <MotiView
+          animate={{
+            scale:
+              !isModalShacked && modalVisible ? [1, 1.02, 0.98, 1.02, 1] : 1,
+          }}
+          from={{ scale: 1 }}
+          style={[styles.container, containerStyles]}
+          transition={{
+            type: 'timing',
+            duration: 30,
+          }}
+        >
           <Image
             resizeMode={'contain'}
             source={require('../../../../assets/images/monkey-modal.png')}
@@ -109,7 +136,7 @@ const CustomModal: FC<CustomModalProps> = ({
               </View>
             </LinearGradient>
           </ImageBackground>
-        </View>
+        </MotiView>
       </View>
     </Modal>
   )

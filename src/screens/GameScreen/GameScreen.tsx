@@ -247,7 +247,7 @@ const GameScreen: FC = () => {
       isVisible: false,
     }))
 
-  const handleCloseResetStepsModal = () => () => {
+  const handleCloseResetStepsModal = () => {
     setResetStepsModalData((prevState) => ({
       ...prevState,
       isVisible: false,
@@ -392,6 +392,18 @@ const GameScreen: FC = () => {
     }
 
     handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocks)
+  }
+  const handleHomeButtonPress = () => {
+    if (!isInterfacesVisible) {
+      return
+    }
+    handleOpenActionModal(GAME_MODAL_TYPE.Home)
+  }
+  const handleResetButtonPress = () => {
+    if (!isInterfacesVisible) {
+      return
+    }
+    handleOpenActionModal(GAME_MODAL_TYPE.Reset)
   }
 
   const handleAddExtraStepPress = () => {
@@ -603,7 +615,7 @@ const GameScreen: FC = () => {
     }, 1000)
   }, [handleCloseActionModal])
 
-  const handlePressCloseResetStepsModal = () => () => {
+  const handlePressCloseResetStepsModal = () => {
     handleCloseResetStepsModal()
     handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
   }
@@ -974,10 +986,10 @@ const GameScreen: FC = () => {
         <Header
           level={level}
           onAddExtraStepPress={handleAddExtraStepPress}
-          onHomePress={() => handleOpenActionModal(GAME_MODAL_TYPE.Home)}
+          onHomePress={handleHomeButtonPress}
           onRandomAddBlockPress={handleRandomAddBlockPress}
           onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
-          onResetPress={() => handleOpenActionModal(GAME_MODAL_TYPE.Reset)}
+          onResetPress={handleResetButtonPress}
         />
         {isInterfacesVisible && !isOutOfAttempts && (
           <View style={styles.progressBadgeContainer}>

@@ -43,6 +43,8 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     [type]
   )
 
+  const [isModalShacked, setIsModalShacked] = useState(false)
+
   const initialPrice = useMemo(
     () =>
       isTowerManipulationType
@@ -66,6 +68,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   const handleClose = () => {
     setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
     setShouldReset(true)
+    setIsModalShacked(false)
   }
 
   const handleTryAgain = async () => {
@@ -104,6 +107,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setTryAgainModalVisible(true)
   }
   const handleSpinPress = () => {
+    setIsModalShacked(true)
     setIsSpinButtonDisabled(true)
     setShouldSpinWheel(true)
   }
@@ -193,8 +197,22 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
       transparent={true}
       visible={isVisible}
     >
-      <View
+      <MotiView
+        animate={{
+          backgroundColor: [
+            COLORS.codeGrey70,
+            COLORS.codeGrey80,
+            COLORS.codeGrey90,
+            COLORS.codeGrey,
+          ],
+        }}
+        from={{ backgroundColor: COLORS.codeGrey90 }}
         style={[GlobalStyles.centeredContainer, styles.backgroundContainer]}
+        transition={{
+          type: 'timing',
+          duration: 1500,
+          loop: true,
+        }}
       >
         <SuccessActionInfoModal
           isVisible={isWheelModalResultVisible}
@@ -217,19 +235,28 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           transition={{ type: 'timing', duration: 500 }}
         >
           <View style={styles.headerContentContainer}>{renderTitle()}</View>
-          {winnerIndex !== null && (
-            <WheelOfFortune
-              onFinish={handleWheelFortuneFinish}
-              ref={wheelRef}
-              result={wheelResult}
-              sectors={sectors}
-              {...(!isTowerManipulationType && {
-                textStyle: styles.increasedSectorValues,
-              })}
-              winnerIndex={winnerIndex}
-            />
-          )}
-
+          <MotiView
+            animate={{
+              scale: !isModalShacked ? [1, 1.02, 0.98, 1.02, 1] : 1,
+            }}
+            from={{ scale: 1 }}
+            transition={{
+              scale: { type: 'timing', duration: 150 },
+            }}
+          >
+            {winnerIndex !== null && (
+              <WheelOfFortune
+                onFinish={handleWheelFortuneFinish}
+                ref={wheelRef}
+                result={wheelResult}
+                sectors={sectors}
+                {...(!isTowerManipulationType && {
+                  textStyle: styles.increasedSectorValues,
+                })}
+                winnerIndex={winnerIndex}
+              />
+            )}
+          </MotiView>
           <MotiView
             animate={{ opacity: isSpinCounterVisible ? 1 : 0 }}
             from={{ opacity: 0 }}
@@ -281,7 +308,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           onConfirm={handleTryAgain}
           visible={tryAgainModalVisible}
         />
-      </View>
+      </MotiView>
     </Modal>
   )
 }

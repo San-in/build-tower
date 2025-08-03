@@ -1,9 +1,7 @@
-import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   backgroundContainer: {
-    backgroundColor: COLORS.codeGrey90,
     position: 'relative',
   },
   bottom: {
