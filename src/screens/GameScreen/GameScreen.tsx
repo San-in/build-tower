@@ -12,7 +12,7 @@ import {
   LevelResultModalContent,
   PowerUpModalContent,
 } from '@components/organisms/CustomModal/components'
-import { EdgeGlowOverlay } from '@components/wrappers'
+import { EdgeGlowOverlay, Toast } from '@components/wrappers'
 import {
   BLOCK_DIMENSION,
   EMPTY_FUNCTION,
@@ -66,7 +66,6 @@ import {
   ScrollView,
   View,
 } from 'react-native'
-import Toast from 'react-native-toast-message'
 
 import { marketService } from '../../services/marketService'
 import {
@@ -418,6 +417,8 @@ const GameScreen: FC = () => {
       Toast.show({
         type: 'info',
         text1: "You're already at the first step!",
+        autoHide: true,
+        visibilityTime: 2000,
       })
       return
     }
@@ -603,21 +604,24 @@ const GameScreen: FC = () => {
       ...prevState,
       isVisible: false,
     }))
-    setSuccessActionInfoModalData({
-      isVisible: true,
-      type: GAME_SCREEN_SUCCESS_ACTION.ResetSteps,
-    })
+
     setTimeout(() => {
+      setSuccessActionInfoModalData({
+        isVisible: true,
+        type: GAME_SCREEN_SUCCESS_ACTION.ResetSteps,
+      })
       setResetStepsModalData((prevState) => ({
         ...prevState,
         attempt: prevState.attempt - 1,
       }))
-    }, 1000)
+    }, 800)
   }, [handleCloseActionModal])
 
   const handlePressCloseResetStepsModal = () => {
     handleCloseResetStepsModal()
-    handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
+    setTimeout(() => {
+      handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
+    }, 500)
   }
 
   const handleChangeOption = (newOption: SELECTED_OPTION) => {

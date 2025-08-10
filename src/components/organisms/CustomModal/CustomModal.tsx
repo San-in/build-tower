@@ -9,6 +9,7 @@ import { ImageBackground, Modal, Pressable, View } from 'react-native'
 
 import { styles } from './CustomModal.styles'
 import { CustomModalProps } from './CustomModal.types'
+const DELAY_TIME = 500
 
 const CustomModal: FC<CustomModalProps> = ({
   modalVisible,
@@ -20,20 +21,31 @@ const CustomModal: FC<CustomModalProps> = ({
   withCrossIcon = true,
 }) => {
   const [isModalShacked, setIsModalShacked] = useState(false)
+  const [shouldShake, setShouldShake] = useState(false)
 
   useEffect(() => {
     let timeout: NodeJS.Timeout
 
-    if (modalVisible) {
+    if (modalVisible && !isModalShacked) {
       timeout = setTimeout(() => {
         setIsModalShacked(true)
-      }, 800)
-    } else {
+      }, DELAY_TIME)
+    }
+    if (!modalVisible) {
       setIsModalShacked(false)
     }
-
     return () => clearTimeout(timeout)
-  }, [modalVisible])
+  }, [isModalShacked, modalVisible])
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (modalVisible) {
+      timeout = setTimeout(() => {
+        setShouldShake(!isModalShacked)
+      }, DELAY_TIME)
+    }
+    return () => clearTimeout(timeout)
+  }, [isModalShacked, modalVisible])
 
   const backgroundImage = {
     [MODAL_TYPE.Orange]: require('../../../../assets/images/modal-border-orange.png'),
@@ -87,14 +99,13 @@ const CustomModal: FC<CustomModalProps> = ({
       <View style={[GlobalStyles.centeredContainer, styles.background]}>
         <MotiView
           animate={{
-            scale:
-              !isModalShacked && modalVisible ? [1, 1.02, 0.98, 1.02, 1] : 1,
+            scale: shouldShake ? [1, 1.02, 0.98, 1.02, 1] : 1,
           }}
           from={{ scale: 1 }}
           style={[styles.container, containerStyles]}
           transition={{
             type: 'timing',
-            duration: 30,
+            duration: 100,
           }}
         >
           <Image
