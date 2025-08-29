@@ -1,3 +1,5 @@
+import { StarsGif } from '@assets/gifs'
+import { MonkeyNotification } from '@components/atoms'
 import { Header, MonkeyAnimation } from '@components/molecules'
 import {
   CustomModal,
@@ -29,6 +31,7 @@ import {
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
+import { COLORS } from '@theme'
 import {
   EDGE_GLOW_OVERLAY_TYPE,
   FortuneWheelModalState,
@@ -58,9 +61,19 @@ import {
   getValidOptionNumber,
   showIsUserNeedHelp,
 } from '@utils'
+import { Asset } from 'expo-asset'
 import { MotiView } from 'moti'
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  FC,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import {
+  Image,
   ImageBackground,
   LayoutAnimation,
   ScrollView,
@@ -89,6 +102,10 @@ import {
   INITIAL_SUCCESS_ACTION_MODAL_STATE,
 } from './constants'
 import { styles } from './GameScreen.styles'
+
+const groundImage = {
+  src: require('@assets/images/ground.png'),
+}
 
 const GameScreen: FC = () => {
   // HOOKS
@@ -121,6 +138,7 @@ const GameScreen: FC = () => {
   const [chosenOption, setChosenOption] = useState<SELECTED_OPTION>(
     SELECTED_OPTION.None
   )
+  const [isStarsGifVisible, setIsStarsGifVisible] = useState(false)
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
   const [isInterfacesVisible, setIsInterfacesVisible] = useState(false)
   const [isLevelFinished, setIsLevelFinished] = useState(false)
@@ -142,13 +160,14 @@ const GameScreen: FC = () => {
   const [successActionInfoModalData, setSuccessActionInfoModalData] = useState<
     ModalState<GAME_SCREEN_SUCCESS_ACTION>
   >(INITIAL_SUCCESS_ACTION_MODAL_STATE)
-
   const [powerUpActiveAction, setPowerUpActiveAction] =
     useState<PowerUpActiveActionModalState>(
       INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE
     )
-
+  const [isMonkeyNotificationVisible, setIsMonkeyNotificationVisible] =
+    useState(false)
   const [isTowerBuilding, setIsTowerBuilding] = useState(false)
+  const [assetsLoaded, setAssetsLoaded] = useState(false)
 
   // LOCAL CONSTANT
   const {
@@ -160,9 +179,28 @@ const GameScreen: FC = () => {
     prize,
   } = LEVEL_CONFIG[level]
 
+  const monkeyNotificationShowedSteps = useMemo(
+    () => generateRandomNumber({ min: 2, max: attempts }),
+    [attempts]
+  )
+
   const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
   ${monkeyAnimationData.isVisible}`
   const isOutOfAttempts = useMemo(() => step > attempts, [attempts, step])
+  const isLevelPrematurelyFinished = useMemo(
+    () =>
+      Boolean(
+        initialBlockValue &&
+          userBlockValue === initialBlockValue &&
+          !isTowerBuilding
+      ),
+    [initialBlockValue, isTowerBuilding, userBlockValue]
+  )
+
+  const assetsToPreload = useMemo(() => {
+    const backgroundImageSource = getLevelBackground(level)
+    return [backgroundImageSource, groundImage.src, StarsGif]
+  }, [level])
 
   // CALLBACKS WITHOUT DEPENDENCIES
   const handleResetLevel = useCallback(() => {
@@ -285,14 +323,17 @@ const GameScreen: FC = () => {
       prevState - number > 1 ? prevState - number : 1
     )
   }
+
   const handleAddUserBlocks = (number: number) => {
     setUserBlockValue((prevState) => prevState + number)
   }
+
   const handleDivisionUserBlocks = (number: number) => {
     setUserBlockValue((prevState) =>
       Math.round(prevState / number) > 1 ? Math.round(prevState / number) : 1
     )
   }
+
   const handleMultiplyUserBlocks = (number: number) => {
     setUserBlockValue((prevState) => prevState * number)
   }
@@ -319,9 +360,10 @@ const GameScreen: FC = () => {
     await handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
     setImmediate(() => {
       setStep((prevState) => Math.max(prevState - 1, 1))
-      Toast.show({
+      Toast({
         type: 'success',
         text1: 'Moved one step back!',
+        onHide: () => setIsStarsGifVisible(true),
       })
     })
   }, [handleCloseActionModal, handleRemovePowerUp])
@@ -377,7 +419,7 @@ const GameScreen: FC = () => {
   const handleRandomRemoveBlockPress = () => {
     if (!userBlockValue || userBlockValue <= 1) {
       if (userBlockValue <= 1) {
-        Toast.show({
+        Toast({
           type: 'info',
           text1: "Just 1 block left — can't remove more!",
         })
@@ -392,12 +434,14 @@ const GameScreen: FC = () => {
 
     handleOpenActionModal(GAME_MODAL_TYPE.RemoveBlocks)
   }
+
   const handleHomeButtonPress = () => {
     if (!isInterfacesVisible) {
       return
     }
     handleOpenActionModal(GAME_MODAL_TYPE.Home)
   }
+
   const handleResetButtonPress = () => {
     if (!isInterfacesVisible) {
       return
@@ -414,11 +458,9 @@ const GameScreen: FC = () => {
       return
     }
     if (step === 1) {
-      Toast.show({
+      Toast({
         type: 'info',
         text1: "You're already at the first step!",
-        autoHide: true,
-        visibilityTime: 2000,
       })
       return
     }
@@ -507,9 +549,18 @@ const GameScreen: FC = () => {
       setTimeout(() => handleOpenActionModal(GAME_MODAL_TYPE.LevelResult), 800)
       return
     }
+
+    if (monkeyNotificationShowedSteps === step && !isLevelPrematurelyFinished) {
+      setIsMonkeyNotificationVisible(true)
+    }
     handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Idle)
     setIsInterfacesVisible(true)
-  }, [isOutOfAttempts])
+  }, [
+    isOutOfAttempts,
+    monkeyNotificationShowedSteps,
+    step,
+    isLevelPrematurelyFinished,
+  ])
 
   const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
     if (isLevelFinished) {
@@ -925,25 +976,13 @@ const GameScreen: FC = () => {
   // useEffects
 
   useEffect(() => {
-    if (
-      initialBlockValue &&
-      userBlockValue === initialBlockValue &&
-      !isOutOfAttempts &&
-      !isTowerBuilding
-    ) {
+    if (!isOutOfAttempts && isLevelPrematurelyFinished) {
       setTimeout(async () => {
         setIsInterfacesVisible(false)
         await handleLevelFinished({ prize, stars: 3 })
       }, 500)
     }
-  }, [
-    handleLevelFinished,
-    initialBlockValue,
-    isOutOfAttempts,
-    isTowerBuilding,
-    prize,
-    userBlockValue,
-  ])
+  }, [handleLevelFinished, isLevelPrematurelyFinished, isOutOfAttempts, prize])
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -972,6 +1011,26 @@ const GameScreen: FC = () => {
     }
   }, [focusedTower, initialBlockValue])
 
+  useEffect(() => {
+    let timerId: number
+    if (isStarsGifVisible) {
+      timerId = setTimeout(() => setIsStarsGifVisible(false), 2000)
+    }
+    return () => clearTimeout(timerId)
+  }, [isStarsGifVisible])
+
+  useEffect(() => {
+    setAssetsLoaded(false)
+    Promise.all(
+      assetsToPreload.map((asset) => Asset.fromModule(asset).downloadAsync())
+    ).then(() => setAssetsLoaded(true))
+  }, [assetsToPreload, level])
+
+  // TODO: add a fancy preloader
+  if (!assetsLoaded) {
+    return <View />
+  }
+
   return (
     <>
       <ImageBackground
@@ -997,6 +1056,43 @@ const GameScreen: FC = () => {
         />
         {isInterfacesVisible && !isOutOfAttempts && (
           <View style={styles.progressBadgeContainer}>
+            <MotiView
+              animate={{ opacity: Number(isStarsGifVisible) }}
+              style={{
+                position: 'absolute',
+                left: -50,
+                top: -30,
+                zIndex: 5,
+                flexDirection: 'row',
+              }}
+              transition={{ type: 'timing', duration: 200, delay: 300 }}
+            >
+              {isStarsGifVisible && (
+                <>
+                  <Image
+                    source={StarsGif}
+                    style={{
+                      width: 100,
+                      height: 100,
+                    }}
+                  />
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      width: step * 50,
+                      height: 80,
+                      alignSelf: 'flex-end',
+                      marginLeft: -60,
+                      marginBottom: -5,
+                      borderRadius: 20,
+                      borderColor: COLORS.yellow40,
+                      backgroundColor: COLORS.yellow20,
+                    }}
+                  />
+                </>
+              )}
+            </MotiView>
+
             <StepBar
               animationKey={animationRestartKey}
               currentStep={step}
@@ -1151,6 +1247,12 @@ const GameScreen: FC = () => {
       <ResetStepsModal
         isVisible={successActionInfoModalData.isVisible}
         onPress={handleCloseSuccessActionModal}
+      />
+      <MonkeyNotification
+        current={userBlockValue}
+        goal={initialBlockValue}
+        onRequestClose={() => setIsMonkeyNotificationVisible(false)}
+        visible={isMonkeyNotificationVisible}
       />
     </>
   )

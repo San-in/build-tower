@@ -30,6 +30,7 @@ export default defineConfig([
       'simple-import-sort': simpleImportSort,
     },
     rules: {
+      "@typescript-eslint/no-require-imports": "off",
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
       '@typescript-eslint/no-unused-vars': 'error',

@@ -22,7 +22,7 @@ const createToast =
     </LinearGradient>
   )
 
-export const toastConfigObj = {
+export const toastConfig = {
   success: createToast([
     COLORS.gradientOrange_2,
     COLORS.gradientOrange_4,
@@ -43,4 +43,4 @@ export const toastConfigObj = {
   ]),
 }
 
-export default toastConfigObj
+export default toastConfig

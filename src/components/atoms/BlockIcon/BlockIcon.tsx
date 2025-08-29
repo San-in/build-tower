@@ -1,18 +1,32 @@
 import { BlockIconProps } from '@components/atoms/BlockIcon/BlockIcon.types'
+import { GlobalStyles } from '@theme'
 import { BLOCK_TYPE } from '@types'
-import { FC, memo } from 'react'
-import { ImageBackground, View } from 'react-native'
+import { Asset } from 'expo-asset'
+import { FC, memo, useEffect, useState } from 'react'
+import { ActivityIndicator, ImageBackground, View } from 'react-native'
 
 import { styles } from './BlockIcon.styles'
+
+const blockImage = {
+  src: require('@assets/images/block.png'),
+}
 
 const BlockIcon: FC<BlockIconProps> = ({
   size = 40,
   styleContainer = {},
   type = BLOCK_TYPE.Basic,
 }) => {
+  const [imagesLoaded, setImagesLoaded] = useState(false)
   const imageSource = {
-    [BLOCK_TYPE.Basic]: require('../../../../assets/images/block.png'),
+    [BLOCK_TYPE.Basic]: blockImage,
   }[type]
+
+  useEffect(() => {
+    setImagesLoaded(false)
+    Asset.fromModule(imageSource.src)
+      .downloadAsync()
+      .then(() => setImagesLoaded(true))
+  }, [imageSource])
 
   return (
     <View
@@ -25,11 +39,13 @@ const BlockIcon: FC<BlockIconProps> = ({
         styleContainer,
       ]}
     >
-      <ImageBackground
-        resizeMode="cover"
-        source={imageSource}
-        style={styles.image}
-      />
+      {imagesLoaded && (
+        <ImageBackground
+          resizeMode="cover"
+          source={imageSource.src}
+          style={styles.image}
+        />
+      )}
     </View>
   )
 }

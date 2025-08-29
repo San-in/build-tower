@@ -20,13 +20,12 @@ export const styles = StyleSheet.create({
   },
   container: {
     maxWidth: '90%',
-    position: 'relative',
   },
   contentContainer: {
     alignItems: 'center',
     gap: 16,
     overflow: 'hidden',
-    padding: 20,
+    padding: 15,
     width: '100%',
   },
   gradientContainer: {

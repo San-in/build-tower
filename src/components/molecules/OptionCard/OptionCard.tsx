@@ -10,10 +10,10 @@ import { OptionCardProps } from './OptionCard.types'
 
 const OptionCard: FC<OptionCardProps> = ({ onPress, value, operator }) => {
   const backgroundImage = {
-    [OPERATOR.Minus]: require('../../../../assets/images/modal-border-minus.png'),
-    [OPERATOR.Plus]: require('../../../../assets/images/modal-border-plus.png'),
-    [OPERATOR.Multiply]: require('../../../../assets/images/modal-border-multiply.png'),
-    [OPERATOR.Division]: require('../../../../assets/images/modal-border-divide.png'),
+    [OPERATOR.Minus]: require('../../../../assets/images/modal-border-minus.webp'),
+    [OPERATOR.Plus]: require('../../../../assets/images/modal-border-plus.webp'),
+    [OPERATOR.Multiply]: require('../../../../assets/images/modal-border-multiply.webp'),
+    [OPERATOR.Division]: require('../../../../assets/images/modal-border-divide.webp'),
   }[operator]
 
   const backgroundGradient: readonly [string, string, ...Array<string>] = {

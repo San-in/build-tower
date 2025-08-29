@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   levelConditionModalContainer: {
+    alignItems: 'center',
     alignSelf: 'flex-end',
     maxWidth: '76%',
     minWidth: 275,

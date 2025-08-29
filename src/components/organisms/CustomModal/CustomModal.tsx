@@ -2,6 +2,7 @@ import { CloseCrossIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
+import { Asset } from 'expo-asset'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Image, MotiView } from 'moti'
 import { FC, useEffect, useState } from 'react'
@@ -9,7 +10,19 @@ import { ImageBackground, Modal, Pressable, View } from 'react-native'
 
 import { styles } from './CustomModal.styles'
 import { CustomModalProps } from './CustomModal.types'
-const DELAY_TIME = 500
+
+const monkeyImage = {
+  src: require('@assets/images/monkey-modal.png'),
+}
+
+const SHAKE_INTERVAL = 5000
+
+const backgroundImageSrc = {
+  [MODAL_TYPE.Orange]: require('@assets/images/modal-border-orange.webp'),
+  [MODAL_TYPE.Green]: require('@assets/images/modal-border-green.webp'),
+  [MODAL_TYPE.Purple]: require('@assets/images/modal-border-purple.webp'),
+  [MODAL_TYPE.Blue]: require('@assets/images/modal-border-blue.webp'),
+}
 
 const CustomModal: FC<CustomModalProps> = ({
   modalVisible,
@@ -20,39 +33,28 @@ const CustomModal: FC<CustomModalProps> = ({
   containerStyles = {},
   withCrossIcon = true,
 }) => {
-  const [isModalShacked, setIsModalShacked] = useState(false)
   const [shouldShake, setShouldShake] = useState(false)
-
+  const [imagesLoaded, setImagesLoaded] = useState(false)
   useEffect(() => {
-    let timeout: NodeJS.Timeout
+    let interval = 0
 
-    if (modalVisible && !isModalShacked) {
-      timeout = setTimeout(() => {
-        setIsModalShacked(true)
-      }, DELAY_TIME)
-    }
-    if (!modalVisible) {
-      setIsModalShacked(false)
-    }
-    return () => clearTimeout(timeout)
-  }, [isModalShacked, modalVisible])
-
-  useEffect(() => {
-    let timeout: NodeJS.Timeout
     if (modalVisible) {
-      timeout = setTimeout(() => {
-        setShouldShake(!isModalShacked)
-      }, DELAY_TIME)
+      interval = setInterval(() => {
+        setShouldShake(true)
+        setTimeout(() => setShouldShake(false), 300) // shake duration
+      }, SHAKE_INTERVAL)
+    } else {
+      setShouldShake(false)
     }
-    return () => clearTimeout(timeout)
-  }, [isModalShacked, modalVisible])
 
-  const backgroundImage = {
-    [MODAL_TYPE.Orange]: require('../../../../assets/images/modal-border-orange.png'),
-    [MODAL_TYPE.Green]: require('../../../../assets/images/modal-border-green.png'),
-    [MODAL_TYPE.Purple]: require('../../../../assets/images/modal-border-purple.png'),
-    [MODAL_TYPE.Blue]: require('../../../../assets/images/modal-border-blue.png'),
-  }[type]
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [modalVisible])
+
+  const backgroundImage = backgroundImageSrc[type]
 
   const gradientColors: readonly [string, string, ...Array<string>] = {
     [MODAL_TYPE.Orange]: [
@@ -89,6 +91,22 @@ const CustomModal: FC<CustomModalProps> = ({
     ],
   }[type] as [string, string, ...Array<string>]
 
+  useEffect(() => {
+    if (!modalVisible) {
+      return
+    }
+
+    setImagesLoaded(false)
+    Promise.all([
+      Asset.fromModule(monkeyImage.src).downloadAsync(),
+      Asset.fromModule(backgroundImageSrc[type]).downloadAsync(),
+    ]).then(() => setImagesLoaded(true))
+  }, [modalVisible, type])
+
+  if (modalVisible && !imagesLoaded) {
+    return <View />
+  }
+
   return (
     <Modal
       animationType="fade"
@@ -110,7 +128,7 @@ const CustomModal: FC<CustomModalProps> = ({
         >
           <Image
             resizeMode={'contain'}
-            source={require('../../../../assets/images/monkey-modal.png')}
+            source={monkeyImage.src}
             style={styles.monkeyImage}
           />
           <ImageBackground

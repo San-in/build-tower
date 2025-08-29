@@ -1,6 +1,6 @@
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { GameScreen, WelcomeScreen } from '@screens'
+import { GameScreen, LevelsScreen, WelcomeScreen } from '@screens'
 import { SCREENS } from '@types'
 import React from 'react'
 
@@ -17,6 +17,11 @@ const GameStack = () => (
       component={GameScreen}
       name={SCREENS.GameScreen}
       options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      component={LevelsScreen}
+      name={SCREENS.LevelsScreen}
+      options={{ headerShown: false, animation: 'default' }}
     />
   </Stack.Navigator>
 )

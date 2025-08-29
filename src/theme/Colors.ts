@@ -153,6 +153,7 @@ export const COLORS = {
   yellow20: 'rgba(251,216,2,0.2)',
   yellow10: 'rgba(251,216,2,0.1)',
 
+  backgroundBlue: 'rgb(1,123,165)',
   brown: 'rgb(128,76,1)',
   lightBlue: 'rgb(3,188,239)',
   vividPurple: 'rgb(211,5,243)',

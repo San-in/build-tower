@@ -1,6 +1,7 @@
 export enum SCREENS {
   GameScreen = 'Game Screen',
   WelcomeScreen = 'Welcome Screen',
+  LevelsScreen = 'Levels Screen',
 }
 export enum BUTTON_TYPE {
   Success = 'Success',
@@ -114,4 +115,11 @@ export enum BLOCK_CREATOR_OPERATION {
 export enum EDGE_GLOW_OVERLAY_TYPE {
   Sides = 'sides',
   All = 'all',
+}
+
+export enum MONKEY_NOTIFICATION_STATUS {
+  TooLittleForWin = 'too_little_for_win',
+  TooMuchForWin = 'too_much_for_win',
+  CloseToWin = 'close_to_win',
+  Neutral = 'neutral',
 }

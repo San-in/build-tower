@@ -1,14 +1,10 @@
-import RNToast from 'react-native-toast-message'
+import Toast, { ToastShowParams } from 'react-native-toast-message'
 
-const originalShow = RNToast.show
-
-RNToast.show = (options) => {
-  originalShow({
-    visibilityTime: 2000,
+const CustomToast = (options: ToastShowParams) =>
+  Toast.show({
+    visibilityTime: 1500,
     autoHide: true,
-    onPress: () => RNToast.hide(),
     ...options,
   })
-}
 
-export default RNToast
+export default CustomToast
