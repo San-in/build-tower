@@ -9,11 +9,12 @@ import { LevelCardProps } from '@components/molecules/LevelCard/LevelCard.types'
 import { LEVEL_NAMES } from '@constants'
 import { useAppSelector } from '@store/hooks'
 import { getLevelById, Level } from '@store/slices/levelsSlice'
-import { GlobalStyles } from '@theme'
+import { COLORS, GlobalStyles } from '@theme'
 import { getLevelIcon } from '@utils'
+import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
-import React, { FC, memo, useMemo } from 'react'
-import { Image, Pressable, View } from 'react-native'
+import React, { FC, memo, useCallback, useMemo, useState } from 'react'
+import { Pressable, StyleSheet, View } from 'react-native'
 
 import { styles } from './CardInner.styles'
 
@@ -23,6 +24,9 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
   const { isAvailable, stars, difficulty } = useAppSelector(
     selectLevel
   ) as Level
+
+  const iconSrc = isAvailable ? getLevelIcon(level) : closedLevelIcon
+  const recyclingKey = isAvailable ? `lvl-${level}` : 'lock'
 
   const containerGradient: readonly [string, string, ...Array<string>] =
     containerGradientMap[difficulty] as [string, string, ...Array<string>]
@@ -36,10 +40,9 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
     isSelectedLevel && isAvailable && containerShadow,
     isSelectedLevel && !isAvailable && styles.greyShadow,
   ].filter(Boolean)
-  if (level === 3) {
-    console.log(isSelectedLevel)
-    console.log(isAvailable)
-  }
+
+  const [bgReady, setBgReady] = useState(false)
+  const handleBgLoaded = useCallback(() => setBgReady(true), [])
 
   return (
     <Pressable onPress={onPress} style={containerStyles}>
@@ -66,10 +69,18 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
 
         <View style={styles.imageContainer}>
           <Image
-            resizeMode="cover"
-            source={isAvailable ? getLevelIcon(level) : closedLevelIcon}
-            style={styles.image}
+            allowDownscaling
+            cachePolicy="memory-disk"
+            contentFit="cover"
+            onLoadEnd={handleBgLoaded}
+            placeholder={isAvailable ? COLORS.yellow80 : COLORS.codeGrey50}
+            priority="high"
+            recyclingKey={recyclingKey}
+            source={iconSrc}
+            style={StyleSheet.absoluteFill}
+            transition={120}
           />
+          {!bgReady && <View style={StyleSheet.absoluteFill} />}
         </View>
 
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>

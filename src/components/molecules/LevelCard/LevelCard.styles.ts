@@ -14,5 +14,5 @@ export const styles = StyleSheet.create({
   purpleBorder: { borderColor: COLORS.gradientPurple_1 },
   purpleShadow: { shadowColor: COLORS.gradientPurple_5 },
   selectedWrapper: { borderColor: COLORS.codeGrey, borderWidth: 2 },
-  wrapper: { borderRadius: 16 },
+  wrapper: { borderRadius: 18 },
 })

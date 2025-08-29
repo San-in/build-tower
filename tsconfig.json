@@ -53,6 +53,9 @@
       ],
       "@services": [
         "services/index.ts"
+      ],
+      "@hooks": [
+        "hooks/index.ts"
       ]
     },
     "removeComments": true,
