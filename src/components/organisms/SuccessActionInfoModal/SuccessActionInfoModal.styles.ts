@@ -20,11 +20,10 @@ export const styles = StyleSheet.create({
     maxWidth: '90%',
     padding: 40,
   },
-  imageContainer: {
+  pressableContainer: {
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center',
     width: '100%',
   },
-  pressableContainer: { height: '100%', width: '100%' },
 })

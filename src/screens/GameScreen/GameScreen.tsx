@@ -1,5 +1,11 @@
-import { StarsGif } from '@assets/gifs'
-import { BlockImg, GroundImg, MonkeyNotificationImg } from '@assets/images'
+import { ConfettiGif, StarsGif } from '@assets/gifs'
+import {
+  BackgroundImg,
+  BlockImg,
+  GroundImg,
+  MonkeyNotificationImg,
+  MonkeyWizardImg,
+} from '@assets/images'
 import { MonkeyNotification } from '@components/atoms'
 import { Header, MonkeyAnimation } from '@components/molecules'
 import {
@@ -125,6 +131,9 @@ const GameScreen: FC = () => {
       StarsGif,
       BlockImg,
       MonkeyNotificationImg,
+      MonkeyWizardImg,
+      ConfettiGif,
+      BackgroundImg,
     ],
     [backgroundImage]
   )
