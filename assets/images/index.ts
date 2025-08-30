@@ -1,0 +1,5 @@
+export { default as BackgroundImg } from './background.webp'
+export { default as BlockImg } from './block.png'
+export { default as GroundImg } from './ground.png'
+export { default as LockImg } from './levels/lock-icon.png'
+export { default as MonkeyNotificationImg } from './monkey-notification.png'

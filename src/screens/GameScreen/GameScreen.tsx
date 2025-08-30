@@ -1,6 +1,5 @@
 import { StarsGif } from '@assets/gifs'
-import blockImage from '@assets/images/block.png'
-import groundImage from '@assets/images/ground.png'
+import { BlockImg, GroundImg, MonkeyNotificationImg } from '@assets/images'
 import { MonkeyNotification } from '@components/atoms'
 import { Header, MonkeyAnimation } from '@components/molecules'
 import {
@@ -27,7 +26,7 @@ import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
-import { bananasService, levelService } from '@services'
+import { bananasService, levelService, marketService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { getLevelById, Level } from '@store/slices/levelsSlice'
 import {
@@ -76,7 +75,6 @@ import React, {
 } from 'react'
 import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 
-import { marketService } from '../../services/marketService'
 import {
   BlockTowerCreator,
   BuildTowerSplash,
@@ -121,7 +119,13 @@ const GameScreen: FC = () => {
   )
   const backgroundImage = getLevelBackground(level)
   const assetsToPreload = useMemo(
-    () => [backgroundImage, groundImage, StarsGif, blockImage],
+    () => [
+      backgroundImage,
+      GroundImg,
+      StarsGif,
+      BlockImg,
+      MonkeyNotificationImg,
+    ],
     [backgroundImage]
   )
   const { ready: viewReady, done: assetLoaded } = useAssetsReady(
@@ -1089,7 +1093,7 @@ const GameScreen: FC = () => {
                   zIndex: 5,
                   flexDirection: 'row',
                 }}
-                transition={{ type: 'timing', duration: 200, delay: 300 }}
+                transition={{ type: 'timing', duration: 100, delay: 200 }}
               >
                 {isStarsGifVisible && (
                   <>
@@ -1222,7 +1226,7 @@ const GameScreen: FC = () => {
             <Image
               onError={() => assetLoaded(ASSET_KEYS.GROUND)}
               onLoadEnd={() => assetLoaded(ASSET_KEYS.GROUND)}
-              source={groundImage}
+              source={GroundImg}
               style={styles.bottomGround}
             />
           </ScrollView>

@@ -1,6 +1,5 @@
 import { BackColorIcon, BananasIcon } from '@assets/icons'
-import backgroundImage from '@assets/images/background.webp'
-import lockIcon from '@assets/images/levels/lock-icon.png'
+import { BackgroundImg, LockImg } from '@assets/images'
 import { Button, IconButton, OutlinedText } from '@components/atoms'
 import { LevelCard } from '@components/molecules'
 import { LEVEL_CARD_GAP, LEVEL_CARD_WIDTH, TOTAL_LEVELS } from '@constants'
@@ -51,8 +50,8 @@ const LevelsScreen = () => {
 
   const preloadList = useMemo(
     () => [
-      backgroundImage,
-      lockIcon,
+      BackgroundImg,
+      LockImg,
       ...Array.from({ length: TOTAL_LEVELS }, (_, i) =>
         getLevelIcon((i + 1) as LevelId)
       ),
@@ -157,7 +156,7 @@ const LevelsScreen = () => {
         onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
         placeholder={COLORS.backgroundBlue}
         priority="high"
-        source={backgroundImage}
+        source={BackgroundImg}
         style={StyleSheet.absoluteFill}
         transition={0}
       />

@@ -1,3 +1,4 @@
+import { MonkeyNotificationImg } from '@assets/images'
 import { EN_PHRASES } from '@components/atoms/MonkeyNotification/constants'
 import { styles } from '@components/atoms/MonkeyNotification/MonkeyNotification.styles'
 import { MonkeyNotificationProps } from '@components/atoms/MonkeyNotification/MonkeyNotofocation.types'
@@ -7,9 +8,10 @@ import {
 } from '@components/atoms/MonkeyNotification/utils'
 import { COLORS } from '@theme'
 import { MONKEY_NOTIFICATION_STATUS } from '@types'
+import { Image } from 'expo-image'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
-import { Image, Modal, Pressable, View } from 'react-native'
+import { Modal, Pressable, StyleSheet, View } from 'react-native'
 
 import { OutlinedText } from '../OutlinedText'
 
@@ -39,6 +41,7 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
 
   const lastIndexRef = useRef<number | undefined>(undefined)
   const [phrase, setPhrase] = useState<string>('')
+  const [isImageReady, setIsImageReady] = useState<boolean>(false)
 
   const handleBackdropPress = () => {
     if (backdropClosable) {
@@ -73,20 +76,27 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
     >
       <Pressable onPress={handleBackdropPress} style={styles.backdrop}>
         <MotiView
-          animate={{ opacity: visible ? 1 : 0, translateX: visible ? 0 : 100 }}
+          animate={{
+            opacity: visible && isImageReady ? 1 : 0,
+            translateX: visible && isImageReady ? 0 : 100,
+          }}
           from={{ translateX: 100 }}
+          onStartShouldSetResponder={() => true}
           style={styles.card}
-          transition={{ type: 'timing', duration: 100 }}
+          transition={{ type: 'timing', duration: 200 }}
         >
           <Image
-            resizeMode="contain"
-            source={require('../../../../assets/images/monkey-notification.png')}
-            style={styles.image}
+            onError={() => setIsImageReady(true)}
+            onLoadEnd={() => setIsImageReady(true)}
+            priority="high"
+            source={MonkeyNotificationImg}
+            style={StyleSheet.absoluteFill}
+            transition={200}
           />
           <View style={styles.phraseContainer}>
             <OutlinedText
               color={COLORS.yellow}
-              fontSize={14}
+              fontSize={12}
               strokeColor={COLORS.brown}
             >
               {phrase}

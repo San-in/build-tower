@@ -65,7 +65,6 @@ export const styles = StyleSheet.create({
   },
   userBlockTowerContainer: {
     justifyContent: 'flex-end',
-    marginBottom: 2,
     position: 'relative',
   },
 })

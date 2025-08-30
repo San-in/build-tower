@@ -1,4 +1,4 @@
-import blockImage from '@assets/images/block.png'
+import { BlockImg } from '@assets/images'
 import { BlockIconProps } from '@components/atoms/BlockIcon/BlockIcon.types'
 import { COLORS } from '@theme'
 import { BLOCK_TYPE } from '@types'
@@ -16,7 +16,7 @@ const BlockIcon: FC<BlockIconProps> = ({
     contentFit="cover"
     placeholder={COLORS.backgroundYellow}
     recyclingKey={`block-${type}-${size}`}
-    source={blockImage}
+    source={BlockImg}
     style={[styles.base, { width: size, height: size }, styleContainer || null]}
     transition={100}
   />

@@ -71,8 +71,6 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
                   animate={{
                     opacity: 1,
                     translateY: 0,
-                    height: BLOCK_DIMENSION,
-                    width: BLOCK_DIMENSION,
                   }}
                   exit={{
                     opacity: 0,

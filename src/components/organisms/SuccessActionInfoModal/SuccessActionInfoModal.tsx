@@ -26,7 +26,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
       animate={{ opacity: isVisible ? 1 : 0 }}
       from={{ opacity: 0 }}
       style={styles.container}
-      transition={{ type: 'timing', duration: 500 }}
+      transition={{ type: 'timing', duration: 400 }}
     >
       <Pressable
         onPress={() => {

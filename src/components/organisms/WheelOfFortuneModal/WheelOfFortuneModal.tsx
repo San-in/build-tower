@@ -1,4 +1,3 @@
-import { ConfettiGif } from '@assets/gifs'
 import { BlockIcon, Button, OutlinedText } from '@components/atoms'
 import { SuccessActionInfoModal } from '@components/organisms/SuccessActionInfoModal'
 import { WheelOfFortune } from '@components/organisms/WheelOfFortune'
@@ -9,7 +8,7 @@ import { BUTTON_TYPE, OPERATOR, POWER_UP_TYPE, TOWER } from '@types'
 import { calculateWheelResult, generateRandomNumber } from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Image, Modal, View } from 'react-native'
+import { Modal, View } from 'react-native'
 
 import { UnlockOptionModal } from '../UnlockOptionModal'
 import { styles } from './WheelOfFortuneModal.styles'

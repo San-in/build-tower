@@ -1,5 +1,5 @@
 import { StarIcon } from '@assets/icons'
-import closedLevelIcon from '@assets/images/levels/lock-icon.png'
+import { LockImg } from '@assets/images'
 import { OutlinedText } from '@components/atoms'
 import {
   containerBorderMap,
@@ -25,7 +25,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
     selectLevel
   ) as Level
 
-  const iconSrc = isAvailable ? getLevelIcon(level) : closedLevelIcon
+  const iconSrc = isAvailable ? getLevelIcon(level) : LockImg
   const recyclingKey = isAvailable ? `lvl-${level}` : 'lock'
 
   const containerGradient: readonly [string, string, ...Array<string>] =
