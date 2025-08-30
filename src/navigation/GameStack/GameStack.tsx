@@ -11,12 +11,12 @@ const GameStack = () => (
     <Stack.Screen
       component={WelcomeScreen}
       name={SCREENS.WelcomeScreen}
-      options={{ headerShown: false }}
+      options={{ headerShown: false, animation: 'fade' }}
     />
     <Stack.Screen
       component={GameScreen}
       name={SCREENS.GameScreen}
-      options={{ headerShown: false }}
+      options={{ headerShown: false, animation: 'fade' }}
     />
     <Stack.Screen
       component={LevelsScreen}

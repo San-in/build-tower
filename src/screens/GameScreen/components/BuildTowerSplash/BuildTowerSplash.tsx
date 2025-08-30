@@ -1,12 +1,27 @@
+import {
+  MonkeyFirstConstructorImg,
+  MonkeySecondConstructorImg,
+} from '@assets/images'
 import { Button } from '@components/atoms'
 import { ShadowWrapper } from '@components/wrappers'
 import { BUTTON_TYPE, TOWER } from '@types'
-import { Image, MotiView } from 'moti'
-import { FC, memo, useState } from 'react'
+import { Image } from 'expo-image'
+import { MotiView } from 'moti'
+import { FC, memo, useMemo, useState } from 'react'
 import { LayoutAnimation } from 'react-native'
 
 import { styles } from './BuildTowerSplash.styles'
 import { BuildTowerSplashProps } from './BuildTowerSplash.types'
+
+const BUTTON_LABELS = {
+  [TOWER.FirstTower]: 'BUILD 1ST TOWER',
+  [TOWER.SecondTower]: 'BUILD 2ND TOWER',
+} as const
+
+const IMAGE_SOURCES = {
+  [TOWER.FirstTower]: MonkeyFirstConstructorImg,
+  [TOWER.SecondTower]: MonkeySecondConstructorImg,
+} as const
 
 const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
   const [buildModalContentVisible, setBuildModalContentVisible] = useState(true)
@@ -16,30 +31,28 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
     setBuildModalContentVisible(false)
   }
 
-  const buttonLabel = {
-    [TOWER.FirstTower]: 'BUILD 1ST TOWER',
-    [TOWER.SecondTower]: 'BUILD 2ND TOWER',
-  }[tower]
+  const buttonLabel = useMemo(() => BUTTON_LABELS[tower], [tower])
+  const imageSource = useMemo(() => IMAGE_SOURCES[tower], [tower])
 
-  const imageSource = {
-    [TOWER.FirstTower]: require('../../../../../assets/images/monkey-constructor-1.png'),
-    [TOWER.SecondTower]: require('../../../../../assets/images/monkey-constructor-2.png'),
-  }[tower]
+  const [isImageReady, setIsImageReady] = useState(false)
 
   return (
-    <ShadowWrapper modalVisible={buildModalContentVisible}>
+    <ShadowWrapper modalVisible={buildModalContentVisible && isImageReady}>
       <MotiView
-        animate={{
-          scale: [1, 1.02, 0.98, 1.02, 1],
-        }}
+        animate={{ scale: [1, 1.02, 0.98, 1.02, 1] }}
         from={{ scale: 1 }}
+        pointerEvents={isImageReady ? 'auto' : 'none'}
         style={styles.contentContainer}
-        transition={{
-          scale: { type: 'timing', duration: 150 },
-        }}
+        transition={{ scale: { type: 'timing', duration: 150 } }}
       >
         <Image
-          resizeMode={'contain'}
+          allowDownscaling
+          cachePolicy="memory-disk"
+          contentFit="contain"
+          onError={() => setIsImageReady(true)}
+          onLoadEnd={() => setIsImageReady(true)}
+          priority="high"
+          recyclingKey={`splash-${tower}`}
           source={imageSource}
           style={[
             styles.image,
@@ -47,7 +60,9 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
               transform: [{ translateY: tower === TOWER.FirstTower ? 65 : 75 }],
             },
           ]}
+          transition={400}
         />
+
         <Button
           onPress={handlePressButton}
           style={styles.button}
@@ -62,4 +77,5 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
     </ShadowWrapper>
   )
 }
+
 export default memo(BuildTowerSplash)

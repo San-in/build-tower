@@ -11,8 +11,10 @@ import {
   ModalBorderOrangeImg,
   ModalBorderPlusImg,
   ModalBorderPurpleImg,
+  MonkeyFirstConstructorImg,
   MonkeyModalImg,
   MonkeyNotificationImg,
+  MonkeySecondConstructorImg,
   MonkeyWizardImg,
   WinBannerImg,
 } from '@assets/images'
@@ -154,6 +156,8 @@ const GameScreen: FC = () => {
       ModalBorderOrangeImg,
       ModalBorderPurpleImg,
       MonkeyModalImg,
+      MonkeyFirstConstructorImg,
+      MonkeySecondConstructorImg,
     ],
     [backgroundImage]
   )
@@ -1266,6 +1270,7 @@ const GameScreen: FC = () => {
 
       {buildModalData.isVisible && (
         <BuildTowerSplash
+          key={buildModalData.type}
           onPress={handlePressBuildTowerSplash}
           tower={buildModalData.type}
         />
