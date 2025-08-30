@@ -201,7 +201,7 @@ const LevelsScreen = () => {
               android: 'fast',
             })}
             getItemLayout={getItemLayout}
-            initialNumToRender={7}
+            initialNumToRender={10}
             keyExtractor={keyExtractor}
             maxToRenderPerBatch={8}
             onLayout={handleListLayout}
@@ -216,7 +216,7 @@ const LevelsScreen = () => {
             showsHorizontalScrollIndicator={false}
             snapToInterval={ITEM_SIZE}
             updateCellsBatchingPeriod={16}
-            windowSize={5}
+            windowSize={7}
           />
         </View>
         <View

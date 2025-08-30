@@ -3,8 +3,13 @@ import {
   BackgroundImg,
   BlockImg,
   GroundImg,
+  ModalBorderDivideImg,
+  ModalBorderMinusImg,
+  ModalBorderMultiplyImg,
+  ModalBorderPlusImg,
   MonkeyNotificationImg,
   MonkeyWizardImg,
+  WinBannerImg,
 } from '@assets/images'
 import { MonkeyNotification } from '@components/atoms'
 import { Header, MonkeyAnimation } from '@components/molecules'
@@ -134,6 +139,11 @@ const GameScreen: FC = () => {
       MonkeyWizardImg,
       ConfettiGif,
       BackgroundImg,
+      WinBannerImg,
+      ModalBorderMultiplyImg,
+      ModalBorderPlusImg,
+      ModalBorderMinusImg,
+      ModalBorderDivideImg,
     ],
     [backgroundImage]
   )

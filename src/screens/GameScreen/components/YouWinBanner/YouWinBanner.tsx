@@ -1,4 +1,6 @@
-import { Image, MotiView } from 'moti'
+import { WinBannerImg } from '@assets/images'
+import { Image } from 'expo-image'
+import { MotiView } from 'moti'
 import { FC } from 'react'
 
 import { styles } from './YouWinBanner.styles'
@@ -18,9 +20,13 @@ const YouWinBanner: FC = () => (
     }}
   >
     <Image
-      resizeMode="contain"
-      source={require('../../../../../assets/images/win.png')}
+      allowDownscaling
+      cachePolicy="memory-disk"
+      contentFit="contain"
+      priority="high"
+      source={WinBannerImg}
       style={styles.image}
+      transition={100}
     />
   </MotiView>
 )

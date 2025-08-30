@@ -14,6 +14,7 @@ const ResetStepsModal: FC<ResetStepsModalProps> = ({ isVisible, onPress }) => (
     <OutlinedText color={COLORS.gradientGold_1}>Whoosh!</OutlinedText>
 
     <Image
+      contentFit={'contain'}
       source={MonkeyWizardImg}
       style={styles.imageContainer}
       transition={100}

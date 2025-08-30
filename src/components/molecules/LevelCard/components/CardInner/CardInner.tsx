@@ -42,7 +42,13 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
   ].filter(Boolean)
 
   const [bgReady, setBgReady] = useState(false)
+
   const handleBgLoaded = useCallback(() => setBgReady(true), [])
+  const [reloadKey, setReloadKey] = useState(0)
+
+  const handleImgError = useCallback(() => {
+    setTimeout(() => setReloadKey((k) => k + 1), 80)
+  }, [])
 
   return (
     <Pressable onPress={onPress} style={containerStyles}>
@@ -72,15 +78,16 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
             allowDownscaling
             cachePolicy="memory-disk"
             contentFit="cover"
+            key={reloadKey}
+            onError={handleImgError}
             onLoadEnd={handleBgLoaded}
             placeholder={isAvailable ? COLORS.yellow80 : COLORS.codeGrey50}
-            priority="high"
+            priority={isSelectedLevel ? 'high' : 'normal'}
             recyclingKey={recyclingKey}
             source={iconSrc}
             style={StyleSheet.absoluteFill}
             transition={120}
           />
-          {!bgReady && <View style={StyleSheet.absoluteFill} />}
         </View>
 
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
