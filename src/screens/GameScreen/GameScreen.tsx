@@ -3,10 +3,15 @@ import {
   BackgroundImg,
   BlockImg,
   GroundImg,
+  ModalBorderBlueImg,
   ModalBorderDivideImg,
+  ModalBorderGreenImg,
   ModalBorderMinusImg,
   ModalBorderMultiplyImg,
+  ModalBorderOrangeImg,
   ModalBorderPlusImg,
+  ModalBorderPurpleImg,
+  MonkeyModalImg,
   MonkeyNotificationImg,
   MonkeyWizardImg,
   WinBannerImg,
@@ -144,6 +149,11 @@ const GameScreen: FC = () => {
       ModalBorderPlusImg,
       ModalBorderMinusImg,
       ModalBorderDivideImg,
+      ModalBorderBlueImg,
+      ModalBorderGreenImg,
+      ModalBorderOrangeImg,
+      ModalBorderPurpleImg,
+      MonkeyModalImg,
     ],
     [backgroundImage]
   )
@@ -616,6 +626,8 @@ const GameScreen: FC = () => {
     if (isOutOfAttempts) {
       return
     }
+    // handleAddPowerUp(MARKET_PRODUCT.RemoveRandomBlocks_Gold)
+    // return
 
     if (firstOptionCard.number && secondOptionCard.number) {
       setIsModalOptionVisible(true)

@@ -1,28 +1,79 @@
 import { CloseCrossIcon } from '@assets/icons'
+import {
+  ModalBorderBlueImg,
+  ModalBorderGreenImg,
+  ModalBorderOrangeImg,
+  ModalBorderPurpleImg,
+  MonkeyModalImg,
+} from '@assets/images'
 import { OutlinedText } from '@components/atoms'
+import { useAssetsReady } from '@hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
-import { Asset } from 'expo-asset'
+import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Image, MotiView } from 'moti'
-import { FC, useEffect, useState } from 'react'
-import { ImageBackground, Modal, Pressable, View } from 'react-native'
+import { MotiView } from 'moti'
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { Modal, Pressable, StyleSheet, View } from 'react-native'
 
 import { styles } from './CustomModal.styles'
 import { CustomModalProps } from './CustomModal.types'
 
-const monkeyImage = {
-  src: require('@assets/images/monkey-modal.png'),
-}
-
 const SHAKE_INTERVAL = 5000
 
-const backgroundImageSrc = {
-  [MODAL_TYPE.Orange]: require('@assets/images/modal-border-orange.webp'),
-  [MODAL_TYPE.Green]: require('@assets/images/modal-border-green.webp'),
-  [MODAL_TYPE.Purple]: require('@assets/images/modal-border-purple.webp'),
-  [MODAL_TYPE.Blue]: require('@assets/images/modal-border-blue.webp'),
-}
+const BG_BY_TYPE = {
+  [MODAL_TYPE.Orange]: ModalBorderOrangeImg,
+  [MODAL_TYPE.Green]: ModalBorderGreenImg,
+  [MODAL_TYPE.Purple]: ModalBorderPurpleImg,
+  [MODAL_TYPE.Blue]: ModalBorderBlueImg,
+} as const
+
+const PLACEHOLDER_BY_TYPE = {
+  [MODAL_TYPE.Orange]: COLORS.tango60,
+  [MODAL_TYPE.Green]: COLORS.green60,
+  [MODAL_TYPE.Purple]: COLORS.purple60,
+  [MODAL_TYPE.Blue]: COLORS.blue40,
+} as const
+
+const GRADIENT_BY_TYPE = {
+  [MODAL_TYPE.Orange]: [
+    COLORS.tango60,
+    COLORS.tango80,
+    COLORS.gradientOrange_3,
+    COLORS.gradientOrange_3,
+    COLORS.tango40,
+    COLORS.tango60,
+  ],
+  [MODAL_TYPE.Green]: [
+    COLORS.green60,
+    COLORS.green80,
+    COLORS.gradientGreen_3,
+    COLORS.gradientGreen_3,
+    COLORS.green40,
+    COLORS.green60,
+  ],
+  [MODAL_TYPE.Purple]: [
+    COLORS.purple60,
+    COLORS.purple80,
+    COLORS.gradientPurple_3,
+    COLORS.gradientPurple_1,
+    COLORS.gradientPurple_2,
+    COLORS.purple60,
+  ],
+  [MODAL_TYPE.Blue]: [
+    COLORS.blue20,
+    COLORS.blue40,
+    COLORS.blue50,
+    COLORS.blue60,
+    COLORS.blue40,
+    COLORS.blue20,
+  ],
+} as const
+
+const ASSET_KEYS = {
+  BG: 'background',
+  MONKEY: 'monkey',
+} as const
 
 const CustomModal: FC<CustomModalProps> = ({
   modalVisible,
@@ -33,113 +84,91 @@ const CustomModal: FC<CustomModalProps> = ({
   containerStyles = {},
   withCrossIcon = true,
 }) => {
-  const [shouldShake, setShouldShake] = useState(false)
-  const [imagesLoaded, setImagesLoaded] = useState(false)
+  const [shake, setShake] = useState(false)
+
+  const ASSET_LABELS = useMemo(() => Object.values(ASSET_KEYS), [])
+  const {
+    ready: allReady,
+    done: assetLoaded,
+    reset,
+  } = useAssetsReady(ASSET_LABELS)
+
+  const timerRef = useRef<number | null>(null)
   useEffect(() => {
-    let interval = 0
-
     if (modalVisible) {
-      interval = setInterval(() => {
-        setShouldShake(true)
-        setTimeout(() => setShouldShake(false), 300) // shake duration
-      }, SHAKE_INTERVAL)
-    } else {
-      setShouldShake(false)
+      timerRef.current = setInterval(() => {
+        setShake(true)
+        setTimeout(() => setShake(false), 300)
+      }, SHAKE_INTERVAL) as unknown as number
     }
-
     return () => {
-      if (interval) {
-        clearInterval(interval)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
       }
     }
   }, [modalVisible])
 
-  const backgroundImage = backgroundImageSrc[type]
-
-  const gradientColors: readonly [string, string, ...Array<string>] = {
-    [MODAL_TYPE.Orange]: [
-      COLORS.tango60,
-      COLORS.tango80,
-      COLORS.gradientOrange_3,
-      COLORS.gradientOrange_3,
-      COLORS.tango40,
-      COLORS.tango60,
-    ],
-    [MODAL_TYPE.Green]: [
-      COLORS.green60,
-      COLORS.green80,
-      COLORS.gradientGreen_3,
-      COLORS.gradientGreen_3,
-      COLORS.green40,
-      COLORS.green60,
-    ],
-    [MODAL_TYPE.Purple]: [
-      COLORS.purple60,
-      COLORS.purple80,
-      COLORS.gradientPurple_3,
-      COLORS.gradientPurple_1,
-      COLORS.gradientPurple_2,
-      COLORS.purple60,
-    ],
-    [MODAL_TYPE.Blue]: [
-      COLORS.blue20,
-      COLORS.blue40,
-      COLORS.blue50,
-      COLORS.blue60,
-      COLORS.blue40,
-      COLORS.blue20,
-    ],
-  }[type] as [string, string, ...Array<string>]
-
+  const prev = useRef({ visible: false, type })
   useEffect(() => {
-    if (!modalVisible) {
-      return
+    const opened = !prev.current.visible && modalVisible
+    const typeChangedWhileOpen = modalVisible && prev.current.type !== type
+    if (opened || typeChangedWhileOpen) {
+      reset()
     }
+    prev.current = { visible: modalVisible, type }
+  }, [modalVisible, type, reset])
 
-    setImagesLoaded(false)
-    Promise.all([
-      Asset.fromModule(monkeyImage.src).downloadAsync(),
-      Asset.fromModule(backgroundImageSrc[type]).downloadAsync(),
-    ]).then(() => setImagesLoaded(true))
-  }, [modalVisible, type])
-
-  if (modalVisible && !imagesLoaded) {
-    return <View />
-  }
+  const bgSrc = BG_BY_TYPE[type]
+  const placeholder = PLACEHOLDER_BY_TYPE[type]
+  const gradientColors = useMemo(() => GRADIENT_BY_TYPE[type], [type])
 
   return (
     <Modal
+      transparent
       animationType="fade"
       onRequestClose={handleClose}
-      transparent={true}
       visible={modalVisible}
     >
       <View style={[GlobalStyles.centeredContainer, styles.background]}>
         <MotiView
           animate={{
-            scale: shouldShake ? [1, 1.02, 0.98, 1.02, 1] : 1,
+            opacity: modalVisible && allReady ? 1 : 0,
+            scale: shake ? [1, 1.02, 0.98, 1.02, 1] : 1,
           }}
-          from={{ scale: 1 }}
+          from={{ opacity: 0, scale: 1 }}
+          pointerEvents={allReady ? 'auto' : 'none'}
           style={[styles.container, containerStyles]}
-          transition={{
-            type: 'timing',
-            duration: 100,
-          }}
+          transition={{ type: 'timing', duration: 160 }}
         >
           <Image
-            resizeMode={'contain'}
-            source={monkeyImage.src}
+            cachePolicy="memory-disk"
+            contentFit="contain"
+            onError={() => assetLoaded(ASSET_KEYS.MONKEY)}
+            onLoadEnd={() => assetLoaded(ASSET_KEYS.MONKEY)}
+            priority="high"
+            source={MonkeyModalImg}
             style={styles.monkeyImage}
+            transition={120}
           />
-          <ImageBackground
-            resizeMode={'cover'}
-            source={backgroundImage}
-            style={styles.imageBackground}
-          >
+
+          <View style={styles.imageBackground}>
+            <Image
+              cachePolicy="memory-disk"
+              contentFit="cover"
+              onError={() => assetLoaded(ASSET_KEYS.BG)}
+              onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+              placeholder={placeholder}
+              priority="high"
+              recyclingKey={`modal-bg-${type}`}
+              source={bgSrc}
+              style={StyleSheet.absoluteFill}
+              transition={100}
+            />
+
             {withCrossIcon && (
               <Pressable
                 onPress={handleClose}
-                style={({ pressed }: { pressed: boolean }) => [
+                style={({ pressed }) => [
                   styles.closeIcon,
                   pressed && styles.closeIconPressed,
                 ]}
@@ -147,24 +176,23 @@ const CustomModal: FC<CustomModalProps> = ({
                 <CloseCrossIcon height={40} width={40} />
               </Pressable>
             )}
+
             <LinearGradient
               colors={gradientColors}
               end={{ x: 1, y: 1 }}
               start={{ x: 0, y: 0 }}
               style={styles.gradientContainer}
             >
-              <View style={[styles.contentContainer]}>
-                <>
-                  {title && (
-                    <OutlinedText fontSize={26} offset={2}>
-                      {title}
-                    </OutlinedText>
-                  )}
-                  {children}
-                </>
+              <View style={styles.contentContainer}>
+                {!!title && (
+                  <OutlinedText fontSize={26} offset={2}>
+                    {title}
+                  </OutlinedText>
+                )}
+                {children}
               </View>
             </LinearGradient>
-          </ImageBackground>
+          </View>
         </MotiView>
       </View>
     </Modal>
