@@ -1,4 +1,6 @@
 import { StarsGif } from '@assets/gifs'
+import blockImage from '@assets/images/block.png'
+import groundImage from '@assets/images/ground.png'
 import { MonkeyNotification } from '@components/atoms'
 import { Header, MonkeyAnimation } from '@components/molecules'
 import {
@@ -21,6 +23,7 @@ import {
   LEVEL_CONFIG,
   POWER_UP_BLOCK_MANIPULATION_LIMITS,
 } from '@constants'
+import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
@@ -61,24 +64,17 @@ import {
   getValidOptionNumber,
   showIsUserNeedHelp,
 } from '@utils'
-import { Asset } from 'expo-asset'
+import { Image } from 'expo-image'
 import { MotiView } from 'moti'
-import {
+import React, {
   FC,
-  use,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
-import {
-  Image,
-  ImageBackground,
-  LayoutAnimation,
-  ScrollView,
-  View,
-} from 'react-native'
+import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 
 import { marketService } from '../../services/marketService'
 import {
@@ -103,8 +99,10 @@ import {
 } from './constants'
 import { styles } from './GameScreen.styles'
 
-const groundImage = {
-  src: require('@assets/images/ground.png'),
+const ASSET_KEYS = {
+  BG: 'background',
+  ASSETS: 'assets',
+  GROUND: 'ground',
 }
 
 const GameScreen: FC = () => {
@@ -121,6 +119,15 @@ const GameScreen: FC = () => {
   const addExtraStepPowerUps = useAppSelector(
     (state) => state.market?.AddExtraStep
   )
+  const backgroundImage = getLevelBackground(level)
+  const assetsToPreload = useMemo(
+    () => [backgroundImage, groundImage, StarsGif, blockImage],
+    [backgroundImage]
+  )
+  const { ready: viewReady, done: assetLoaded } = useAssetsReady(
+    Object.values(ASSET_KEYS)
+  )
+  const { ready: assetsReady } = useAssetPreload(assetsToPreload)
 
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
   const dispatch = useAppDispatch()
@@ -167,7 +174,6 @@ const GameScreen: FC = () => {
   const [isMonkeyNotificationVisible, setIsMonkeyNotificationVisible] =
     useState(false)
   const [isTowerBuilding, setIsTowerBuilding] = useState(false)
-  const [assetsLoaded, setAssetsLoaded] = useState(false)
 
   // LOCAL CONSTANT
   const {
@@ -197,10 +203,7 @@ const GameScreen: FC = () => {
     [initialBlockValue, isTowerBuilding, userBlockValue]
   )
 
-  const assetsToPreload = useMemo(() => {
-    const backgroundImageSource = getLevelBackground(level)
-    return [backgroundImageSource, groundImage.src, StarsGif]
-  }, [level])
+  const contentVisible = assetsReady && viewReady
 
   // CALLBACKS WITHOUT DEPENDENCIES
   const handleResetLevel = useCallback(() => {
@@ -976,6 +979,12 @@ const GameScreen: FC = () => {
   // useEffects
 
   useEffect(() => {
+    if (assetsReady) {
+      assetLoaded(ASSET_KEYS.ASSETS)
+    }
+  }, [assetsReady, assetLoaded])
+
+  useEffect(() => {
     if (!isOutOfAttempts && isLevelPrematurelyFinished) {
       setTimeout(async () => {
         setIsInterfacesVisible(false)
@@ -985,6 +994,9 @@ const GameScreen: FC = () => {
   }, [handleLevelFinished, isLevelPrematurelyFinished, isOutOfAttempts, prize])
 
   useEffect(() => {
+    if (!contentVisible) {
+      return
+    }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setTimeout(() => {
       if (scrollViewRef?.current && focusedTower === TOWER.SecondTower) {
@@ -997,9 +1009,18 @@ const GameScreen: FC = () => {
         })
       }
     }, 100)
-  }, [scrollViewRef, initialBlockValue, userBlockValue, focusedTower])
+  }, [
+    scrollViewRef,
+    initialBlockValue,
+    userBlockValue,
+    focusedTower,
+    contentVisible,
+  ])
 
   useEffect(() => {
+    if (!contentVisible) {
+      return
+    }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 
     if (
@@ -1009,7 +1030,7 @@ const GameScreen: FC = () => {
     ) {
       scrollViewRef.current.scrollToEnd()
     }
-  }, [focusedTower, initialBlockValue])
+  }, [contentVisible, focusedTower, initialBlockValue])
 
   useEffect(() => {
     let timerId: number
@@ -1018,117 +1039,153 @@ const GameScreen: FC = () => {
     }
     return () => clearTimeout(timerId)
   }, [isStarsGifVisible])
-
-  useEffect(() => {
-    setAssetsLoaded(false)
-    Promise.all(
-      assetsToPreload.map((asset) => Asset.fromModule(asset).downloadAsync())
-    ).then(() => setAssetsLoaded(true))
-  }, [assetsToPreload, level])
-
-  // TODO: add a fancy preloader
-  if (!assetsLoaded) {
-    return <View />
-  }
-
   return (
     <>
-      <ImageBackground
-        source={getLevelBackground(level)}
-        style={styles.backgroundContainer}
-      >
-        {isLevelFinished && (
-          <>
-            <EdgeGlowOverlay
-              onPress={handleGoHome}
-              sides={EDGE_GLOW_OVERLAY_TYPE.Sides}
-            />
-            <YouWinBanner />
-          </>
-        )}
-        <Header
-          level={level}
-          onAddExtraStepPress={handleAddExtraStepPress}
-          onHomePress={handleHomeButtonPress}
-          onRandomAddBlockPress={handleRandomAddBlockPress}
-          onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
-          onResetPress={handleResetButtonPress}
+      <View style={styles.backgroundContainer}>
+        <Image
+          allowDownscaling
+          cachePolicy="disk"
+          contentFit="cover"
+          key={String(level)}
+          onError={() => assetLoaded(ASSET_KEYS.BG)}
+          onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+          placeholder={COLORS.backgroundBlue}
+          priority="high"
+          source={backgroundImage}
+          style={StyleSheet.absoluteFill}
+          transition={200}
         />
-        {isInterfacesVisible && !isOutOfAttempts && (
-          <View style={styles.progressBadgeContainer}>
-            <MotiView
-              animate={{ opacity: Number(isStarsGifVisible) }}
-              style={{
-                position: 'absolute',
-                left: -50,
-                top: -30,
-                zIndex: 5,
-                flexDirection: 'row',
-              }}
-              transition={{ type: 'timing', duration: 200, delay: 300 }}
-            >
-              {isStarsGifVisible && (
-                <>
-                  <Image
-                    source={StarsGif}
-                    style={{
-                      width: 100,
-                      height: 100,
-                    }}
-                  />
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      width: step * 50,
-                      height: 80,
-                      alignSelf: 'flex-end',
-                      marginLeft: -60,
-                      marginBottom: -5,
-                      borderRadius: 20,
-                      borderColor: COLORS.yellow40,
-                      backgroundColor: COLORS.yellow20,
-                    }}
-                  />
-                </>
-              )}
-            </MotiView>
-
-            <StepBar
-              animationKey={animationRestartKey}
-              currentStep={step}
-              totalSteps={attempts}
-            />
-            <ProgressBadge
-              animationKey={animationRestartKey}
-              initialValue={initialBlockValue}
-              isTowerBuilding={isTowerBuilding}
-              userValue={userBlockValue}
-            />
-          </View>
-        )}
-        <ScrollView
-          alwaysBounceVertical={false}
-          bounces={false}
-          contentContainerStyle={styles.towersScrollWrapperContainer}
-          ref={scrollViewRef}
+        <View
+          pointerEvents={contentVisible ? 'auto' : 'none'}
+          style={[StyleSheet.absoluteFill, { opacity: Number(contentVisible) }]}
         >
-          <View style={styles.towersContainer}>
-            {!!initialBlockValue && (
-              <View style={styles.initialBlockTowerContainer}>
-                <PrizeSection
-                  animationKey={animationRestartKey}
-                  isVisible={isPrizeVisible}
-                />
-                {isLevelFinished && (
-                  <View style={styles.monkeyStageInitTowerContainer}>
-                    <MotiView
-                      animate={{
-                        opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
+          {isLevelFinished && (
+            <>
+              <EdgeGlowOverlay
+                onPress={handleGoHome}
+                sides={EDGE_GLOW_OVERLAY_TYPE.Sides}
+              />
+              <YouWinBanner />
+            </>
+          )}
+
+          <Header
+            level={level}
+            onAddExtraStepPress={handleAddExtraStepPress}
+            onHomePress={handleHomeButtonPress}
+            onRandomAddBlockPress={handleRandomAddBlockPress}
+            onRandomRemoveBlockPress={handleRandomRemoveBlockPress}
+            onResetPress={handleResetButtonPress}
+          />
+
+          {isInterfacesVisible && !isOutOfAttempts && (
+            <View style={styles.progressBadgeContainer}>
+              <MotiView
+                animate={{ opacity: Number(isStarsGifVisible) }}
+                style={{
+                  position: 'absolute',
+                  left: -50,
+                  top: -30,
+                  zIndex: 5,
+                  flexDirection: 'row',
+                }}
+                transition={{ type: 'timing', duration: 200, delay: 300 }}
+              >
+                {isStarsGifVisible && (
+                  <>
+                    <Image
+                      source={StarsGif}
+                      style={{ width: 100, height: 100 }}
+                    />
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        width: step * 50,
+                        height: 80,
+                        alignSelf: 'flex-end',
+                        marginLeft: -60,
+                        marginBottom: -5,
+                        borderRadius: 20,
+                        borderColor: COLORS.yellow40,
+                        backgroundColor: COLORS.yellow20,
                       }}
-                      from={{ opacity: 0 }}
-                      style={styles.monkeyStageInitTower}
-                      transition={{ type: 'timing', duration: 200, delay: 300 }}
-                    >
+                    />
+                  </>
+                )}
+              </MotiView>
+
+              <StepBar
+                animationKey={animationRestartKey}
+                currentStep={step}
+                totalSteps={attempts}
+              />
+              <ProgressBadge
+                animationKey={animationRestartKey}
+                initialValue={initialBlockValue}
+                isTowerBuilding={isTowerBuilding}
+                userValue={userBlockValue}
+              />
+            </View>
+          )}
+          <ScrollView
+            alwaysBounceVertical={false}
+            bounces={false}
+            contentContainerStyle={styles.towersScrollWrapperContainer}
+            ref={scrollViewRef}
+          >
+            <View style={styles.towersContainer}>
+              {!!initialBlockValue && (
+                <View style={styles.initialBlockTowerContainer}>
+                  <PrizeSection
+                    animationKey={animationRestartKey}
+                    isVisible={isPrizeVisible}
+                  />
+                  {isLevelFinished && (
+                    <View style={styles.monkeyStageInitTowerContainer}>
+                      <MotiView
+                        animate={{
+                          opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
+                        }}
+                        from={{ opacity: 0 }}
+                        style={styles.monkeyStageInitTower}
+                        transition={{
+                          type: 'timing',
+                          duration: 200,
+                          delay: 300,
+                        }}
+                      >
+                        <MonkeyAnimation
+                          isVisible={monkeyAnimationData.isVisible}
+                          loop={monkeyAnimationLoop}
+                          onFinish={monkeyAnimationCallback}
+                          size={monkeyAnimationSize}
+                          speed={monkeyAnimationSpeed}
+                          type={monkeyAnimationData.type}
+                        />
+                      </MotiView>
+                    </View>
+                  )}
+
+                  <BlockTowerCreator
+                    isScaled={isScaledTower}
+                    quantity={initialBlockValue}
+                    type={TOWER.FirstTower}
+                  />
+                </View>
+              )}
+              {!!userBlockValue && (
+                <View style={styles.userBlockTowerContainer}>
+                  <View
+                    style={[
+                      styles.monkeyStageUserTowerContainer,
+                      { bottom: userBlockValue * BLOCK_DIMENSION - 12 },
+                    ]}
+                  >
+                    {[
+                      MONKEY_ANIMATION_TYPE.Idle,
+                      MONKEY_ANIMATION_TYPE.Landing,
+                      MONKEY_ANIMATION_TYPE.JumpToTop,
+                    ].includes(monkeyAnimationData.type) && (
                       <MonkeyAnimation
                         isVisible={monkeyAnimationData.isVisible}
                         loop={monkeyAnimationLoop}
@@ -1137,68 +1194,41 @@ const GameScreen: FC = () => {
                         speed={monkeyAnimationSpeed}
                         type={monkeyAnimationData.type}
                       />
-                    </MotiView>
+                    )}
                   </View>
-                )}
-
-                <BlockTowerCreator
-                  isScaled={isScaledTower}
-                  quantity={initialBlockValue}
-                  type={TOWER.FirstTower}
-                />
-              </View>
-            )}
-            {!!userBlockValue && (
-              <View style={styles.userBlockTowerContainer}>
-                <View
-                  style={[
-                    styles.monkeyStageUserTowerContainer,
-                    {
-                      bottom: userBlockValue * BLOCK_DIMENSION - 12,
-                    },
-                  ]}
-                >
-                  {[
-                    MONKEY_ANIMATION_TYPE.Idle,
-                    MONKEY_ANIMATION_TYPE.Landing,
-                    MONKEY_ANIMATION_TYPE.JumpToTop,
-                  ].includes(monkeyAnimationData.type) && (
-                    <MonkeyAnimation
-                      isVisible={monkeyAnimationData.isVisible}
-                      loop={monkeyAnimationLoop}
-                      onFinish={monkeyAnimationCallback}
-                      size={monkeyAnimationSize}
-                      speed={monkeyAnimationSpeed}
-                      type={monkeyAnimationData.type}
-                    />
-                  )}
+                  <BlockTowerCreator
+                    onAnimatedEnd={handleBlockTowerCreatingEnd}
+                    quantity={userBlockValue}
+                    type={TOWER.SecondTower}
+                  />
                 </View>
-                <BlockTowerCreator
-                  onAnimatedEnd={handleBlockTowerCreatingEnd}
-                  quantity={userBlockValue}
-                  type={TOWER.SecondTower}
+              )}
+            </View>
+
+            <View style={styles.monkeyStageGroundContainer}>
+              {monkeyAnimationData.type ===
+                MONKEY_ANIMATION_TYPE.RunAndJump && (
+                <MonkeyAnimation
+                  isVisible={monkeyAnimationData.isVisible}
+                  loop={monkeyAnimationLoop}
+                  onFinish={monkeyAnimationCallback}
+                  size={monkeyAnimationSize}
+                  speed={monkeyAnimationSpeed}
+                  type={monkeyAnimationData.type}
                 />
-              </View>
-            )}
-          </View>
-          <View style={styles.monkeyStageGroundContainer}>
-            {monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.RunAndJump && (
-              <MonkeyAnimation
-                isVisible={monkeyAnimationData.isVisible}
-                loop={monkeyAnimationLoop}
-                onFinish={monkeyAnimationCallback}
-                size={monkeyAnimationSize}
-                speed={monkeyAnimationSpeed}
-                type={monkeyAnimationData.type}
-              />
-            )}
-          </View>
-          <ImageBackground
-            source={require('../../../assets/images/ground.png')}
-            style={styles.bottomGround}
-          />
-        </ScrollView>
-      </ImageBackground>
+              )}
+            </View>
+
+            <Image
+              onError={() => assetLoaded(ASSET_KEYS.GROUND)}
+              onLoadEnd={() => assetLoaded(ASSET_KEYS.GROUND)}
+              source={groundImage}
+              style={styles.bottomGround}
+            />
+          </ScrollView>
+        </View>
+      </View>
+
       {buildModalData.isVisible && (
         <BuildTowerSplash
           onPress={handlePressBuildTowerSplash}

@@ -1,14 +1,16 @@
 import { BackColorIcon, BananasIcon } from '@assets/icons'
+import backgroundImage from '@assets/images/background.webp'
+import lockIcon from '@assets/images/levels/lock-icon.png'
 import { Button, IconButton, OutlinedText } from '@components/atoms'
 import { LevelCard } from '@components/molecules'
 import { LEVEL_CARD_GAP, LEVEL_CARD_WIDTH, TOTAL_LEVELS } from '@constants'
-import { useAssetPreload } from '@hooks'
+import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppSelector } from '@store/hooks'
 import { getAllAvailableLevels } from '@store/slices/levelsSlice'
-import { GlobalStyles } from '@theme'
+import { COLORS, GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
 import { getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
@@ -27,11 +29,12 @@ import { styles } from './LevelScreen.styles'
 const ITEM_WIDTH = LEVEL_CARD_WIDTH
 const ITEM_GAP = LEVEL_CARD_GAP
 const ITEM_SIZE = ITEM_WIDTH + ITEM_GAP
+const ASSET_KEYS = {
+  BG: 'background',
+  ASSETS: 'assets',
+}
 
 const LevelsScreen = () => {
-  const backgroundImage = require('../../../assets/images/background.webp')
-  const lockIcon = require('../../../assets/images/levels/lock-icon.png')
-
   const availableLevels = useAppSelector(getAllAvailableLevels)
   const bananas = useAppSelector(({ bananas }) => bananas.bananas)
 
@@ -54,11 +57,12 @@ const LevelsScreen = () => {
         getLevelIcon((i + 1) as LevelId)
       ),
     ],
-    [backgroundImage, lockIcon]
+    []
   )
   const { ready: assetsReady } = useAssetPreload(preloadList)
-
-  const [bgReady, setBgReady] = useState(false)
+  const { ready: contentVisible, done: assetLoaded } = useAssetsReady(
+    Object.values(ASSET_KEYS)
+  )
 
   const data = useMemo(
     () => Array.from({ length: TOTAL_LEVELS }, (_, i) => (i + 1) as LevelId),
@@ -113,6 +117,12 @@ const LevelsScreen = () => {
   )
 
   useEffect(() => {
+    if (assetsReady) {
+      assetLoaded(ASSET_KEYS.ASSETS)
+    }
+  }, [assetLoaded, assetsReady])
+
+  useEffect(() => {
     if (!didInitialCenter.current) {
       return
     }
@@ -137,16 +147,15 @@ const LevelsScreen = () => {
 
   const keyExtractor = useCallback((lvl: LevelId) => String(lvl), [])
 
-  const contentVisible = assetsReady && bgReady
-
   return (
     <View style={styles.backgroundImage}>
       <Image
         allowDownscaling
         cachePolicy="disk"
         contentFit="cover"
-        onLoad={() => setBgReady(true)}
-        placeholder="#0183AB"
+        onError={() => assetLoaded(ASSET_KEYS.BG)}
+        onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+        placeholder={COLORS.backgroundBlue}
         priority="high"
         source={backgroundImage}
         style={StyleSheet.absoluteFill}
@@ -154,6 +163,7 @@ const LevelsScreen = () => {
       />
 
       <View
+        pointerEvents={contentVisible ? 'auto' : 'none'}
         style={[
           styles.contentContainer,
           {

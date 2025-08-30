@@ -1,4 +1,5 @@
 import { StarIcon } from '@assets/icons'
+import closedLevelIcon from '@assets/images/levels/lock-icon.png'
 import { OutlinedText } from '@components/atoms'
 import {
   containerBorderMap,
@@ -19,7 +20,6 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { styles } from './CardInner.styles'
 
 const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
-  const closedLevelIcon = require('../../../../../../assets/images/levels/lock-icon.png')
   const selectLevel = useMemo(() => getLevelById(level), [level])
   const { isAvailable, stars, difficulty } = useAppSelector(
     selectLevel

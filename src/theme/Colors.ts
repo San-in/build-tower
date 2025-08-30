@@ -154,6 +154,7 @@ export const COLORS = {
   yellow10: 'rgba(251,216,2,0.1)',
 
   backgroundBlue: 'rgb(1,123,165)',
+  backgroundYellow: 'rgb(233,152,94)',
   brown: 'rgb(128,76,1)',
   lightBlue: 'rgb(3,188,239)',
   vividPurple: 'rgb(211,5,243)',

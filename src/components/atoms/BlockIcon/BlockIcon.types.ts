@@ -1,8 +1,9 @@
 import { BLOCK_TYPE } from '@types'
-import { DimensionValue, ViewStyle } from 'react-native'
+import { ImageStyle } from 'expo-image'
+import { DimensionValue } from 'react-native'
 
 export type BlockIconProps = {
   size?: DimensionValue
-  styleContainer?: ViewStyle
+  styleContainer?: ImageStyle
   type?: BLOCK_TYPE
 }

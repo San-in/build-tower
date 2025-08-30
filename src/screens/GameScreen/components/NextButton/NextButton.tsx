@@ -20,7 +20,7 @@ const NextButton: FC<NextButtonProps> = ({
     const wasDisabled = prevDisabled.current
     const becameEnabled = !isDisabled
 
-    let timeoutId: NodeJS.Timeout | undefined
+    let timeoutId: number
 
     if (wasDisabled && becameEnabled) {
       setShouldShake(true)
