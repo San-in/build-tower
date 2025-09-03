@@ -15,4 +15,5 @@ export { default as MonkeySecondConstructorImg } from './monkey-constructor-2.pn
 export { default as MonkeyModalImg } from './monkey-modal.png'
 export { default as MonkeyNotificationImg } from './monkey-notification.png'
 export { default as MonkeyWizardImg } from './monkey-wizard.png'
+export { default as SplashImg } from './splash.png'
 export { default as WinBannerImg } from './win.png'

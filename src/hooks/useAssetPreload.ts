@@ -1,11 +1,11 @@
 import { Asset } from 'expo-asset'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { ImageSourcePropType, ImageURISource } from 'react-native'
 
-type Source = number | string
 type Options = { auto?: boolean }
 
 export const useAssetPreload = (
-  sources: Array<Source>,
+  sources: ReadonlyArray<ImageSourcePropType>,
   opts: Options = { auto: true }
 ) => {
   const sourcesKey = useMemo(() => JSON.stringify(sources), [sources])
@@ -13,16 +13,34 @@ export const useAssetPreload = (
   const assets = useMemo(() => {
     const seen = new Set<string>()
     const list: Array<Asset> = []
-    for (const s of sources) {
-      const key = typeof s === 'number' ? `m:${s}` : `u:${s}`
+
+    const pushUnique = (key: string, asset: Asset) => {
       if (seen.has(key)) {
-        continue
+        return
       }
       seen.add(key)
-      list.push(
-        typeof s === 'number' ? Asset.fromModule(s) : Asset.fromURI(String(s))
-      )
+      list.push(asset)
     }
+
+    const fromImageURISource = (s: ImageURISource | null | undefined) => {
+      if (!s?.uri) {
+        return
+      }
+      pushUnique(`u:${s.uri}`, Asset.fromURI(String(s.uri)))
+    }
+
+    for (const src of sources) {
+      if (typeof src === 'number') {
+        pushUnique(`m:${src}`, Asset.fromModule(src))
+      } else if (Array.isArray(src)) {
+        for (const s of src) {
+          fromImageURISource(s)
+        }
+      } else if (src && typeof src === 'object') {
+        fromImageURISource(src as ImageURISource)
+      }
+    }
+
     return list
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourcesKey])
@@ -30,7 +48,6 @@ export const useAssetPreload = (
   const [ready, setReady] = useState(false)
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState<Error | null>(null)
-
   const runId = useRef(0)
 
   const start = useCallback(async (): Promise<void> => {
@@ -41,12 +58,11 @@ export const useAssetPreload = (
 
     try {
       let done = 0
-      // паралельно з прогресом
       await Promise.all(
         assets.map((a) =>
           a
             .downloadAsync()
-            .catch(() => {}) // або прокинути помилку якщо хочеш фейлити весь прогін
+            .catch(() => {})
             .finally(() => {
               if (runId.current !== id) {
                 return
@@ -56,15 +72,14 @@ export const useAssetPreload = (
             })
         )
       )
-
       if (runId.current === id) {
         setReady(true)
       }
     } catch (e: unknown) {
-      const err = e instanceof Error ? e : new Error(String(e))
-      if (runId.current === id) {
-        setError(err)
+      if (runId.current !== id) {
+        return
       }
+      setError(e instanceof Error ? e : new Error(String(e)))
     }
   }, [assets])
 
@@ -72,7 +87,8 @@ export const useAssetPreload = (
     if (opts.auto) {
       start().then()
     }
-  }, [opts.auto, sourcesKey, start])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opts.auto, sourcesKey])
 
   useEffect(
     () => () => {
