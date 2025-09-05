@@ -51,7 +51,6 @@ import {
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
-import { COLORS } from '@theme'
 import {
   EDGE_GLOW_OVERLAY_TYPE,
   FortuneWheelModalState,
@@ -1088,10 +1087,9 @@ const GameScreen: FC = () => {
           key={String(level)}
           onError={() => assetLoaded(ASSET_KEYS.BG)}
           onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
-          placeholder={COLORS.backgroundBlue}
           priority="high"
           source={backgroundImage}
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, styles.image]}
           transition={200}
         />
         <View
@@ -1121,33 +1119,24 @@ const GameScreen: FC = () => {
             <View style={styles.progressBadgeContainer}>
               <MotiView
                 animate={{ opacity: Number(isStarsGifVisible) }}
-                style={{
-                  position: 'absolute',
-                  left: -50,
-                  top: -30,
-                  zIndex: 5,
-                  flexDirection: 'row',
-                }}
+                style={styles.starsGifContainer}
                 transition={{ type: 'timing', duration: 100, delay: 200 }}
               >
                 {isStarsGifVisible && (
                   <>
                     <Image
+                      priority={'high'}
                       source={StarsGif}
-                      style={{ width: 100, height: 100 }}
+                      style={styles.starsGif}
+                      transition={100}
                     />
                     <View
-                      style={{
-                        borderWidth: 1,
-                        width: step * 50,
-                        height: 80,
-                        alignSelf: 'flex-end',
-                        marginLeft: -60,
-                        marginBottom: -5,
-                        borderRadius: 20,
-                        borderColor: COLORS.yellow40,
-                        backgroundColor: COLORS.yellow20,
-                      }}
+                      style={[
+                        styles.starsGifBackdrop,
+                        {
+                          width: step * 50,
+                        },
+                      ]}
                     />
                   </>
                 )}

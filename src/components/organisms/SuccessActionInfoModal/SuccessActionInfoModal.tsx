@@ -1,6 +1,5 @@
 import { ConfettiGif } from '@assets/gifs'
 import { BackgroundImg } from '@assets/images'
-import { COLORS } from '@theme'
 import { Image } from 'expo-image'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useState } from 'react'
@@ -48,10 +47,9 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
           contentFit="cover"
           onError={() => setIsBackGroundReady(true)}
           onLoadEnd={() => setIsBackGroundReady(true)}
-          placeholder={COLORS.backgroundBlue}
           priority="high"
           source={BackgroundImg}
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, styles.backgroundContainer]}
           transition={50}
         />
         <View style={styles.contentContainer}>{children}</View>
@@ -59,12 +57,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
           <Image
             recyclingKey={`confetti-${Number(isConfettiVisible)}`}
             source={ConfettiGif}
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              bottom: 0,
-            }}
+            style={styles.gifContainer}
             transition={100}
           />
         )}

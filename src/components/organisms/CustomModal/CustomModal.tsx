@@ -157,11 +157,13 @@ const CustomModal: FC<CustomModalProps> = ({
               contentFit="cover"
               onError={() => assetLoaded(ASSET_KEYS.BG)}
               onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
-              placeholder={placeholder}
               priority="high"
               recyclingKey={`modal-bg-${type}`}
               source={bgSrc}
-              style={StyleSheet.absoluteFill}
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: placeholder },
+              ]}
               transition={100}
             />
 

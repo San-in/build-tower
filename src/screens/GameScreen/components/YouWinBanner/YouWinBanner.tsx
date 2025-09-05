@@ -1,7 +1,7 @@
 import { WinBannerImg } from '@assets/images'
 import { Image } from 'expo-image'
 import { MotiView } from 'moti'
-import { FC } from 'react'
+import React, { FC } from 'react'
 
 import { styles } from './YouWinBanner.styles'
 

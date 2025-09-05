@@ -11,8 +11,8 @@ import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { View } from 'react-native'
 
+import { styles } from './SideMenu.styles'
 import { SideMenuProps } from './SideMenu.types'
-import { styles } from './SideMeny.styles'
 
 const ICON_SIZE = 35
 const ICON_MENU_SIZE = 40
@@ -56,16 +56,10 @@ const SideMenu: FC<SideMenuProps> = () => {
             animate={{ opacity: 1, translateX: 0, scaleX: 1 }}
             exit={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
             from={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
-            style={{ marginLeft: 8, borderRadius: 12, overflow: 'visible' }}
+            style={styles.menuListContainer}
             transition={{ type: 'timing', duration: 180 }}
           >
-            <View
-              style={{
-                flexDirection: 'row-reverse',
-                gap: 6,
-                alignItems: 'center',
-              }}
-            >
+            <View style={styles.menuListContent}>
               {items.map((icon, idx) => (
                 <MotiView
                   animate={{ opacity: 1, translateX: 0 }}

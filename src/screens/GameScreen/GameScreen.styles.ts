@@ -11,6 +11,9 @@ export const styles = StyleSheet.create({
     height: 100,
     width: '100%',
   },
+  image: {
+    backgroundColor: COLORS.backgroundBlue,
+  },
   initialBlockTowerContainer: {
     justifyContent: 'flex-end',
     marginBottom: -2,
@@ -47,6 +50,24 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 25,
     top: 120,
+  },
+  starsGif: { height: 100, width: 100 },
+  starsGifBackdrop: {
+    alignSelf: 'flex-end',
+    backgroundColor: COLORS.yellow20,
+    borderColor: COLORS.yellow40,
+    borderRadius: 20,
+    borderWidth: 1,
+    height: 80,
+    marginBottom: -5,
+    marginLeft: -60,
+  },
+  starsGifContainer: {
+    flexDirection: 'row',
+    left: -50,
+    position: 'absolute',
+    top: -30,
+    zIndex: 5,
   },
   towersContainer: {
     flexDirection: 'row',

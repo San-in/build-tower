@@ -88,16 +88,15 @@ const OptionCard: FC<OptionCardProps> = ({ onPress, value, operator }) => {
           },
         ]}
       >
-        <View style={{ minHeight: 200, minWidth: 150, padding: 15 }}>
+        <View style={styles.imageBackground}>
           <Image
             cachePolicy="memory-disk"
             contentFit="cover"
             onError={handleLoaded}
             onLoadEnd={handleLoaded}
-            placeholder={placeholder}
             priority="high"
             source={backgroundImage}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, { backgroundColor: placeholder }]}
             transition={120}
           />
 

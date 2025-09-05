@@ -14,7 +14,15 @@ import { COLORS, GlobalStyles } from '@theme'
 import { getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
-import React, { FC, memo, useCallback, useMemo, useState } from 'react'
+import React, {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 
 import { styles } from './CardInner.styles'
@@ -41,14 +49,26 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
     isSelectedLevel && !isAvailable && styles.greyShadow,
   ].filter(Boolean)
 
-  const [bgReady, setBgReady] = useState(false)
-
-  const handleBgLoaded = useCallback(() => setBgReady(true), [])
   const [reloadKey, setReloadKey] = useState(0)
+  const retryRef = useRef(0)
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const handleImgError = useCallback(() => {
-    setTimeout(() => setReloadKey((k) => k + 1), 80)
+    if (retryRef.current >= 3) {
+      return
+    }
+    retryRef.current += 1
+    retryTimer.current = setTimeout(() => setReloadKey((k) => k + 1), 120)
   }, [])
+
+  useEffect(
+    () => () => {
+      if (retryTimer.current) {
+        clearTimeout(retryTimer.current)
+      }
+    },
+    []
+  )
 
   return (
     <Pressable onPress={onPress} style={containerStyles}>
@@ -80,12 +100,17 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
             contentFit="cover"
             key={reloadKey}
             onError={handleImgError}
-            onLoadEnd={handleBgLoaded}
-            placeholder={isAvailable ? COLORS.yellow80 : COLORS.codeGrey50}
             priority={isSelectedLevel ? 'high' : 'normal'}
             recyclingKey={recyclingKey}
             source={iconSrc}
-            style={StyleSheet.absoluteFill}
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: isAvailable
+                  ? COLORS.yellow80
+                  : COLORS.codeGrey50,
+              },
+            ]}
             transition={120}
           />
         </View>
@@ -110,5 +135,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
 export default memo(
   CardInner,
   (prev, next) =>
-    prev.level === next.level && prev.isSelectedLevel === next.isSelectedLevel
+    prev.level === next.level &&
+    prev.isSelectedLevel === next.isSelectedLevel &&
+    prev.onPress === next.onPress
 )

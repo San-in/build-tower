@@ -88,10 +88,9 @@ const WelcomeScreen = () => {
         contentFit="cover"
         onError={() => assetLoaded(ASSET_KEYS.BG)}
         onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
-        placeholder={COLORS.backgroundBlue}
         priority="high"
         source={SplashImg}
-        style={StyleSheet.absoluteFill}
+        style={[StyleSheet.absoluteFill, styles.image]}
         transition={100}
       />
 
@@ -104,7 +103,7 @@ const WelcomeScreen = () => {
             animate={{ opacity: Number(bgReady) }}
             exit={{ opacity: 0 }}
             from={{ opacity: 0 }}
-            style={{ height: '100%', width: '100%', alignItems: 'center' }}
+            style={styles.sideMenuContainer}
             transition={{ type: 'timing', duration: 300, delay: 150 }}
           >
             <SideMenu />

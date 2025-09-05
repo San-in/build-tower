@@ -2,6 +2,9 @@ import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
+  backgroundContainer: {
+    backgroundColor: COLORS.backgroundBlue,
+  },
   container: {
     height: '100%',
     left: 0,
@@ -19,6 +22,12 @@ export const styles = StyleSheet.create({
     marginBottom: 50,
     maxWidth: '90%',
     padding: 40,
+  },
+  gifContainer: {
+    bottom: 0,
+    height: '100%',
+    position: 'absolute',
+    width: '100%',
   },
   pressableContainer: {
     alignItems: 'center',

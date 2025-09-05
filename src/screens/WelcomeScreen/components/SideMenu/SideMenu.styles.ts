@@ -10,4 +10,10 @@ export const styles = StyleSheet.create({
     top: 0,
     zIndex: 5,
   },
+  menuListContainer: { borderRadius: 12, marginLeft: 8, overflow: 'visible' },
+  menuListContent: {
+    alignItems: 'center',
+    flexDirection: 'row-reverse',
+    gap: 6,
+  },
 })

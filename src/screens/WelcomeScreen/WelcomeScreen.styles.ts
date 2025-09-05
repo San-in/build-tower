@@ -7,6 +7,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  image: {
+    backgroundColor: COLORS.backgroundBlue,
+  },
+  sideMenuContainer: { alignItems: 'center', height: '100%', width: '100%' },
   startButton: { marginTop: 100 },
   title: {
     marginTop: 450,

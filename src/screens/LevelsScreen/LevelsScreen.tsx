@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppSelector } from '@store/hooks'
 import { getAllAvailableLevels } from '@store/slices/levelsSlice'
-import { COLORS, GlobalStyles } from '@theme'
+import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
 import { getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
@@ -154,10 +154,9 @@ const LevelsScreen = () => {
         contentFit="cover"
         onError={() => assetLoaded(ASSET_KEYS.BG)}
         onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
-        placeholder={COLORS.backgroundBlue}
         priority="high"
         source={BackgroundImg}
-        style={StyleSheet.absoluteFill}
+        style={[StyleSheet.absoluteFill, styles.image]}
         transition={0}
       />
 

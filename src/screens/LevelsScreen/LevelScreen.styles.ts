@@ -20,12 +20,13 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
   },
-
   contentContainer: {
     flex: 1,
-
     paddingHorizontal: 0,
     position: 'relative',
+  },
+  image: {
+    backgroundColor: COLORS.backgroundBlue,
   },
   letsGoButton: { alignItems: 'center' },
   levelsList: {
