@@ -22,17 +22,26 @@ export const styles = StyleSheet.create({
     marginBottom: 50,
     maxWidth: '90%',
     padding: 40,
+    zIndex: 5,
   },
-  gifContainer: {
-    bottom: 0,
+  gifAnimation: {
     height: '100%',
-    position: 'absolute',
     width: '100%',
   },
+  gifContainer: { zIndex: 2 },
   pressableContainer: {
     alignItems: 'center',
     height: '100%',
     justifyContent: 'center',
     width: '100%',
+  },
+  winBannerAnimation: {
+    height: '100%',
+    opacity: 0.6,
+    transform: [{ scale: 1.5 }],
+    width: '100%',
+  },
+  winBannerContainer: {
+    zIndex: 1,
   },
 })

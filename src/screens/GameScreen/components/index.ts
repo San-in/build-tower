@@ -1,5 +1,6 @@
 export * from './BlockTowerCreator'
 export * from './BuildTowerSplash'
+export * from './LevelFinishedOverlay'
 export * from './NextButton'
 export * from './PrizeSection'
 export * from './ProgressBadge'

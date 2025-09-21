@@ -1,4 +1,5 @@
 import { ConfettiGif, StarsGif } from '@assets/gifs'
+import birdsAnimation from '@assets/icons/animations/birds.json'
 import {
   BackgroundImg,
   BlockImg,
@@ -27,6 +28,7 @@ import { NavigationProp } from '@react-navigation/native'
 import { COLORS, GlobalStyles } from '@theme'
 import { SCREENS } from '@types'
 import { Image } from 'expo-image'
+import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
 import React, { useEffect, useMemo } from 'react'
 import { SafeAreaView, StyleSheet, View } from 'react-native'
@@ -82,6 +84,18 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.backgroundImage}>
+      <View
+        pointerEvents={'none'}
+        style={[StyleSheet.absoluteFillObject, styles.birdsAnimationContainer]}
+      >
+        <LottieView
+          loop
+          autoPlay={true}
+          source={birdsAnimation}
+          style={styles.birdsAnimation}
+        />
+      </View>
+
       <Image
         allowDownscaling
         cachePolicy="disk"
@@ -107,7 +121,6 @@ const WelcomeScreen = () => {
             transition={{ type: 'timing', duration: 300, delay: 150 }}
           >
             <SideMenu />
-
             <OutlinedText
               color={COLORS.yellow}
               fontSize={60}

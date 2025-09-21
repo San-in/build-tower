@@ -34,6 +34,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
   ) as Level
 
   const iconSrc = isAvailable ? getLevelIcon(level) : LockImg
+
   const recyclingKey = isAvailable ? `lvl-${level}` : 'lock'
 
   const containerGradient: readonly [string, string, ...Array<string>] =
@@ -107,8 +108,8 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
               StyleSheet.absoluteFill,
               {
                 backgroundColor: isAvailable
-                  ? COLORS.yellow80
-                  : COLORS.codeGrey50,
+                  ? COLORS.yellow20
+                  : COLORS.codeGrey20,
               },
             ]}
             transition={120}

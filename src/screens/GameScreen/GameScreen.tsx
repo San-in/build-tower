@@ -33,7 +33,7 @@ import {
   LevelResultModalContent,
   PowerUpModalContent,
 } from '@components/organisms/CustomModal/components'
-import { EdgeGlowOverlay, Toast } from '@components/wrappers'
+import { Toast } from '@components/wrappers'
 import {
   BLOCK_DIMENSION,
   EMPTY_FUNCTION,
@@ -52,7 +52,6 @@ import {
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
 import {
-  EDGE_GLOW_OVERLAY_TYPE,
   FortuneWheelModalState,
   GAME_MODAL_TYPE,
   GAME_SCREEN_SUCCESS_ACTION,
@@ -95,11 +94,11 @@ import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 import {
   BlockTowerCreator,
   BuildTowerSplash,
+  LevelFinishedOverlay,
   NextButton,
   PrizeSection,
   ProgressBadge,
   ResetStepsModal,
-  YouWinBanner,
 } from './components'
 import StepBar from './components/StepBar/StepBar'
 import {
@@ -629,8 +628,6 @@ const GameScreen: FC = () => {
     if (isOutOfAttempts) {
       return
     }
-    // handleAddPowerUp(MARKET_PRODUCT.RemoveRandomBlocks_Gold)
-    // return
 
     if (firstOptionCard.number && secondOptionCard.number) {
       setIsModalOptionVisible(true)
@@ -888,7 +885,7 @@ const GameScreen: FC = () => {
           onCrossIconPress: handleCloseActionModal,
         },
         [GAME_MODAL_TYPE.Reset]: {
-          actionModalHeader: 'Start over? Really?',
+          actionModalHeader: 'Start over?',
           actionModalContent: (
             <BasicModalContent
               onCancel={handleCloseActionModal}
@@ -1097,13 +1094,7 @@ const GameScreen: FC = () => {
           style={[StyleSheet.absoluteFill, { opacity: Number(contentVisible) }]}
         >
           {isLevelFinished && (
-            <>
-              <EdgeGlowOverlay
-                onPress={handleGoHome}
-                sides={EDGE_GLOW_OVERLAY_TYPE.Sides}
-              />
-              <YouWinBanner />
-            </>
+            <LevelFinishedOverlay handleGoHome={handleGoHome} />
           )}
 
           <Header

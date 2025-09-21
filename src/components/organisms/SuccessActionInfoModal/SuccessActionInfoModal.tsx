@@ -1,6 +1,8 @@
-import { ConfettiGif } from '@assets/gifs'
+import confettiAnimation from '@assets/icons/animations/confetti.json'
+import winAnimation from '@assets/icons/animations/win.json'
 import { BackgroundImg } from '@assets/images'
 import { Image } from 'expo-image'
+import LottieView from 'lottie-react-native'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
@@ -13,16 +15,16 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
   onPress,
   children,
 }) => {
-  const [isConfettiVisible, setIsConfettiVisible] = useState(true)
   const [isBackgroundReady, setIsBackGroundReady] = useState(false)
+  const [isConfettiVisible, setIsConfettiVisible] = useState(false)
 
   useEffect(() => {
-    let timerId: number
-    if (isConfettiVisible && isVisible) {
-      timerId = setTimeout(() => setIsConfettiVisible(false), 3000)
+    if (isVisible && !isConfettiVisible && isBackgroundReady) {
+      setTimeout(() => {
+        setIsConfettiVisible(true)
+      }, 800)
     }
-    return () => clearTimeout(timerId)
-  }, [isConfettiVisible, isVisible])
+  }, [isBackgroundReady, isConfettiVisible, isVisible])
 
   return (
     <MotiView
@@ -34,8 +36,8 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
     >
       <Pressable
         onPress={() => {
-          setIsConfettiVisible(true)
           if (onPress) {
+            setIsConfettiVisible(false)
             onPress()
           }
         }}
@@ -52,15 +54,32 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
           style={[StyleSheet.absoluteFill, styles.backgroundContainer]}
           transition={50}
         />
-        <View style={styles.contentContainer}>{children}</View>
-        {isConfettiVisible && isVisible && isBackgroundReady && (
-          <Image
-            recyclingKey={`confetti-${Number(isConfettiVisible)}`}
-            source={ConfettiGif}
-            style={styles.gifContainer}
-            transition={100}
+        <View
+          pointerEvents={'none'}
+          style={[StyleSheet.absoluteFill, styles.winBannerContainer]}
+        >
+          <LottieView
+            autoPlay
+            loop
+            source={winAnimation}
+            style={styles.winBannerAnimation}
           />
-        )}
+        </View>
+        <View
+          pointerEvents={'none'}
+          style={[StyleSheet.absoluteFill, styles.gifContainer]}
+        >
+          {isConfettiVisible && (
+            <LottieView
+              autoPlay={true}
+              loop={false}
+              source={confettiAnimation}
+              style={styles.gifAnimation}
+            />
+          )}
+        </View>
+
+        <View style={styles.contentContainer}>{children}</View>
       </Pressable>
     </MotiView>
   )

@@ -21,7 +21,7 @@ const GameStack = () => (
     <Stack.Screen
       component={LevelsScreen}
       name={SCREENS.LevelsScreen}
-      options={{ headerShown: false, animation: 'default' }}
+      options={{ headerShown: false, animation: 'fade' }}
     />
   </Stack.Navigator>
 )

@@ -7,6 +7,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  birdsAnimation: {
+    height: '100%',
+    width: '100%',
+  },
+  birdsAnimationContainer: { zIndex: 1 },
   image: {
     backgroundColor: COLORS.backgroundBlue,
   },
