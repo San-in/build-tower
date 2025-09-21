@@ -5,6 +5,7 @@ import {
   LevelConfig,
   LevelId,
   POWER_UP_GRADE,
+  Z_INDEX_PRIORITY,
 } from '@types'
 
 export const TOTAL_LEVELS = 30
@@ -12,6 +13,13 @@ export const LEVEL_CARD_WIDTH = 200
 export const LEVEL_CARD_GAP = 20
 export const INITIAL_SPIN_QUANTITY = 4
 export const BLOCK_DIMENSION = 70
+export const Z_INDEX_TYPE: Record<Z_INDEX_PRIORITY, number> = {
+  [Z_INDEX_PRIORITY.Hidden]: -1,
+  [Z_INDEX_PRIORITY.Minimal]: 1,
+  [Z_INDEX_PRIORITY.Medium]: 3,
+  [Z_INDEX_PRIORITY.High]: 5,
+  [Z_INDEX_PRIORITY.ExtraHigh]: 10,
+}
 
 export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
   1: {

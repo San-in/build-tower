@@ -4,7 +4,7 @@ import { BackgroundImg } from '@assets/images'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { MotiView } from 'moti'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 
 import { styles } from './SuccessActionInfoModal.styles'
@@ -16,73 +16,96 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
   children,
 }) => {
   const [isBackgroundReady, setIsBackGroundReady] = useState(false)
+  const confettiRef = useRef<LottieView>(null)
+  const isAnimationPlaying = useRef(false)
   const [isConfettiVisible, setIsConfettiVisible] = useState(false)
 
   useEffect(() => {
-    if (isVisible && !isConfettiVisible && isBackgroundReady) {
-      setTimeout(() => {
+    let timeoutId: number
+    if (
+      isVisible &&
+      confettiRef?.current &&
+      isBackgroundReady &&
+      !isAnimationPlaying.current
+    ) {
+      confettiRef.current?.reset()
+      isAnimationPlaying.current = true
+      timeoutId = setTimeout(() => {
+        confettiRef.current?.play()
         setIsConfettiVisible(true)
-      }, 800)
+      }, 1000)
+    } else {
+      setIsConfettiVisible(false)
     }
-  }, [isBackgroundReady, isConfettiVisible, isVisible])
+    return () => clearTimeout(timeoutId)
+  }, [isBackgroundReady, isVisible])
 
-  return (
-    <MotiView
-      animate={{ opacity: isVisible && isBackgroundReady ? 1 : 0 }}
-      from={{ opacity: 0 }}
-      pointerEvents={isVisible && isBackgroundReady ? 'auto' : 'none'}
-      style={styles.container}
-      transition={{ type: 'timing', duration: 400 }}
-    >
-      <Pressable
-        onPress={() => {
-          if (onPress) {
-            setIsConfettiVisible(false)
-            onPress()
-          }
-        }}
-        style={styles.pressableContainer}
+  const handleOnPress = () => {
+    if (onPress) {
+      onPress()
+      setTimeout(() => {
+        confettiRef.current?.reset()
+        isAnimationPlaying.current = false
+        setIsBackGroundReady(false)
+        setIsConfettiVisible(false)
+      }, 500)
+    }
+  }
+  if (isVisible) {
+    return (
+      <MotiView
+        animate={{ opacity: isBackgroundReady ? 1 : 0 }}
+        pointerEvents={isVisible && isBackgroundReady ? 'auto' : 'none'}
+        style={styles.container}
+        transition={{ type: 'timing' }}
       >
-        <Image
-          allowDownscaling
-          cachePolicy="memory-disk"
-          contentFit="cover"
-          onError={() => setIsBackGroundReady(true)}
-          onLoadEnd={() => setIsBackGroundReady(true)}
-          priority="high"
-          source={BackgroundImg}
-          style={[StyleSheet.absoluteFill, styles.backgroundContainer]}
-          transition={50}
-        />
-        <View
-          pointerEvents={'none'}
-          style={[StyleSheet.absoluteFill, styles.winBannerContainer]}
-        >
-          <LottieView
-            autoPlay
-            loop
-            source={winAnimation}
-            style={styles.winBannerAnimation}
+        <Pressable onPress={handleOnPress} style={styles.pressableContainer}>
+          <Image
+            allowDownscaling
+            cachePolicy="memory-disk"
+            contentFit="cover"
+            onError={() => setIsBackGroundReady(true)}
+            onLoadEnd={() => setIsBackGroundReady(true)}
+            priority="high"
+            source={BackgroundImg}
+            style={[StyleSheet.absoluteFill, styles.backgroundContainer]}
+            transition={50}
           />
-        </View>
-        <View
-          pointerEvents={'none'}
-          style={[StyleSheet.absoluteFill, styles.gifContainer]}
-        >
-          {isConfettiVisible && (
+          <View
+            pointerEvents={'none'}
+            style={[StyleSheet.absoluteFill, styles.winBannerContainer]}
+          >
             <LottieView
-              autoPlay={true}
+              autoPlay
+              loop
+              source={winAnimation}
+              style={styles.winBannerAnimation}
+            />
+          </View>
+          <MotiView
+            animate={{
+              opacity: isConfettiVisible ? 1 : 0,
+            }}
+            from={{ opacity: 0 }}
+            pointerEvents={'none'}
+            style={[StyleSheet.absoluteFill, styles.gifContainer]}
+            transition={{ type: 'timing', duration: 300 }}
+          >
+            <LottieView
+              autoPlay={false}
               loop={false}
+              ref={confettiRef}
               source={confettiAnimation}
               style={styles.gifAnimation}
             />
-          )}
-        </View>
+          </MotiView>
 
-        <View style={styles.contentContainer}>{children}</View>
-      </Pressable>
-    </MotiView>
-  )
+          <View style={styles.contentContainer}>{children}</View>
+        </Pressable>
+      </MotiView>
+    )
+  }
+  return null
 }
 
 export default SuccessActionInfoModal

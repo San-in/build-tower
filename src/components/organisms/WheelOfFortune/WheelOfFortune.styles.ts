@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -15,6 +16,6 @@ export const styles = StyleSheet.create({
   knobIconContainer: {
     position: 'absolute',
     top: -35,
-    zIndex: 1,
+    zIndex: Z_INDEX_TYPE.minimal,
   },
 })

@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -12,7 +13,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 3,
     top: 2,
-    zIndex: 5,
+    zIndex: Z_INDEX_TYPE.high,
   },
   closeIconPressed: {
     opacity: 0.7,
@@ -48,7 +49,7 @@ export const styles = StyleSheet.create({
     top: -125,
     transform: [{ translateX: '-50%' }],
     width: 150,
-    zIndex: 9,
+    zIndex: Z_INDEX_TYPE.extra_high,
   },
   text: { alignSelf: 'flex-start', color: COLORS.codeGrey },
   title: { color: COLORS.vanCleef, textAlign: 'center' },

@@ -131,7 +131,7 @@ const GameScreen: FC = () => {
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market?.AddExtraStep
+    (state) => state.market[MARKET_PRODUCT.AddExtraStep] || 0
   )
   const backgroundImage = getLevelBackground(level)
   const assetsToPreload = useMemo(

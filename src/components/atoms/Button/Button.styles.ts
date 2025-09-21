@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -16,7 +17,7 @@ export const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     top: 0,
-    zIndex: 0,
+    zIndex: Z_INDEX_TYPE.hidden,
   },
   gradientBackground: {
     alignItems: 'center',
@@ -29,10 +30,10 @@ export const styles = StyleSheet.create({
   },
   gradientContainer: {
     borderRadius: 14,
-    zIndex: 1,
+    zIndex: Z_INDEX_TYPE.minimal,
   },
   pressedContainer: {
     transform: [{ scale: 0.95 }, { translateX: 3 }, { translateY: 2 }],
   },
-  titleContainer: { zIndex: 2 },
+  titleContainer: { zIndex: Z_INDEX_TYPE.medium },
 })

@@ -1,65 +1,65 @@
 export enum SCREENS {
-  GameScreen = 'Game Screen',
-  WelcomeScreen = 'Welcome Screen',
-  LevelsScreen = 'Levels Screen',
+  GameScreen = 'game_screen',
+  WelcomeScreen = 'welcome_screen',
+  LevelsScreen = 'levels_screen',
 }
 export enum BUTTON_TYPE {
-  Success = 'Success',
-  Warning = 'Warning',
-  Error = 'Error',
-  Info = 'Info',
+  Success = 'success',
+  Warning = 'warning',
+  Error = 'error',
+  Info = 'info',
 }
 
 export enum LEVEL_DIFFICULTY {
-  Easy = 'Easy',
-  Medium = 'Medium',
-  Hard = 'Hard',
+  Easy = 'easy',
+  Medium = 'medium',
+  Hard = 'hard',
 }
 
 export enum MARKET_PRODUCT {
-  AddExtraStep = 'AddExtraStep',
-  AddRandomBlocks_Bronze = 'AddRandomBlocks_bronze',
-  AddRandomBlocks_Silver = 'AddRandomBlocks_silver',
-  AddRandomBlocks_Gold = 'AddRandomBlocks_gold',
-  RemoveRandomBlocks_Bronze = 'RemoveRandomBlocks_bronze',
-  RemoveRandomBlocks_Silver = 'RemoveRandomBlocks_silver',
-  RemoveRandomBlocks_Gold = 'RemoveRandomBlocks_gold',
+  AddExtraStep = 'add_extra_step',
+  AddRandomBlocks_Bronze = 'add_random_blocks_bronze',
+  AddRandomBlocks_Silver = 'add_random_blocks_silver',
+  AddRandomBlocks_Gold = 'add_random_blocks_gold',
+  RemoveRandomBlocks_Bronze = 'remove_random_blocks_bronze',
+  RemoveRandomBlocks_Silver = 'remove_random_blocks_silver',
+  RemoveRandomBlocks_Gold = 'remove_random_blocks_gold',
 }
 
 export enum INFO_UNLOCK_OPTION_MODAL_KEY {
   Empty = 'empty',
-  DisabledAd = 'disabledAd',
-  DisabledBananas = 'disabledBananas',
-  EnabledAd = 'enabledAd',
-  EnabledBananas = 'enabledBananas',
+  DisabledAd = 'disabled_ad',
+  DisabledBananas = 'disabled_bananas',
+  EnabledAd = 'enabled_ad',
+  EnabledBananas = 'enabled_bananas',
 }
 
 export enum GAME_MODAL_TYPE {
-  Home = 'Home',
-  Reset = 'Reset ',
-  AddBlocks = 'AddBlocks',
-  RemoveBlocks = 'RemoveBlocks',
-  RemoveBlocksWarning = 'RemoveBlocksWarning',
-  PowerUpWarning = 'PowerUpWarning',
-  LevelConditions = 'LevelConditions',
-  LevelResult = 'LevelResult',
-  AddExtraStep = 'AddExtraStep',
+  Home = 'home',
+  Reset = 'reset ',
+  AddBlocks = 'add_blocks',
+  RemoveBlocks = 'remove_blocks',
+  RemoveBlocksWarning = 'remove_blocks_warning',
+  PowerUpWarning = 'power_up_warning',
+  LevelConditions = 'level_conditions',
+  LevelResult = 'level_result',
+  AddExtraStep = 'add_extra_step',
 }
 export enum MODAL_TYPE {
-  Orange = 'Orange',
-  Green = 'Green ',
-  Purple = 'Purple',
-  Blue = 'Blue',
+  Orange = 'orange',
+  Green = 'green ',
+  Purple = 'purple',
+  Blue = 'blue',
 }
 export enum POWER_UP_GRADE {
-  Bronze = 'Bronze',
-  Silver = 'Silver',
-  Gold = 'Gold',
+  Bronze = 'bronze',
+  Silver = 'silver',
+  Gold = 'gold',
 }
 
 export enum POWER_UP_TYPE {
-  AddRandomBlocks = 'AddRandomBlocks',
-  RemoveRandomBlocks = 'RemoveRandomBlocks',
+  AddRandomBlocks = 'add_random_blocks',
+  RemoveRandomBlocks = 'remove_random_blocks',
 }
 
 export enum OPERATOR {
@@ -70,14 +70,14 @@ export enum OPERATOR {
 }
 
 export enum TOWER {
-  FirstTower = 'First',
-  SecondTower = 'Second',
+  FirstTower = 'first',
+  SecondTower = 'second',
 }
 
 export type FORTUNE_WHEEL_MODAL_TYPE = TOWER | POWER_UP_TYPE
 
 export enum GAME_SCREEN_SUCCESS_ACTION {
-  ResetSteps = 'ResetSteps',
+  ResetSteps = 'reset-steps',
 }
 export enum BONUS_OPTION_TYPE {
   Ad = 'ad',
@@ -85,14 +85,14 @@ export enum BONUS_OPTION_TYPE {
 }
 
 export enum BLOCK_TYPE {
-  Basic = 'Basic',
+  Basic = 'basic',
 }
 
 export enum MONKEY_ANIMATION_TYPE {
-  RunAndJump = 'run-and-jump',
+  RunAndJump = 'run_and_jump',
   Landing = 'landing',
   Idle = 'idle',
-  JumpToTop = 'jump-to-top',
+  JumpToTop = 'jump_to_top',
   Celebration = 'celebration',
 }
 export enum SELECTED_OPTION {
@@ -101,11 +101,11 @@ export enum SELECTED_OPTION {
   None = 'none',
 }
 export enum LEVEL_RESULT {
-  TooHigh = 'tooHigh',
-  TooLow = 'tooLow',
-  GoldResult = 'goldResult',
-  SilverResult = 'silverResult',
-  BronzeResult = 'bronzeResult',
+  TooHigh = 'too_high',
+  TooLow = 'too_low',
+  GoldResult = 'gold_result',
+  SilverResult = 'silver_result',
+  BronzeResult = 'bronze_result',
 }
 export enum BLOCK_CREATOR_OPERATION {
   Add = 'add',
@@ -122,4 +122,12 @@ export enum MONKEY_NOTIFICATION_STATUS {
   TooMuchForWin = 'too_much_for_win',
   CloseToWin = 'close_to_win',
   Neutral = 'neutral',
+}
+
+export enum Z_INDEX_PRIORITY {
+  Hidden = "hidden",
+  Minimal ="minimal",
+  Medium = "medium",
+  High ="high",
+  ExtraHigh ="extra_high",
 }

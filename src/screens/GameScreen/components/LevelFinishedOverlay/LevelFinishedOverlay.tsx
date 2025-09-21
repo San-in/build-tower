@@ -16,17 +16,22 @@ const LevelFinishedOverlay: FC<LevelFinishedOverlayProps> = ({
   const confettiRef = useRef<LottieView>(null)
 
   useEffect(() => {
+    confettiRef.current?.reset()
     const timer = setTimeout(() => {
       confettiRef.current?.play()
-    }, 2800)
+    }, 3000)
 
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [])
 
   return (
     <View style={[StyleSheet.absoluteFill, styles.container]}>
       <EdgeGlowOverlay
-        onPress={handleGoHome}
+        onPress={() => {
+          handleGoHome()
+        }}
         sides={EDGE_GLOW_OVERLAY_TYPE.Sides}
       />
       <YouWinBanner />
@@ -34,7 +39,7 @@ const LevelFinishedOverlay: FC<LevelFinishedOverlayProps> = ({
         animate={{ opacity: [1] }}
         from={{ opacity: 0 }}
         style={styles.animationContainer}
-        transition={{ type: 'timing', duration: 800, delay: 2000 }}
+        transition={{ type: 'timing', duration: 500, delay: 2750 }}
       >
         <LottieView
           autoPlay={false}

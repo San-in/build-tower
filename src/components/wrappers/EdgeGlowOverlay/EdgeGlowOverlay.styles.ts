@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { Dimensions, StyleSheet } from 'react-native'
 const { width, height } = Dimensions.get('window')
 export const styles = StyleSheet.create({
@@ -6,12 +7,12 @@ export const styles = StyleSheet.create({
     height: 50,
     width,
   },
-  container: { zIndex: 10 },
+  container: { zIndex: Z_INDEX_TYPE.extra_high },
   edge: {
     borderRadius: 20,
     overflow: 'hidden',
     position: 'absolute',
-    zIndex: 10,
+    zIndex: Z_INDEX_TYPE.extra_high,
   },
   left: {
     height,

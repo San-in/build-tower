@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -6,6 +7,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.backgroundBlue,
   },
   container: {
+    backgroundColor: COLORS.backgroundBlue,
     height: '100%',
     left: 0,
     position: 'absolute',
@@ -22,13 +24,13 @@ export const styles = StyleSheet.create({
     marginBottom: 50,
     maxWidth: '90%',
     padding: 40,
-    zIndex: 5,
+    zIndex: Z_INDEX_TYPE.high,
   },
   gifAnimation: {
     height: '100%',
     width: '100%',
   },
-  gifContainer: { zIndex: 2 },
+  gifContainer: { zIndex: Z_INDEX_TYPE.medium },
   pressableContainer: {
     alignItems: 'center',
     height: '100%',
@@ -42,6 +44,6 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   winBannerContainer: {
-    zIndex: 1,
+    zIndex: Z_INDEX_TYPE.minimal,
   },
 })

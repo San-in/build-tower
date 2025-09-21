@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -28,7 +29,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 62,
-    zIndex: 3,
+    zIndex: Z_INDEX_TYPE.medium,
   },
   dropdownContainer: {
     paddingBottom: 20,
@@ -70,7 +71,7 @@ export const styles = StyleSheet.create({
     left: 16,
     paddingHorizontal: 4,
     position: 'absolute',
-    zIndex: 2,
+    zIndex: Z_INDEX_TYPE.medium,
   },
   labelDisabled: {
     color: COLORS.codeGrey40,

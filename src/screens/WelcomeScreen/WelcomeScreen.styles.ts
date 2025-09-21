@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -11,7 +12,7 @@ export const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  birdsAnimationContainer: { zIndex: 1 },
+  birdsAnimationContainer: { zIndex: Z_INDEX_TYPE.minimal },
   image: {
     backgroundColor: COLORS.backgroundBlue,
   },

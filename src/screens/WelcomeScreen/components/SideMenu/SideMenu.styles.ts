@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     top: 0,
-    zIndex: 5,
+    zIndex: Z_INDEX_TYPE.high,
   },
   menuListContainer: { borderRadius: 12, marginLeft: 8, overflow: 'visible' },
   menuListContent: {

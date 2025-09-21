@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -30,7 +31,7 @@ export const styles = StyleSheet.create({
     bottom: -30,
     position: 'absolute',
     right: -180,
-    zIndex: 10,
+    zIndex: Z_INDEX_TYPE.extra_high,
   },
   monkeyStageInitTower: { marginTop: 'auto' },
   monkeyStageInitTowerContainer: {
@@ -42,7 +43,7 @@ export const styles = StyleSheet.create({
   monkeyStageUserTowerContainer: {
     position: 'absolute',
     right: -15,
-    zIndex: 10,
+    zIndex: Z_INDEX_TYPE.extra_high,
   },
   progressBadgeContainer: {
     alignItems: 'flex-end',
@@ -67,7 +68,7 @@ export const styles = StyleSheet.create({
     left: -50,
     position: 'absolute',
     top: -30,
-    zIndex: 5,
+    zIndex: Z_INDEX_TYPE.high,
   },
   towersContainer: {
     flexDirection: 'row',

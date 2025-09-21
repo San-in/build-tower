@@ -1,3 +1,4 @@
+import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -13,7 +14,7 @@ export const styles = StyleSheet.create({
     right: 0,
     top: '5%',
     width: 250,
-    zIndex: 15,
+    zIndex: Z_INDEX_TYPE.extra_high,
   },
   image: { height: '120%', width: '120%' },
   phraseContainer: {
