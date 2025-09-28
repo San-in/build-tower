@@ -78,6 +78,7 @@ export type FORTUNE_WHEEL_MODAL_TYPE = TOWER | POWER_UP_TYPE
 
 export enum GAME_SCREEN_SUCCESS_ACTION {
   ResetSteps = 'reset-steps',
+  ResetLevel = 'reset-level',
 }
 export enum BONUS_OPTION_TYPE {
   Ad = 'ad',
@@ -125,9 +126,9 @@ export enum MONKEY_NOTIFICATION_STATUS {
 }
 
 export enum Z_INDEX_PRIORITY {
-  Hidden = "hidden",
-  Minimal ="minimal",
-  Medium = "medium",
-  High ="high",
-  ExtraHigh ="extra_high",
+  Hidden = 'hidden',
+  Minimal = 'minimal',
+  Medium = 'medium',
+  High = 'high',
+  ExtraHigh = 'extra_high',
 }

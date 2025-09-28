@@ -98,9 +98,13 @@ import {
   NextButton,
   PrizeSection,
   ProgressBadge,
-  ResetStepsModal,
+  SuccessActionModal,
 } from './components'
 import StepBar from './components/StepBar/StepBar'
+import {
+  ResetLevelContent,
+  ResetStepsContent,
+} from './components/SuccessActionModal/components'
 import {
   INITIAL_BUILD_MODAL_STATE,
   INITIAL_FORTUNE_WHEEL_MODAL_STATE,
@@ -254,16 +258,13 @@ const GameScreen: FC = () => {
     setIsInterfacesVisible(false)
     setIsLevelFinished(false)
     setPowerUpActiveAction(INITIAL_POWER_UP_ACTIVE_ACTION_MODAL_STATE)
-
-    setTimeout(() => {
-      setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
-      setResetStepsModalData(INITIAL_RESET_STEPS_MODAL_STATE)
-      setIsScaledTower(false)
-      setInitialBlockValue(0)
-      setUserBlockValue(0)
-      setBuildModalData(INITIAL_BUILD_MODAL_STATE)
-      setIsTowerBuilding(false)
-    }, 1500)
+    setIsScaledTower(false)
+    setInitialBlockValue(0)
+    setUserBlockValue(0)
+    setIsTowerBuilding(false)
+    setResetStepsModalData(INITIAL_RESET_STEPS_MODAL_STATE)
+    setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
+    setBuildModalData(INITIAL_BUILD_MODAL_STATE)
   }, [])
 
   const handleCloseMonkeyAnimation = () => {
@@ -383,9 +384,12 @@ const GameScreen: FC = () => {
   }, [handleCloseActionModal, navigation])
 
   const handleResetLevelPressed = useCallback(() => {
-    handleResetLevel()
+    setSuccessActionInfoModalData({
+      isVisible: true,
+      type: GAME_SCREEN_SUCCESS_ACTION.ResetLevel,
+    })
     handleCloseActionModal()
-  }, [handleCloseActionModal, handleResetLevel])
+  }, [handleCloseActionModal])
 
   const handleResetSteps = useCallback(() => {
     handleCloseActionModal()
@@ -604,7 +608,7 @@ const GameScreen: FC = () => {
     if (isLevelFinished) {
       setTimeout(() => {
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
-      }, 800)
+      }, 400)
       return
     }
     const { type, number } = powerUpActiveAction
@@ -800,7 +804,7 @@ const GameScreen: FC = () => {
       size: 100,
       loop: false,
       onFinishCalBack: EMPTY_FUNCTION,
-      speed: 3,
+      speed: 1.5,
     },
   }[monkeyAnimationData.type]
 
@@ -848,6 +852,31 @@ const GameScreen: FC = () => {
   )
 
   const { fortuneWheelCallBack } = fortuneWheelModalCallbacks
+
+  const successActionModalConfig = useMemo(
+    () =>
+      ({
+        [GAME_SCREEN_SUCCESS_ACTION.ResetSteps]: {
+          successActionModalHeader: 'Shazam!',
+          successActionModalContent: <ResetStepsContent />,
+          successActionModalImage: MonkeyWizardImg,
+          successActionModalCallback: handleCloseSuccessActionModal,
+        },
+        [GAME_SCREEN_SUCCESS_ACTION.ResetLevel]: {
+          successActionModalHeader: 'Whoosh!',
+          successActionModalContent: <ResetLevelContent />,
+          successActionModalImage: MonkeyWizardImg,
+          successActionModalCallback: handleResetLevel,
+        },
+      })[successActionInfoModalData.type],
+    [handleResetLevel, successActionInfoModalData.type]
+  )
+  const {
+    successActionModalHeader,
+    successActionModalContent,
+    successActionModalImage,
+    successActionModalCallback,
+  } = successActionModalConfig || {}
 
   const actionModalConfig = useMemo(
     () =>
@@ -1294,10 +1323,14 @@ const GameScreen: FC = () => {
         onConfirm={handleConfirmResetStepsModal}
         visible={resetStepsModalData.isVisible}
       />
-      <ResetStepsModal
+      <SuccessActionModal
+        image={successActionModalImage}
         isVisible={successActionInfoModalData.isVisible}
-        onPress={handleCloseSuccessActionModal}
-      />
+        onPress={successActionModalCallback}
+        title={successActionModalHeader}
+      >
+        {successActionModalContent}
+      </SuccessActionModal>
       <MonkeyNotification
         current={userBlockValue}
         goal={initialBlockValue}
