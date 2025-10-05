@@ -15,8 +15,8 @@ export const styles = StyleSheet.create({
     gap: 5,
     marginHorizontal: 5,
   },
-
   buttonLabel: { flexWrap: 'wrap', width: 50 },
+
   buttonsContainer: {
     alignItems: 'flex-start',
     flexDirection: 'row',
@@ -25,6 +25,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
     minWidth: '90%',
+  },
+  consolationPrizeContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 2,
+    justifyContent: 'center',
+    marginTop: 10,
   },
   container: { alignItems: 'center', justifyContent: 'center' },
   iconContainer: {

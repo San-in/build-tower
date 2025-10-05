@@ -2,7 +2,10 @@ import { BananasIcon, StarIcon } from '@assets/icons'
 import { BlockIcon, Button, OutlinedText } from '@components/atoms'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
-import { calculateExpectedLevelConditions } from '@utils'
+import {
+  calculateConsolationPrize,
+  calculateExpectedLevelConditions,
+} from '@utils'
 import { FC, memo, useMemo } from 'react'
 import { View } from 'react-native'
 
@@ -88,9 +91,19 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
         {isLevelCompletedWithThreeStars ? (
           <View style={styles.completedLevelText}>
             <OutlinedText fontSize={12}>
-              You’ve already completed this level. Feel free to play on just for
-              fun!
+              You’ve already completed this level, but you’ll still get a bonus
+              for replaying:
             </OutlinedText>
+            <View style={styles.consolationPrizeContainer}>
+              <OutlinedText
+                color={COLORS.gradientGold_1}
+                fontSize={25}
+                strokeColor={COLORS.brown}
+              >
+                {`${calculateConsolationPrize(prize)}`}
+              </OutlinedText>
+              <BananasIcon height={25} width={25} />
+            </View>
           </View>
         ) : (
           <View style={styles.failureCaseDescription}>

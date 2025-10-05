@@ -8,7 +8,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonContent: { paddingHorizontal: 5 },
-  completedLevelText: { marginTop: 20 },
+  completedLevelText: { gap: 5, marginTop: 20 },
+  consolationPrizeContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 2,
+    justifyContent: 'center',
+  },
   container: { alignItems: 'center', gap: 15 },
   contentContainer: { alignItems: 'center' },
   failureCaseDescription: {

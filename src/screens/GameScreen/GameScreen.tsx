@@ -300,12 +300,18 @@ const GameScreen: FC = () => {
       earnedStars,
       isDoublePrize = false,
       level,
+      consolationPrize,
     }: {
       prize: number
       earnedStars: Star
       isDoublePrize?: boolean
+      consolationPrize?: number
       level: LevelId
     }) => {
+      if (consolationPrize) {
+        await bananasService.addBananas(dispatch, consolationPrize)
+        return
+      }
       const calculatedPrize = isDoublePrize ? prize * 2 : prize
       await levelService.updateLevelRatingAndUnlockNext(
         dispatch,
@@ -520,12 +526,21 @@ const GameScreen: FC = () => {
   }
 
   const handleLevelFinished = useCallback(
-    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+    async ({
+      prize,
+      stars: earnedStars,
+      consolationPrize,
+    }: {
+      prize: number
+      stars: Star
+      consolationPrize?: number
+    }) => {
       handleScrollToTop()
       await handleGetPrizeAndUnlockLevel({
         prize,
         earnedStars,
         level,
+        consolationPrize,
       })
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setIsLevelFinished(true)
@@ -537,9 +552,17 @@ const GameScreen: FC = () => {
   )
 
   const handleLevelResultGetPrizePressed = useCallback(
-    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
+    async ({
+      prize,
+      stars: earnedStars,
+      consolationPrize,
+    }: {
+      prize: number
+      stars: Star
+      consolationPrize?: number
+    }) => {
       handleCloseActionModal()
-      await handleLevelFinished({ prize, stars: earnedStars })
+      await handleLevelFinished({ prize, stars: earnedStars, consolationPrize })
     },
     [handleCloseActionModal, handleLevelFinished]
   )
@@ -553,12 +576,21 @@ const GameScreen: FC = () => {
   )
 
   const handleLevelResultResetLevelPressed = useCallback(
-    async ({ prize, stars: earnedStars }: { prize: number; stars: Star }) => {
-      if (prize) {
+    async ({
+      prize,
+      stars: earnedStars,
+      consolationPrize,
+    }: {
+      prize: number
+      stars: Star
+      consolationPrize?: number
+    }) => {
+      if (prize || consolationPrize) {
         await handleGetPrizeAndUnlockLevel({
           prize,
           earnedStars,
           level,
+          consolationPrize,
         })
       }
       handleCloseActionModal()

@@ -33,7 +33,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
       timeoutId = setTimeout(() => {
         confettiRef.current?.play()
         setIsConfettiVisible(true)
-      }, 1000)
+      }, 500)
     } else {
       setIsConfettiVisible(false)
     }

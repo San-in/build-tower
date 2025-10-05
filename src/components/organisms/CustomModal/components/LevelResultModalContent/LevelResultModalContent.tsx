@@ -18,7 +18,11 @@ import {
 } from '@components/organisms/CustomModal/components/LevelResultModalContent/constants'
 import { COLORS } from '@theme'
 import { LEVEL_RESULT, Star } from '@types'
-import { calculateExpectedLevelConditions, getLevelResult } from '@utils'
+import {
+  calculateConsolationPrize,
+  calculateExpectedLevelConditions,
+  getLevelResult,
+} from '@utils'
 import { FC, memo, useMemo } from 'react'
 import { Text, View } from 'react-native'
 
@@ -109,6 +113,11 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     )
   }, [levelResult, prizeRules, stars])
 
+  const isShouldShowConsolationPrize = useMemo(
+    () => !displayedPrize && isLevelPassed && stars === 3,
+    [isLevelPassed, stars, displayedPrize]
+  )
+
   const displayedStars: Star = useMemo(() => {
     const map: Record<LEVEL_RESULT, Star> = {
       [LEVEL_RESULT.GoldResult]: 3,
@@ -133,7 +142,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         style={[styles.iconContainer]}
       />
     ),
-    !(isLevelPassed && displayedPrize) && (
+    !(isLevelPassed && displayedPrize) && !isShouldShowConsolationPrize && (
       <IconButton
         icon={<HomeIcon height={30} width={30} />}
         label={'Home'}
@@ -150,7 +159,10 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Reset Steps'}
         labelStyles={styles.buttonLabel}
         onPress={onResetSteps}
-        style={[styles.iconContainer, styles.priorityIcon]}
+        style={[
+          styles.iconContainer,
+          isShouldShowConsolationPrize ? {} : styles.priorityIcon,
+        ]}
       />
     ),
     !(isGoldResult && displayedPrize) && (
@@ -159,21 +171,36 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Restart'}
         labelStyles={styles.buttonLabel}
         onPress={() =>
-          onRestartLevel({ prize: displayedPrize, stars: displayedStars })
+          onRestartLevel({
+            prize: displayedPrize,
+            stars: displayedStars,
+            consolationPrize: isShouldShowConsolationPrize
+              ? calculateConsolationPrize(prize)
+              : undefined,
+          })
         }
         style={styles.iconContainer}
       />
     ),
 
-    isLevelPassed && displayedPrize && (
+    ((isLevelPassed && displayedPrize) || isShouldShowConsolationPrize) && (
       <IconButton
         icon={<ReceiveIcon height={30} width={30} />}
         label={'Get Prize'}
         labelStyles={styles.buttonLabel}
         onPress={() =>
-          onGetPrize({ prize: displayedPrize, stars: displayedStars })
+          onGetPrize({
+            prize: displayedPrize,
+            stars: displayedStars,
+            consolationPrize: isShouldShowConsolationPrize
+              ? calculateConsolationPrize(prize)
+              : undefined,
+          })
         }
-        style={styles.iconContainer}
+        style={[
+          styles.iconContainer,
+          isShouldShowConsolationPrize ? styles.priorityIcon : {},
+        ]}
       />
     ),
   ].filter(Boolean)
@@ -182,8 +209,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     () =>
       displayedPrize || !isLevelPassed
         ? secondaryMessageMap[levelResult]
-        : 'Restart for fun, or go to Home to try the next level!',
-    [displayedPrize, isLevelPassed, levelResult]
+        : `Restart for fun, reset steps or${isShouldShowConsolationPrize ? ' get a prize' : ' go to Home to try the next level'}!`,
+    [displayedPrize, isLevelPassed, isShouldShowConsolationPrize, levelResult]
   )
 
   const prizeMessage = displayedPrize
@@ -267,6 +294,22 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       {isLevelPassed ? (
         <View style={styles.prizeContainer}>
           <OutlinedText fontSize={20}>{prizeMessage}</OutlinedText>
+          {isShouldShowConsolationPrize && (
+            <View>
+              <OutlinedText fontSize={20}>
+                But here’s a little bonus for you:
+              </OutlinedText>
+              <View style={styles.consolationPrizeContainer}>
+                <OutlinedText
+                  color={COLORS.gradientGold_1}
+                  fontSize={40}
+                  strokeColor={COLORS.brown}
+                  style={styles.prizeLabel}
+                >{`${calculateConsolationPrize(prize)}`}</OutlinedText>
+                <BananasIcon height={40} width={40} />
+              </View>
+            </View>
+          )}
           {!!displayedPrize && (
             <View style={[styles.block, styles.prizeBlock]}>
               <OutlinedText
