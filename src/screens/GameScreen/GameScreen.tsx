@@ -71,6 +71,7 @@ import {
   TOWER,
 } from '@types'
 import {
+  calculateConsolationPrize,
   generateRandomNumber,
   getLevelBackground,
   getMarketProductByPowerUp,
@@ -1084,10 +1085,21 @@ const GameScreen: FC = () => {
     if (!isOutOfAttempts && isLevelPrematurelyFinished) {
       setTimeout(async () => {
         setIsInterfacesVisible(false)
-        await handleLevelFinished({ prize, stars: 3 })
+        await handleLevelFinished({
+          prize,
+          stars: 3,
+          consolationPrize:
+            stars === 3 ? calculateConsolationPrize(prize) : undefined,
+        })
       }, 500)
     }
-  }, [handleLevelFinished, isLevelPrematurelyFinished, isOutOfAttempts, prize])
+  }, [
+    handleLevelFinished,
+    stars,
+    isLevelPrematurelyFinished,
+    isOutOfAttempts,
+    prize,
+  ])
 
   useEffect(() => {
     if (!contentVisible) {

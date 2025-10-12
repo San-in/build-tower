@@ -9,7 +9,8 @@ import {
 import { COLORS } from '@theme'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FC, memo } from 'react'
-import { Pressable, SafeAreaView, View } from 'react-native'
+import { Pressable, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { styles } from './Header.styles'
 
@@ -27,7 +28,7 @@ const Header: FC<HeaderProps> = ({
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market?.AddExtraStep
+    (state) => state.market?.add_extra_step
   )
 
   const levelTitle = `Level ${String(level)}`
