@@ -1,6 +1,6 @@
 import { OutlinedTextProps } from '@components/atoms/OutlinedText/OutlinedText.types'
 import { COLORS } from '@theme'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { Text, View } from 'react-native'
 
 import { styles } from './OutlinedText.styles'
@@ -19,6 +19,7 @@ const OutlinedText = ({
     { x: -offset, y: offset },
     { x: offset, y: offset },
   ]
+  const [textDimensions, setTextDimensions] = useState({})
 
   return (
     <View style={styles.container}>
@@ -33,13 +34,24 @@ const OutlinedText = ({
               color: strokeColor,
               fontSize,
             },
+            textDimensions,
             style,
           ]}
         >
           {children}
         </Text>
       ))}
-      <Text style={[styles.text, { color, fontSize }, style]}>{children}</Text>
+      <Text
+        onLayout={({ nativeEvent }) => {
+          setTextDimensions({
+            width: nativeEvent.layout.width,
+            height: nativeEvent.layout.height,
+          })
+        }}
+        style={[styles.text, { color, fontSize }, style]}
+      >
+        {children}
+      </Text>
     </View>
   )
 }

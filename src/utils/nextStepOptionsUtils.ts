@@ -23,28 +23,63 @@ export const getOptionNumberByOperator = ({
         max: multiplicativeOperators.end,
       })
 
-export const showIsUserNeedHelp = (userBlocks: number, initBlocks: number) => ({
-  help: userBlocks - initBlocks > initBlocks / 2,
-  strongHelp: userBlocks - initBlocks > initBlocks,
-})
+export const showIsUserNeedHelp = (userBlocks: number, initBlocks: number) => {
+  if (initBlocks <= 0) {
+    const diff = userBlocks - initBlocks
+    return {
+      help: diff > 0,
+      strongHelp: diff > 0,
+      isMultipleBlocked: false,
+      isMultiplePlusBlocked: userBlocks > 0,
+    }
+  }
+
+  const diff = userBlocks - initBlocks
+  const ratio = userBlocks / initBlocks
+
+  return {
+    help: diff > initBlocks / 2,
+    strongHelp: diff > initBlocks,
+    isMultipleBlocked: ratio >= 2 && ratio < 4,
+    isMultiplePlusBlocked: ratio >= 4,
+  }
+}
 
 export const getOptionOperators = (
   isLastBlock: boolean,
-  isNeedHelp: boolean
+  isNeedHelp: boolean,
+  isMultipleBlocked: boolean,
+  isMultiplePlusBlocked: boolean
 ): [OPERATOR, OPERATOR] => {
-  const first = isLastBlock
-    ? generateRandomOperator([OPERATOR.Minus, OPERATOR.Division])
-    : generateRandomOperator(
-        isNeedHelp && !isLastBlock ? [OPERATOR.Division] : null
-      )
+  const firstExceptions = Array.from(
+    new Set(
+      [
+        isLastBlock ? [OPERATOR.Minus, OPERATOR.Division] : [],
+        isNeedHelp && !isLastBlock ? [OPERATOR.Division] : [],
+        isMultipleBlocked ? [OPERATOR.Multiply] : [],
+        isMultiplePlusBlocked ? [OPERATOR.Multiply, OPERATOR.Plus] : [],
+      ].flat()
+    )
+  )
 
-  const second =
-    [
-      isLastBlock &&
-        generateRandomOperator([first, OPERATOR.Minus, OPERATOR.Division]),
-      !isLastBlock && isNeedHelp && OPERATOR.Division,
-    ].filter(Boolean)[0] || generateRandomOperator([first])
+  const first = generateRandomOperator(firstExceptions)
 
+  const secondExceptions = Array.from(
+    new Set(
+      [
+        isLastBlock ? [first, OPERATOR.Minus, OPERATOR.Division] : [first],
+        isNeedHelp && !isLastBlock && first !== OPERATOR.Division
+          ? [OPERATOR.Multiply, OPERATOR.Plus, OPERATOR.Minus]
+          : [first],
+        isMultipleBlocked ? [first, OPERATOR.Multiply] : [first],
+        isMultiplePlusBlocked
+          ? [first, OPERATOR.Multiply, OPERATOR.Plus]
+          : [first],
+      ].flat()
+    )
+  )
+
+  const second = generateRandomOperator(secondExceptions)
   return [first, second]
 }
 

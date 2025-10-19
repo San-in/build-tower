@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   base: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.white10,
     borderColor: COLORS.codeGrey,
     borderWidth: 1,
     elevation: 5,

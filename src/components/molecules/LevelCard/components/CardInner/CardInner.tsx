@@ -117,7 +117,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
         </View>
 
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
-          <OutlinedText fontSize={stars ? 25 : 32} style={styles.levelLabel}>
+          <OutlinedText fontSize={stars ? 25 : 30} style={styles.levelLabel}>
             {`Level ${level}`}
           </OutlinedText>
           {isAvailable && (

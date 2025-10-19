@@ -623,11 +623,11 @@ const GameScreen: FC = () => {
   }, [handleCloseActionModal])
 
   const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
-    setTimeout(() => {
-      if (lastMonkeyAnimationRef.current === MONKEY_ANIMATION_TYPE.RunAndJump) {
+    if (lastMonkeyAnimationRef.current === MONKEY_ANIMATION_TYPE.RunAndJump) {
+      setImmediate(() =>
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
-      }
-    }, 1000)
+      )
+    }
   }, [])
 
   const handleMonkeyAnimationLandingFinished = useCallback(() => {
@@ -681,12 +681,18 @@ const GameScreen: FC = () => {
       setIsModalOptionVisible(true)
       return
     }
-    const { help: isUserNeedHelp, strongHelp: isUserNeedStrongHelp } =
-      showIsUserNeedHelp(userBlockValue, initialBlockValue)
+    const {
+      help: isUserNeedHelp,
+      strongHelp: isUserNeedStrongHelp,
+      isMultipleBlocked,
+      isMultiplePlusBlocked,
+    } = showIsUserNeedHelp(userBlockValue, initialBlockValue)
 
     const [firstOperator, secondOperator] = getOptionOperators(
       userBlockValue === 1,
-      isUserNeedHelp
+      isUserNeedHelp,
+      isMultiplePlusBlocked,
+      isMultipleBlocked
     )
 
     const firstNumber = getOptionNumberByOperator({
