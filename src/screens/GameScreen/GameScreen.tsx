@@ -130,6 +130,8 @@ const GameScreen: FC = () => {
     params: { level },
   } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
   const scrollViewRef = useRef<ScrollView>(null)
+  const lastMonkeyAnimationRef = useRef<MONKEY_ANIMATION_TYPE | null>(null)
+
   const { stars } = useAppSelector(getLevelById(level)) as Level
   const totalRemoveBlocksPowerUps = useAppSelector(
     selectTotalRemoveRandomBlocks
@@ -266,6 +268,7 @@ const GameScreen: FC = () => {
     setResetStepsModalData(INITIAL_RESET_STEPS_MODAL_STATE)
     setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
     setBuildModalData(INITIAL_BUILD_MODAL_STATE)
+    lastMonkeyAnimationRef.current = null
   }, [])
 
   const handleCloseMonkeyAnimation = () => {
@@ -273,10 +276,13 @@ const GameScreen: FC = () => {
   }
 
   const handleOpenMonkeyAnimation = (type: MONKEY_ANIMATION_TYPE) => {
-    setMonkeyAnimationData({
-      isVisible: true,
-      type,
-    })
+    if (lastMonkeyAnimationRef.current !== type) {
+      setMonkeyAnimationData({
+        isVisible: true,
+        type,
+      })
+      lastMonkeyAnimationRef.current = type
+    }
   }
 
   const handleCloseActionModal = useCallback(() => {
@@ -387,6 +393,7 @@ const GameScreen: FC = () => {
   // CALLBACKS WITH DEPENDENCIES
   const handleGoHome = useCallback(async () => {
     navigation.navigate(SCREENS.WelcomeScreen)
+    lastMonkeyAnimationRef.current = null
     handleCloseActionModal()
   }, [handleCloseActionModal, navigation])
 
@@ -616,7 +623,11 @@ const GameScreen: FC = () => {
   }, [handleCloseActionModal])
 
   const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
-    handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
+    setTimeout(() => {
+      if (lastMonkeyAnimationRef.current === MONKEY_ANIMATION_TYPE.RunAndJump) {
+        handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
+      }
+    }, 1000)
   }, [])
 
   const handleMonkeyAnimationLandingFinished = useCallback(() => {
@@ -1147,6 +1158,7 @@ const GameScreen: FC = () => {
     }
     return () => clearTimeout(timerId)
   }, [isStarsGifVisible])
+
   return (
     <>
       <View style={styles.backgroundContainer}>

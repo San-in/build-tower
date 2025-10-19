@@ -40,7 +40,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
           </OutlinedText>
           <BlockIcon size={25} />
         </View>
-        <OutlinedText fontSize={10}>
+        <OutlinedText fontSize={10} style={styles.subTitle}>
           (build the second as close as you can)
         </OutlinedText>
         <OutlinedText fontSize={stars ? 18 : 25} style={styles.rewardsTitle}>

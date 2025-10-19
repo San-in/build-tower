@@ -45,6 +45,9 @@ export const styles = StyleSheet.create({
   rewardsPrizeContainer: { marginHorizontal: 3 },
   rewardsTitle: { marginVertical: 15 },
   starsContainer: { flexDirection: 'row', gap: 5 },
+  subTitle: {
+    width: '100%',
+  },
   title: {
     alignItems: 'center',
     flexDirection: 'row',
