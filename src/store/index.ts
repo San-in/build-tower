@@ -3,12 +3,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import bananasReducer from './slices/bananasSlice'
 import levelsReducer from './slices/levelsSlice'
 import marketReducer from './slices/marketSlice'
+import userActivityReducer from './slices/userActivitySlice'
 
 export const store = configureStore({
   reducer: {
     levels: levelsReducer,
     bananas: bananasReducer,
     market: marketReducer,
+    userActivity: userActivityReducer,
   },
 })
 

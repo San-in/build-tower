@@ -624,9 +624,7 @@ const GameScreen: FC = () => {
 
   const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
     if (lastMonkeyAnimationRef.current === MONKEY_ANIMATION_TYPE.RunAndJump) {
-      setImmediate(() =>
-        handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
-      )
+      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
     }
   }, [])
 
