@@ -977,4 +977,8 @@ export const POWER_UP_BLOCK_MANIPULATION_LIMITS = {
     min: 1,
     max: 4,
   },
+  [POWER_UP_GRADE.Base]: {
+    min: 1,
+    max: 1,
+  },
 }

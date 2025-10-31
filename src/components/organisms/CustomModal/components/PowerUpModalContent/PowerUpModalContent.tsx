@@ -53,6 +53,11 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
         ({ market }) => market[MARKET_PRODUCT.RemoveRandomBlocks_Gold]
       ),
     },
+    [POWER_UP_TYPE.AddExtraStep]: {
+      [POWER_UP_GRADE.Base]: useAppSelector(
+        ({ market }) => market[MARKET_PRODUCT.AddExtraStep]
+      ),
+    },
   }[type]
 
   const isSelectedPowerUpAvailable = useMemo(
@@ -93,6 +98,7 @@ Get some in the MonkeyMarket.`
         COLORS.gradientGold_2,
         COLORS.gradientGold_3,
       ],
+      [POWER_UP_GRADE.Base]: [COLORS.white, COLORS.white90, COLORS.white80],
     })[grade] as [string, string, ...Array<string>]
 
   return (

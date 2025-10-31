@@ -1,5 +1,5 @@
 import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/RootStackWrapper.types'
-import { bananasService, levelService } from '@services'
+import { bananasService, levelService, marketService } from '@services'
 import { useAppDispatch } from '@store/hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import * as Font from 'expo-font'
@@ -7,7 +7,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 
-import { marketService } from '../../../services/marketService'
+import { userActivityService } from '../../../services/userActivityService'
 import { toastConfig } from '../ToastWrapper/toastConfig'
 import { styles } from './RootStackWrapper.styles'
 
@@ -31,10 +31,17 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
           levelService.initLevels(dispatch),
           bananasService.initBananas(dispatch),
           marketService.initMarket(dispatch),
+          userActivityService.initUserActivity(dispatch),
         ])
-        setAppLoaded(true)
+        await userActivityService.checkAndUpdateOnAppStart(dispatch, (day) => {
+          // TODO : implement logic of notification calendar's award
+          console.warn('Calendar', day)
+          // Toast.show({ type: 'success', text1: `Нагорода за день ${day}!` })
+        })
       } catch (error) {
         console.warn(error)
+      } finally {
+        setAppLoaded(true)
       }
     }
     loadApp().then()

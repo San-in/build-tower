@@ -12,17 +12,20 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
   size = 50,
   type,
   color,
-  textSize = 40,
+  textSize,
+  textStyle,
 }) => {
   const powerUpType = {
     [POWER_UP_TYPE.AddRandomBlocks]: '+',
     [POWER_UP_TYPE.RemoveRandomBlocks]: '-',
+    [POWER_UP_TYPE.AddExtraStep]: '+1',
   }[type]
 
   const borderColor = {
     [POWER_UP_GRADE.Bronze]: COLORS.gradientBronze_3,
     [POWER_UP_GRADE.Silver]: COLORS.gradientSilver_3,
     [POWER_UP_GRADE.Gold]: COLORS.gradientGold_1,
+    [POWER_UP_GRADE.Base]: COLORS.white,
   }[color]
 
   const containerGradient: readonly [string, string, ...Array<string>] = {
@@ -37,6 +40,12 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
       COLORS.gradientRed_2,
       COLORS.gradientRed_3,
       COLORS.gradientRed_1,
+    ],
+    [POWER_UP_TYPE.AddExtraStep]: [
+      COLORS.gradientBronze_1,
+      COLORS.gradientGold_2,
+      COLORS.gradientBronze_2,
+      COLORS.gradientGold_1,
     ],
   }[type] as [string, string, ...Array<string>]
 
@@ -60,10 +69,18 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
           {
             borderColor,
             borderRadius: size / 2,
+            borderWidth: size / 15,
           },
         ]}
       >
-        <View style={styles.text}>
+        <View
+          style={[
+            {
+              bottom: size / 20,
+            },
+            textStyle,
+          ]}
+        >
           <OutlinedText fontSize={textSize}>{powerUpType}</OutlinedText>
         </View>
       </LinearGradient>

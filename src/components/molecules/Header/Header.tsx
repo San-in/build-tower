@@ -1,5 +1,6 @@
 import { BananasIcon, HomeIcon, RestartIcon } from '@assets/icons'
 import { IconButton, OutlinedText } from '@components/atoms'
+import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { HeaderProps } from '@components/molecules/Header/Header.types'
 import { useAppSelector } from '@store/hooks'
 import {
@@ -7,9 +8,9 @@ import {
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
-import { LinearGradient } from 'expo-linear-gradient'
+import { POWER_UP_TYPE } from '@types'
 import { FC, memo } from 'react'
-import { Pressable, View } from 'react-native'
+import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { styles } from './Header.styles'
@@ -45,99 +46,21 @@ const Header: FC<HeaderProps> = ({
         <View style={styles.contentContainer}>
           {level && <OutlinedText fontSize={25}>{levelTitle}</OutlinedText>}
           <View style={styles.powerUpsContainer}>
-            <Pressable
+            <PowerUpButton
+              count={totalAddBlocksPowerUps}
               onPress={onRandomAddBlockPress}
-              style={({ pressed }) => [
-                styles.powerUp,
-                pressed && styles.powerUpPressed,
-              ]}
-            >
-              <LinearGradient
-                colors={[
-                  COLORS.gradientGreen_1,
-                  COLORS.gradientGreen_2,
-                  COLORS.gradientGreen_3,
-                  COLORS.gradientGreen_1,
-                ]}
-                end={{ x: 1, y: 0 }}
-                start={{ x: 0, y: 0 }}
-                style={styles.gradientContainer}
-              >
-                <View style={styles.powerUpContent}>
-                  <OutlinedText fontSize={24}>+</OutlinedText>
-                </View>
-              </LinearGradient>
-              {!!totalAddBlocksPowerUps && (
-                <View style={styles.powerUpCounter}>
-                  <OutlinedText fontSize={13}>
-                    {`${totalAddBlocksPowerUps}`}
-                  </OutlinedText>
-                </View>
-              )}
-            </Pressable>
-            <Pressable
+              type={POWER_UP_TYPE.AddRandomBlocks}
+            />
+            <PowerUpButton
+              count={totalRemoveBlocksPowerUps}
               onPress={onRandomRemoveBlockPress}
-              style={({ pressed }) => [
-                styles.powerUp,
-                pressed && styles.powerUpPressed,
-              ]}
-            >
-              <LinearGradient
-                colors={[
-                  COLORS.gradientRed_1,
-                  COLORS.gradientRed_2,
-                  COLORS.gradientRed_3,
-                  COLORS.gradientRed_1,
-                ]}
-                end={{ x: 1, y: 0 }}
-                start={{ x: 0, y: 0 }}
-                style={styles.gradientContainer}
-              >
-                <View style={styles.powerUpContent}>
-                  <OutlinedText fontSize={24}>-</OutlinedText>
-                </View>
-              </LinearGradient>
-              {!!totalRemoveBlocksPowerUps && (
-                <View style={styles.powerUpCounter}>
-                  <OutlinedText fontSize={13}>
-                    {`${totalRemoveBlocksPowerUps}`}
-                  </OutlinedText>
-                </View>
-              )}
-            </Pressable>
-            <Pressable
+              type={POWER_UP_TYPE.RemoveRandomBlocks}
+            />
+            <PowerUpButton
+              count={addExtraStepPowerUps}
               onPress={onAddExtraStepPress}
-              style={({ pressed }) => [
-                styles.powerUp,
-                pressed && styles.powerUpPressed,
-              ]}
-            >
-              <LinearGradient
-                colors={[
-                  COLORS.gradientBronze_1,
-                  COLORS.gradientGold_2,
-                  COLORS.gradientBronze_2,
-                  COLORS.gradientGold_1,
-                ]}
-                end={{ x: 1, y: 0 }}
-                start={{ x: 0, y: 0 }}
-                style={styles.gradientContainer}
-              >
-                <View
-                  style={[styles.powerUpContent, styles.addExtraStepPowerUp]}
-                >
-                  <OutlinedText fontSize={12}>+</OutlinedText>
-                  <OutlinedText fontSize={16}>1</OutlinedText>
-                </View>
-              </LinearGradient>
-              {!!addExtraStepPowerUps && (
-                <View style={styles.powerUpCounter}>
-                  <OutlinedText fontSize={13}>
-                    {`${addExtraStepPowerUps}`}
-                  </OutlinedText>
-                </View>
-              )}
-            </Pressable>
+              type={POWER_UP_TYPE.AddExtraStep}
+            />
           </View>
         </View>
         <View style={styles.actionButtonsContainer}>

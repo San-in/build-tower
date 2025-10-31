@@ -17,13 +17,14 @@ const SuccessActionModal: FC<SuccessActionModalProps> = ({
 }) => (
   <SuccessActionInfoModal isVisible={isVisible} onPress={onPress}>
     <OutlinedText color={COLORS.gradientGold_1}>{title}</OutlinedText>
-
-    <Image
-      contentFit="contain"
-      source={image}
-      style={[styles.imageContainer, imageStyle]}
-      transition={100}
-    />
+    {image && (
+      <Image
+        contentFit="contain"
+        source={image}
+        style={[styles.imageContainer, imageStyle]}
+        transition={100}
+      />
+    )}
 
     {children}
   </SuccessActionInfoModal>

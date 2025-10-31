@@ -9,10 +9,8 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
-    borderWidth: 4,
     height: '100%',
     justifyContent: 'center',
     width: '100%',
   },
-  text: { bottom: 6 },
 })

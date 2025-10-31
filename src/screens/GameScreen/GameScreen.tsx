@@ -92,6 +92,7 @@ import React, {
 } from 'react'
 import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 
+import { userActivityService } from '../../services/userActivityService'
 import {
   BlockTowerCreator,
   BuildTowerSplash,
@@ -106,6 +107,7 @@ import {
   ResetLevelContent,
   ResetStepsContent,
 } from './components/SuccessActionModal/components'
+import { WelcomeBonusContent } from './components/SuccessActionModal/components/WelcomeBonusContent'
 import {
   INITIAL_BUILD_MODAL_STATE,
   INITIAL_FORTUNE_WHEEL_MODAL_STATE,
@@ -133,6 +135,9 @@ const GameScreen: FC = () => {
   const lastMonkeyAnimationRef = useRef<MONKEY_ANIMATION_TYPE | null>(null)
 
   const { stars } = useAppSelector(getLevelById(level)) as Level
+  const isWelcomeBonusClaimed = useAppSelector(
+    (s) => s.userActivity.welcomeBonusClaimed
+  )
   const totalRemoveBlocksPowerUps = useAppSelector(
     selectTotalRemoveRandomBlocks
   )
@@ -248,6 +253,7 @@ const GameScreen: FC = () => {
   const contentVisible = assetsReady && viewReady
 
   // CALLBACKS WITHOUT DEPENDENCIES
+
   const handleResetLevel = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setFocusedTower(TOWER.FirstTower)
@@ -362,9 +368,12 @@ const GameScreen: FC = () => {
     [dispatch]
   )
 
-  // const handleAddPowerUp = async (type: MARKET_PRODUCT) => {
-  //   await marketService.increment(dispatch, type)
-  // }
+  const handleAddPowerUp = useCallback(
+    async (type: MARKET_PRODUCT) => {
+      await marketService.increment(dispatch, type)
+    },
+    [dispatch]
+  )
 
   // const handleAddBananas = async (quantity: number) => {
   //   await bananasService.addBananas(dispatch, quantity)
@@ -391,6 +400,15 @@ const GameScreen: FC = () => {
   }
 
   // CALLBACKS WITH DEPENDENCIES
+
+  const handleGetWelcomeBonus = useCallback(async () => {
+    await handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)
+    await handleAddPowerUp(MARKET_PRODUCT.AddRandomBlocks_Bronze)
+    await handleAddPowerUp(MARKET_PRODUCT.RemoveRandomBlocks_Bronze)
+    await userActivityService.setWelcomeBonus(dispatch, true)
+    handleCloseSuccessActionModal()
+  }, [dispatch, handleAddPowerUp])
+
   const handleGoHome = useCallback(async () => {
     navigation.navigate(SCREENS.WelcomeScreen)
     lastMonkeyAnimationRef.current = null
@@ -895,6 +913,9 @@ const GameScreen: FC = () => {
             handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
           },
         },
+        [POWER_UP_TYPE.AddExtraStep]: {
+          fortuneWheelCallBack: EMPTY_FUNCTION,
+        },
       })[fortuneWheelModalData.type],
     [handleInitFirstTowerCallBack, fortuneWheelModalData.type, userBlockValue]
   )
@@ -916,8 +937,14 @@ const GameScreen: FC = () => {
           successActionModalImage: MonkeyWizardImg,
           successActionModalCallback: handleResetLevel,
         },
+        [GAME_SCREEN_SUCCESS_ACTION.WelcomeBonus]: {
+          successActionModalHeader: 'Welcome Bonus Unlocked!',
+          successActionModalContent: <WelcomeBonusContent />,
+          successActionModalImage: null,
+          successActionModalCallback: handleGetWelcomeBonus,
+        },
       })[successActionInfoModalData.type],
-    [handleResetLevel, successActionInfoModalData.type]
+    [handleGetWelcomeBonus, handleResetLevel, successActionInfoModalData.type]
   )
   const {
     successActionModalHeader,
@@ -1162,6 +1189,15 @@ const GameScreen: FC = () => {
     }
     return () => clearTimeout(timerId)
   }, [isStarsGifVisible])
+
+  useEffect(() => {
+    if (!isWelcomeBonusClaimed) {
+      setSuccessActionInfoModalData({
+        isVisible: true,
+        type: GAME_SCREEN_SUCCESS_ACTION.WelcomeBonus,
+      })
+    }
+  }, [isWelcomeBonusClaimed])
 
   return (
     <>

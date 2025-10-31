@@ -50,7 +50,7 @@ const savePersisted = async (data: UserActivityState) =>
   AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 
 export const userActivityService = {
-  async init(dispatch: AppDispatch) {
+  async initUserActivity(dispatch: AppDispatch) {
     const persisted = await loadPersistedActivity()
     if (persisted) {
       dispatch(setAllActivity(persisted))
