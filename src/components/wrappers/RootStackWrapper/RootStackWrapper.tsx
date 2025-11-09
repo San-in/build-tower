@@ -1,4 +1,5 @@
 import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/RootStackWrapper.types'
+import { useSettings } from '@providers'
 import { bananasService, levelService, marketService } from '@services'
 import { useAppDispatch } from '@store/hooks'
 import { COLORS, GlobalStyles } from '@theme'
@@ -21,6 +22,7 @@ const loadFonts = async () => {
 
 const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
   const dispatch = useAppDispatch()
+  const { hydrated } = useSettings()
   const [appLoaded, setAppLoaded] = useState(false)
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
     loadApp().then()
   }, [dispatch])
 
-  if (!appLoaded) {
+  if (!appLoaded || !hydrated) {
     return (
       <View style={[styles.container, GlobalStyles.centeredContainer]}>
         <ActivityIndicator color={COLORS.white} size="large" />

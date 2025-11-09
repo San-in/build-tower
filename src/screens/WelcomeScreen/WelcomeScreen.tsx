@@ -30,14 +30,24 @@ import { SCREENS } from '@types'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { SideMenu } from './components'
+import { ActivityModal, SideMenu } from './components'
+import { ACTIVITY_MODAL_TYPES } from './components/AcitvityModal/ActivityModal.types'
 import { styles } from './WelcomeScreen.styles'
 
 const ASSET_KEYS = { BG: 'background', ASSETS: 'assets' } as const
+
+type ActivityModal = {
+  type: ACTIVITY_MODAL_TYPES
+  isVisible: boolean
+}
+const INITIAL_ACTIVITY_MODAL_STATE: ActivityModal = {
+  type: ACTIVITY_MODAL_TYPES.MARKET,
+  isVisible: false,
+}
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
@@ -66,15 +76,27 @@ const WelcomeScreen = () => {
     ],
     []
   )
-
   const { ready: preloaded } = useAssetPreload(assetsToPreload)
-
   const { ready: bgReady, done: assetLoaded } = useAssetsReady(
     useMemo(() => Object.values(ASSET_KEYS), [])
   )
 
+  const [activityModalConfig, setActivityModalConfig] = useState<ActivityModal>(
+    INITIAL_ACTIVITY_MODAL_STATE
+  )
+
   const handleStartButtonPress = () => {
     navigation.navigate(SCREENS.LevelsScreen)
+  }
+
+  const handleMarketIconPress = () => {}
+  const handleAwardsIconPress = () => {}
+  const handleCalendarIconPress = () => {}
+  const handleSettingsIconPress = () => {
+    setActivityModalConfig({
+      type: ACTIVITY_MODAL_TYPES.SETTINGS,
+      isVisible: true,
+    })
   }
 
   useEffect(() => {
@@ -121,7 +143,12 @@ const WelcomeScreen = () => {
             style={styles.sideMenuContainer}
             transition={{ type: 'timing', duration: 300, delay: 150 }}
           >
-            <SideMenu />
+            <SideMenu
+              handleAwards={handleAwardsIconPress}
+              handleCalendar={handleCalendarIconPress}
+              handleMarket={handleMarketIconPress}
+              handleSettings={handleSettingsIconPress}
+            />
             <OutlinedText
               color={COLORS.yellow}
               fontSize={60}
@@ -148,6 +175,22 @@ const WelcomeScreen = () => {
           </MotiView>
         </AnimatePresence>
       </SafeAreaView>
+      <ActivityModal
+        isVisible={activityModalConfig.isVisible}
+        onClose={() => {
+          setActivityModalConfig((prevState) => ({
+            ...prevState,
+            isVisible: false,
+          }))
+        }}
+        onReopen={() => {
+          setActivityModalConfig((prevState) => ({
+            ...prevState,
+            isVisible: true,
+          }))
+        }}
+        type={activityModalConfig.type}
+      />
     </View>
   )
 }

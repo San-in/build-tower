@@ -6,7 +6,6 @@ import {
   SettingsIcon,
 } from '@assets/icons'
 import { IconButton } from '@components/atoms'
-import { EMPTY_FUNCTION } from '@constants'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { View } from 'react-native'
@@ -17,17 +16,34 @@ import { SideMenuProps } from './SideMenu.types'
 const ICON_SIZE = 35
 const ICON_MENU_SIZE = 40
 
-const SideMenu: FC<SideMenuProps> = () => {
+const SideMenu: FC<SideMenuProps> = ({
+  handleCalendar,
+  handleSettings,
+  handleAwards,
+  handleMarket,
+}) => {
   const [isMenuExpanded, setIsMenuExpanded] = useState(false)
 
   const items = useMemo(
     () => [
-      <SettingsIcon height={ICON_SIZE} key="i1" width={ICON_SIZE} />,
-      <CalendarIcon height={ICON_SIZE} key="i2" width={ICON_SIZE} />,
-      <AwardsIcon height={ICON_SIZE} key="i3" width={ICON_SIZE} />,
-      <MarketIcon height={ICON_SIZE} key="i4å" width={ICON_SIZE} />,
+      {
+        icon: <SettingsIcon height={ICON_SIZE} key="i1" width={ICON_SIZE} />,
+        callback: handleSettings,
+      },
+      {
+        icon: <CalendarIcon height={ICON_SIZE} key="i2" width={ICON_SIZE} />,
+        callback: handleCalendar,
+      },
+      {
+        icon: <AwardsIcon height={ICON_SIZE} key="i3" width={ICON_SIZE} />,
+        callback: handleAwards,
+      },
+      {
+        icon: <MarketIcon height={ICON_SIZE} key="i4å" width={ICON_SIZE} />,
+        callback: handleMarket,
+      },
     ],
-    []
+    [handleAwards, handleCalendar, handleMarket, handleSettings]
   )
 
   return (
@@ -60,7 +76,7 @@ const SideMenu: FC<SideMenuProps> = () => {
             transition={{ type: 'timing', duration: 180 }}
           >
             <View style={styles.menuListContent}>
-              {items.map((icon, idx) => (
+              {items.map(({ icon, callback }, idx) => (
                 <MotiView
                   animate={{ opacity: 1, translateX: 0 }}
                   exit={{ opacity: 0, translateX: -10 }}
@@ -72,7 +88,7 @@ const SideMenu: FC<SideMenuProps> = () => {
                     delay: 50 * idx,
                   }}
                 >
-                  <IconButton icon={icon} onPress={EMPTY_FUNCTION} />
+                  <IconButton icon={icon} onPress={callback} />
                 </MotiView>
               ))}
             </View>

@@ -83,6 +83,7 @@ const CustomModal: FC<CustomModalProps> = ({
   type = MODAL_TYPE.Orange,
   containerStyles = {},
   withCrossIcon = true,
+  isMonkeyVisible = true,
 }) => {
   const [shake, setShake] = useState(false)
 
@@ -147,7 +148,7 @@ const CustomModal: FC<CustomModalProps> = ({
             onLoadEnd={() => assetLoaded(ASSET_KEYS.MONKEY)}
             priority="high"
             source={MonkeyModalImg}
-            style={styles.monkeyImage}
+            style={[styles.monkeyImage, { opacity: Number(isMonkeyVisible) }]}
             transition={120}
           />
 

@@ -10,4 +10,5 @@ export type CustomModalProps = {
   type?: MODAL_TYPE
   containerStyles?: StyleProp<ViewStyle>
   withCrossIcon?: boolean
+  isMonkeyVisible?: boolean
 }

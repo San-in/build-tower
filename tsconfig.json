@@ -24,6 +24,9 @@
       "@components/*": [
         "components/*"
       ],
+      "@providers": [
+        "providers/index.ts"
+      ],
       "@types": [
         "types/index.ts"
       ],

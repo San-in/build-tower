@@ -1,2 +1,5 @@
-export { default as CAFlagIcon } from './ca.svg'
-export { default as USAFlagIcon } from './usa.svg'
+export { default as DEFlagIcon } from './de.svg'
+export { default as ESFlagIcon } from './es.svg'
+export { default as FRFlagIcon } from './fr.svg'
+export { default as UAFlagIcon } from './ua.svg'
+export { default as UKFlagIcon } from './uk.svg'

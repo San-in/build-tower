@@ -135,3 +135,11 @@ export enum Z_INDEX_PRIORITY {
   High = 'high',
   ExtraHigh = 'extra_high',
 }
+export enum LANGUAGES {
+  EN = 'en',
+  FR = 'fr',
+  DE = 'de',
+  ES = 'es',
+  IT = 'it',
+  UK = 'uk',
+}

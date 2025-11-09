@@ -69,7 +69,7 @@ export const userActivityService = {
     dispatch(setWelcomeBonusClaimed(claimed))
   },
 
-  async hardReset(dispatch: AppDispatch) {
+  async reset(dispatch: AppDispatch) {
     const initial = createInitialActivityState()
     await savePersisted(initial)
     dispatch(setAllActivity(initial))
