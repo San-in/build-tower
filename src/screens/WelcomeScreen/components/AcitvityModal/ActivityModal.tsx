@@ -3,13 +3,12 @@ import { Toast } from '@components/wrappers'
 import { bananasService, levelService, marketService } from '@services'
 import { MODAL_TYPE } from '@types'
 import React, { FC, memo, useCallback, useMemo, useState } from 'react'
-import { Text, View } from 'react-native'
 import { useDispatch } from 'react-redux'
 
 import { userActivityService } from '../../../../services/userActivityService'
 import { styles } from './ActivityModal.styles'
 import { ACTIVITY_MODAL_TYPES, ActivityModalProps } from './ActivityModal.types'
-import { SettingsContent, WarningModal } from './components'
+import { MarketContent, SettingsContent, WarningModal } from './components'
 
 const ActivityModal: FC<ActivityModalProps> = ({
   isVisible,
@@ -63,12 +62,8 @@ const ActivityModal: FC<ActivityModalProps> = ({
         },
         [ACTIVITY_MODAL_TYPES.MARKET]: {
           title: 'Market',
-          color: MODAL_TYPE.Orange,
-          content: (
-            <View>
-              <Text>Market</Text>
-            </View>
-          ),
+          color: MODAL_TYPE.Purple,
+          content: <MarketContent />,
         },
       })[type],
     [onPressResetProgress, type]

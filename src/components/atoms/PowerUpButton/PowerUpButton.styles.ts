@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     width: 30,
   },
   powerUpContent: { bottom: 4 },
-  powerUpCounter: { position: 'absolute', right: '-10%', top: -8 },
+  powerUpCounter: { position: 'absolute', right: 0, top: -8 },
   powerUpPressed: {
     opacity: 0.8,
     transform: [{ scale: 0.9 }],

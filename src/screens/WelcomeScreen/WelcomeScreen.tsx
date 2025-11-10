@@ -89,15 +89,13 @@ const WelcomeScreen = () => {
     navigation.navigate(SCREENS.LevelsScreen)
   }
 
-  const handleMarketIconPress = () => {}
   const handleAwardsIconPress = () => {}
   const handleCalendarIconPress = () => {}
-  const handleSettingsIconPress = () => {
+  const handleOpenActivityModal = (type: ACTIVITY_MODAL_TYPES) =>
     setActivityModalConfig({
-      type: ACTIVITY_MODAL_TYPES.SETTINGS,
+      type,
       isVisible: true,
     })
-  }
 
   useEffect(() => {
     if (preloaded) {
@@ -146,8 +144,12 @@ const WelcomeScreen = () => {
             <SideMenu
               handleAwards={handleAwardsIconPress}
               handleCalendar={handleCalendarIconPress}
-              handleMarket={handleMarketIconPress}
-              handleSettings={handleSettingsIconPress}
+              handleMarket={() =>
+                handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
+              }
+              handleSettings={() =>
+                handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
+              }
             />
             <OutlinedText
               color={COLORS.yellow}

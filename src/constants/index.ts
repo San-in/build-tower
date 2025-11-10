@@ -1,9 +1,10 @@
-import { CAFlagIcon, USAFlagIcon } from '@assets/icons/flags'
+import { UKFlagIcon } from '@assets/icons/flags'
 import {
   Country,
   LEVEL_DIFFICULTY,
   LevelConfig,
   LevelId,
+  MARKET_PRODUCT,
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
@@ -952,13 +953,13 @@ export const COUNTRY_LIST: Array<Country> = [
     id: 'USA',
     name: 'United States',
     code: '+1',
-    flag: USAFlagIcon,
+    flag: UKFlagIcon,
   },
   {
     id: 'CA',
     name: 'Canada',
     code: '+1',
-    flag: CAFlagIcon,
+    flag: UKFlagIcon,
   },
 ]
 
@@ -981,4 +982,29 @@ export const POWER_UP_BLOCK_MANIPULATION_LIMITS = {
     min: 1,
     max: 1,
   },
+}
+export const MARKET_PRODUCT_PRICE: Record<MARKET_PRODUCT, number> = {
+  [MARKET_PRODUCT.RemoveRandomBlocks_Gold]: 20,
+  [MARKET_PRODUCT.RemoveRandomBlocks_Silver]: 15,
+  [MARKET_PRODUCT.RemoveRandomBlocks_Bronze]: 10,
+  [MARKET_PRODUCT.AddRandomBlocks_Gold]: 20,
+  [MARKET_PRODUCT.AddRandomBlocks_Silver]: 15,
+  [MARKET_PRODUCT.AddRandomBlocks_Bronze]: 10,
+  [MARKET_PRODUCT.AddExtraStep]: 15,
+}
+
+export const MARKET_PRODUCT_DESCRIPTION: Record<MARKET_PRODUCT, string> = {
+  [MARKET_PRODUCT.RemoveRandomBlocks_Gold]:
+    'Removes between 1 and 10 random blocks.',
+  [MARKET_PRODUCT.RemoveRandomBlocks_Silver]:
+    'Removes between 1 and 7 random blocks.',
+  [MARKET_PRODUCT.RemoveRandomBlocks_Bronze]:
+    'Removes between 1 and 4 random blocks.',
+  [MARKET_PRODUCT.AddRandomBlocks_Gold]: 'Adds between 1 and 10 random blocks.',
+  [MARKET_PRODUCT.AddRandomBlocks_Silver]:
+    'Adds between 1 and 7 random blocks.',
+  [MARKET_PRODUCT.AddRandomBlocks_Bronze]:
+    'Adds between 1 and 4 random blocks.',
+  [MARKET_PRODUCT.AddExtraStep]:
+    'Rewinds one move back — gives you an extra step.',
 }

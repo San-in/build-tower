@@ -3,6 +3,7 @@ import {
   DimensionValue,
   PressableProps,
   StyleProp,
+  TextStyle,
   ViewStyle,
 } from 'react-native'
 
@@ -14,4 +15,6 @@ export type ButtonProps = PressableProps & {
   style?: StyleProp<ViewStyle>
   buttonContainerStyle?: StyleProp<ViewStyle>
   textSize?: number
+  textIcon?: string
+  textIconStyle?: StyleProp<TextStyle>
 }

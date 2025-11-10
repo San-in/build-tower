@@ -4,7 +4,7 @@ import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Pressable, StyleSheet, View } from 'react-native'
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
 import { Easing } from 'react-native-reanimated'
 
 import { styles } from './Button.styles'
@@ -18,6 +18,8 @@ const Button: FC<ButtonProps> = ({
   type = BUTTON_TYPE.Success,
   textSize = 20,
   buttonContainerStyle,
+  textIcon,
+  textIconStyle,
   ...props
 }) => {
   const [isPressed, setIsPressed] = useState(false)
@@ -150,6 +152,7 @@ const Button: FC<ButtonProps> = ({
         </Animated.View>
         <View style={styles.titleContainer}>
           <OutlinedText fontSize={textSize}>{title}</OutlinedText>
+          {textIcon && <Text style={textIconStyle}>{textIcon}</Text>}
         </View>
       </Pressable>
     </Animated.View>

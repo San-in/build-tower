@@ -35,5 +35,9 @@ export const styles = StyleSheet.create({
   pressedContainer: {
     transform: [{ scale: 0.95 }, { translateX: 3 }, { translateY: 2 }],
   },
-  titleContainer: { zIndex: Z_INDEX_TYPE.medium },
+  titleContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    zIndex: Z_INDEX_TYPE.medium,
+  },
 })

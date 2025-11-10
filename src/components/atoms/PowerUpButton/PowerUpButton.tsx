@@ -35,7 +35,7 @@ const PowerUpButton = memo(
         />
         {!!count && (
           <View style={[styles.powerUpCounter]}>
-            <OutlinedText fontSize={13 * k}>{String(count)}</OutlinedText>
+            <OutlinedText fontSize={11 * k}>{String(count)}</OutlinedText>
           </View>
         )}
       </Pressable>

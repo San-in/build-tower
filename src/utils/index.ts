@@ -10,6 +10,7 @@ export { getLevelBackground } from './getLevelBackground'
 export { getLevelIcon } from './getLevelIcon'
 export { getLevelResult } from './getLevelResult'
 export { getMarketProductByPowerUp } from './getMarketProductByPowerUp'
+export { getPowerUpInfoByMarketProduct } from './getPowerUpInfoByMarketProduct'
 export {
   getOptionNumberByOperator,
   getOptionOperators,

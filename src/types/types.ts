@@ -4,6 +4,7 @@ import {
   FORTUNE_WHEEL_MODAL_TYPE,
   LEVEL_DIFFICULTY,
   OPERATOR,
+  POWER_UP_GRADE,
   POWER_UP_TYPE,
 } from './enums'
 
@@ -93,3 +94,10 @@ export type LevelId =
   | 28
   | 29
   | 30
+
+export type PowerUpInfo = {
+  type: POWER_UP_TYPE
+  grade: POWER_UP_GRADE
+  description: string
+  price: number
+}

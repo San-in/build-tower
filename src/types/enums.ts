@@ -17,10 +17,10 @@ export enum LEVEL_DIFFICULTY {
 }
 
 export enum MARKET_PRODUCT {
-  AddExtraStep = 'add_extra_step',
   AddRandomBlocks_Bronze = 'add_random_blocks_bronze',
   AddRandomBlocks_Silver = 'add_random_blocks_silver',
   AddRandomBlocks_Gold = 'add_random_blocks_gold',
+  AddExtraStep = 'add_extra_step',
   RemoveRandomBlocks_Bronze = 'remove_random_blocks_bronze',
   RemoveRandomBlocks_Silver = 'remove_random_blocks_silver',
   RemoveRandomBlocks_Gold = 'remove_random_blocks_gold',
