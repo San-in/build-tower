@@ -18,8 +18,11 @@ const marketSlice = createSlice({
   name: 'market',
   initialState,
   reducers: {
-    incrementProduct: (state, { payload }: PayloadAction<MARKET_PRODUCT>) => {
-      state[payload] += 1
+    incrementProduct: (
+      state,
+      { payload }: PayloadAction<{ product: MARKET_PRODUCT; count: number }>
+    ) => {
+      state[payload.product] += payload.count
     },
     decrementProduct: (state, { payload }: PayloadAction<MARKET_PRODUCT>) => {
       state[payload] = Math.max(0, state[payload] - 1)

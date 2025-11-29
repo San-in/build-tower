@@ -25,6 +25,9 @@ export enum MARKET_PRODUCT {
   RemoveRandomBlocks_Silver = 'remove_random_blocks_silver',
   RemoveRandomBlocks_Gold = 'remove_random_blocks_gold',
 }
+export enum CALENDAR_SPECIAL_PRIZE {
+  Bananas = 'bananas',
+}
 
 export enum INFO_UNLOCK_OPTION_MODAL_KEY {
   Empty = 'empty',

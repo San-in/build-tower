@@ -1,8 +1,11 @@
+import { STREAK_CALENDAR_DAYS } from '@constants'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { RootState } from '@store/index'
 
 export type DayEntry = {
   day: number
   achieved: boolean
+  rewardClaimed: boolean
 }
 
 export interface UserActivityState {
@@ -11,12 +14,25 @@ export interface UserActivityState {
   lastCheckAt: string | null
 }
 
-export const STREAK_DAYS = 14
+export const getLastAchievedDay = (days: Array<DayEntry>): number => {
+  let lastAchieved = 0
+
+  for (let i = 0; i < days.length; i++) {
+    if (days[i]?.achieved) {
+      lastAchieved = days[i]?.day || 0
+    } else {
+      break
+    }
+  }
+
+  return lastAchieved
+}
 
 export const makeDefaultDays = (): Array<DayEntry> =>
-  Array.from({ length: STREAK_DAYS }, (_, i) => ({
+  Array.from({ length: STREAK_CALENDAR_DAYS }, (_, i) => ({
     day: i + 1,
     achieved: false,
+    rewardClaimed: false,
   }))
 
 export const makeResetToFirstDay = (): Array<DayEntry> => {
@@ -58,8 +74,29 @@ const userActivitySlice = createSlice({
     setDays: (state, { payload }: PayloadAction<Array<DayEntry>>) => {
       state.days = payload
     },
+    markRewardClaimedForDay: (state, { payload }: PayloadAction<number>) => {
+      const dayIdx = state.days.findIndex((d) => d.day === payload)
+      if (dayIdx === -1) {
+        return
+      }
+      const day = state.days[dayIdx]
+      if (!day?.achieved) {
+        return
+      }
+
+      day.rewardClaimed = true
+    },
   },
 })
+
+export const getLastAchievedDayFromState = (state: RootState) =>
+  getLastAchievedDay(state.userActivity.days)
+
+export const getDayInfoByDay = (state: RootState, day: number) =>
+  state.userActivity.days.find((d) => d.day === day) ?? null
+
+export const getHasUnclaimedRewards = (state: RootState) =>
+  state.userActivity.days.some((d) => d.achieved && !d.rewardClaimed)
 
 export const {
   setWelcomeBonusClaimed,
@@ -67,6 +104,7 @@ export const {
   resetActivityToDefault,
   setLastCheckAt,
   setDays,
+  markRewardClaimedForDay,
 } = userActivitySlice.actions
 
 export default userActivitySlice.reducer

@@ -30,11 +30,11 @@ import { SCREENS } from '@types'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { ActivityModal, SideMenu } from './components'
+import { ActivityCalendar, ActivityModal, SideMenu } from './components'
 import { ACTIVITY_MODAL_TYPES } from './components/AcitvityModal/ActivityModal.types'
 import { styles } from './WelcomeScreen.styles'
 
@@ -84,18 +84,27 @@ const WelcomeScreen = () => {
   const [activityModalConfig, setActivityModalConfig] = useState<ActivityModal>(
     INITIAL_ACTIVITY_MODAL_STATE
   )
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
   const handleStartButtonPress = () => {
+    setIsCalendarOpen(false)
     navigation.navigate(SCREENS.LevelsScreen)
   }
 
   const handleAwardsIconPress = () => {}
-  const handleCalendarIconPress = () => {}
-  const handleOpenActivityModal = (type: ACTIVITY_MODAL_TYPES) =>
+  const handleCalendarIconPress = () => {
+    handleCloseActivityModal()
+    setIsCalendarOpen((prevState) => !prevState)
+  }
+  const handleOpenActivityModal = (type: ACTIVITY_MODAL_TYPES) => {
+    setIsCalendarOpen(false)
     setActivityModalConfig({
       type,
       isVisible: true,
     })
+  }
+  const handleCloseActivityModal = () =>
+    setActivityModalConfig((prevState) => ({ ...prevState, isVisible: false }))
 
   useEffect(() => {
     if (preloaded) {
@@ -116,7 +125,6 @@ const WelcomeScreen = () => {
           style={styles.birdsAnimation}
         />
       </View>
-
       <Image
         allowDownscaling
         cachePolicy="disk"
@@ -128,7 +136,6 @@ const WelcomeScreen = () => {
         style={[StyleSheet.absoluteFill, styles.image]}
         transition={100}
       />
-
       <SafeAreaView
         pointerEvents={bgReady ? 'auto' : 'none'}
         style={GlobalStyles.centeredContainer}
@@ -144,6 +151,7 @@ const WelcomeScreen = () => {
             <SideMenu
               handleAwards={handleAwardsIconPress}
               handleCalendar={handleCalendarIconPress}
+              handleClose={() => setIsCalendarOpen(false)}
               handleMarket={() =>
                 handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
               }
@@ -179,12 +187,7 @@ const WelcomeScreen = () => {
       </SafeAreaView>
       <ActivityModal
         isVisible={activityModalConfig.isVisible}
-        onClose={() => {
-          setActivityModalConfig((prevState) => ({
-            ...prevState,
-            isVisible: false,
-          }))
-        }}
+        onClose={handleCloseActivityModal}
         onReopen={() => {
           setActivityModalConfig((prevState) => ({
             ...prevState,
@@ -192,6 +195,10 @@ const WelcomeScreen = () => {
           }))
         }}
         type={activityModalConfig.type}
+      />
+      <ActivityCalendar
+        isOpen={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
       />
     </View>
   )

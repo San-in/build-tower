@@ -1,11 +1,14 @@
 import {
   AwardsIcon,
   CalendarIcon,
+  ExclamationRoundIcon,
   MarketIcon,
   MenuIcon,
   SettingsIcon,
 } from '@assets/icons'
 import { IconButton } from '@components/atoms'
+import { useAppSelector } from '@store/hooks'
+import { getHasUnclaimedRewards } from '@store/slices/userActivitySlice'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { View } from 'react-native'
@@ -21,29 +24,48 @@ const SideMenu: FC<SideMenuProps> = ({
   handleSettings,
   handleAwards,
   handleMarket,
+  handleClose,
 }) => {
   const [isMenuExpanded, setIsMenuExpanded] = useState(false)
+  const hasUserUnclaimedRewards = useAppSelector(getHasUnclaimedRewards)
+
+  const toggleMenu = () => {
+    if (isMenuExpanded) {
+      handleClose()
+    }
+    setIsMenuExpanded((prevState) => !prevState)
+  }
 
   const items = useMemo(
     () => [
       {
         icon: <SettingsIcon height={ICON_SIZE} key="i1" width={ICON_SIZE} />,
         callback: handleSettings,
+        withNotify: false,
       },
       {
         icon: <CalendarIcon height={ICON_SIZE} key="i2" width={ICON_SIZE} />,
         callback: handleCalendar,
+        withNotify: hasUserUnclaimedRewards,
       },
       {
         icon: <AwardsIcon height={ICON_SIZE} key="i3" width={ICON_SIZE} />,
         callback: handleAwards,
+        withNotify: false,
       },
       {
         icon: <MarketIcon height={ICON_SIZE} key="i4å" width={ICON_SIZE} />,
         callback: handleMarket,
+        withNotify: false,
       },
     ],
-    [handleAwards, handleCalendar, handleMarket, handleSettings]
+    [
+      handleAwards,
+      handleCalendar,
+      handleMarket,
+      handleSettings,
+      hasUserUnclaimedRewards,
+    ]
   )
 
   return (
@@ -63,7 +85,7 @@ const SideMenu: FC<SideMenuProps> = ({
             <MenuIcon height={ICON_MENU_SIZE} width={ICON_MENU_SIZE} />
           </MotiView>
         }
-        onPress={() => setIsMenuExpanded((p) => !p)}
+        onPress={toggleMenu}
       />
 
       <AnimatePresence>
@@ -75,20 +97,36 @@ const SideMenu: FC<SideMenuProps> = ({
             style={styles.menuListContainer}
             transition={{ type: 'timing', duration: 180 }}
           >
-            <View style={styles.menuListContent}>
-              {items.map(({ icon, callback }, idx) => (
+            <View style={[styles.menuListContent]}>
+              {items.map(({ icon, callback, withNotify }, idx) => (
                 <MotiView
                   animate={{ opacity: 1, translateX: 0 }}
                   exit={{ opacity: 0, translateX: -10 }}
                   from={{ opacity: 0, translateX: -10 }}
                   key={idx}
+                  style={styles.menuListItemContainer}
                   transition={{
                     type: 'timing',
                     duration: 100,
                     delay: 50 * idx,
                   }}
                 >
-                  <IconButton icon={icon} onPress={callback} />
+                  <MotiView
+                    animate={{ opacity: Number(withNotify) }}
+                    style={styles.menuListItemIcon}
+                    transition={{
+                      type: 'timing',
+                      duration: 100,
+                    }}
+                  >
+                    <ExclamationRoundIcon height={20} width={20} />
+                  </MotiView>
+
+                  <IconButton
+                    icon={icon}
+                    onPress={callback}
+                    style={withNotify && styles.menuListItemWithNotify}
+                  />
                 </MotiView>
               ))}
             </View>

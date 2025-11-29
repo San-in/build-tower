@@ -26,6 +26,7 @@ const ActivityModal: FC<ActivityModalProps> = ({
       await levelService.reset(dispatch)
       await marketService.reset(dispatch)
       await userActivityService.reset(dispatch)
+      await userActivityService.checkAndUpdateOnAppStart(dispatch)
       Toast({
         type: 'info',
         text1: 'Everything reset — good luck!',

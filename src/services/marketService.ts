@@ -30,13 +30,16 @@ export const marketService = {
     await AsyncStorage.removeItem(STORAGE_KEY)
   },
 
-  async increment(dispatch: AppDispatch, product: MARKET_PRODUCT) {
+  async increment(
+    dispatch: AppDispatch,
+    product: MARKET_PRODUCT,
+    count: number = 1
+  ) {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
     const products: MarketState = raw ? JSON.parse(raw) : { ...initialState }
-    products[product] = (products[product] || 0) + 1
-
+    products[product] = (products[product] || 0) + count
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(products))
-    dispatch(incrementProduct(product))
+    dispatch(incrementProduct({ product, count }))
   },
 
   async decrement(dispatch: AppDispatch, product: MARKET_PRODUCT) {

@@ -14,9 +14,12 @@ const SuccessActionModal: FC<SuccessActionModalProps> = ({
   image,
   imageStyle,
   children,
+  titleSize = 32,
 }) => (
   <SuccessActionInfoModal isVisible={isVisible} onPress={onPress}>
-    <OutlinedText color={COLORS.gradientGold_1}>{title}</OutlinedText>
+    <OutlinedText color={COLORS.gradientGold_1} fontSize={titleSize}>
+      {title}
+    </OutlinedText>
     {image && (
       <Image
         contentFit="contain"

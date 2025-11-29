@@ -1,20 +1,22 @@
+import { STREAK_CALENDAR_DAYS } from '@constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AppDispatch } from '@store/index'
 import {
   createInitialActivityState,
   DayEntry,
+  getLastAchievedDay,
   makeResetToFirstDay,
+  markRewardClaimedForDay,
   setAllActivity,
   setDays,
   setLastCheckAt,
   setWelcomeBonusClaimed,
-  STREAK_DAYS,
   UserActivityState,
 } from '@store/slices/userActivitySlice'
 
 const STORAGE_KEY = 'user_activity'
-const oneDay = 24
-const twoDays = 48
+const hoursInDay = 24
+const hoursInTwoDays = 2 * hoursInDay
 
 const now = () => new Date()
 const toISO = (d: Date) => d.toISOString()
@@ -23,6 +25,7 @@ const startOfTodayLocal = (): Date => {
   currentDate.setHours(0, 0, 0, 0)
   return currentDate
 }
+
 const calculateHoursDifference = (fromISO: string, to: Date): number => {
   const from = new Date(fromISO)
   return (to.getTime() - from.getTime()) / (1000 * 60 * 60)
@@ -37,7 +40,10 @@ const loadPersistedActivity = async (): Promise<UserActivityState | null> => {
   }
   try {
     const parsed = JSON.parse(raw) as UserActivityState
-    if (!Array.isArray(parsed.days) || parsed.days.length !== STREAK_DAYS) {
+    if (
+      !Array.isArray(parsed.days) ||
+      parsed.days.length !== STREAK_CALENDAR_DAYS
+    ) {
       return null
     }
     return parsed
@@ -99,9 +105,9 @@ export const userActivityService = {
 
     const hoursDifference = validatedLastCheckAt
       ? calculateHoursDifference(validatedLastCheckAt, now())
-      : twoDays + 1
+      : hoursInTwoDays + 1
 
-    if (hoursDifference > twoDays) {
+    if (hoursDifference > hoursInTwoDays) {
       persisted.days = makeResetToFirstDay()
       persisted.lastCheckAt = toISO(startOfTodayLocal())
       await savePersisted(persisted)
@@ -111,27 +117,19 @@ export const userActivityService = {
       return
     }
 
-    if (hoursDifference < oneDay) {
+    if (hoursDifference < hoursInDay) {
       return
     }
-
-    let lastAchieved = 0
-    for (let i = 0; i < persisted.days.length; i++) {
-      if (persisted.days[i]?.achieved) {
-        lastAchieved = persisted.days[i]?.day || 0
-      } else {
-        break
-      }
-    }
-
+    const lastAchieved = getLastAchievedDay(persisted.days)
     let nextDay = lastAchieved ? lastAchieved + 1 : 1
-    if (nextDay > STREAK_DAYS) {
+    if (nextDay > STREAK_CALENDAR_DAYS) {
       nextDay = 1
       persisted.days = makeResetToFirstDay()
     } else {
-      const idx = clampToRange(nextDay - 1, 0, STREAK_DAYS - 1)
+      const idx = clampToRange(nextDay - 1, 0, STREAK_CALENDAR_DAYS - 1)
       if (persisted.days[idx]) {
         persisted.days[idx].achieved = true
+        persisted.days[idx].rewardClaimed = false
       }
     }
 
@@ -156,5 +154,54 @@ export const userActivityService = {
     persisted.lastCheckAt = isoOrNull
     await savePersisted(persisted)
     dispatch(setLastCheckAt(isoOrNull))
+  },
+  async claimRewardForDay(dispatch: AppDispatch, day: number) {
+    const persisted =
+      (await loadPersistedActivity()) ?? createInitialActivityState()
+
+    const idx = persisted.days.findIndex((d) => d.day === day)
+    if (idx === -1) {
+      return
+    }
+
+    const entryDay = persisted.days[idx]
+
+    if (!entryDay?.achieved || entryDay.rewardClaimed) {
+      return
+    }
+
+    entryDay.rewardClaimed = true
+
+    await savePersisted(persisted)
+    dispatch(markRewardClaimedForDay(day))
+  },
+  async forceNextDayForTesting(
+    dispatch: AppDispatch,
+    onReward?: (achievedDay: number) => void
+  ) {
+    const persisted =
+      (await loadPersistedActivity()) ?? createInitialActivityState()
+
+    const lastAchieved = getLastAchievedDay(persisted.days)
+    let nextDay = lastAchieved ? lastAchieved + 1 : 1
+
+    if (nextDay > STREAK_CALENDAR_DAYS) {
+      nextDay = 1
+      persisted.days = makeResetToFirstDay()
+    } else {
+      const idx = clampToRange(nextDay - 1, 0, STREAK_CALENDAR_DAYS - 1)
+      if (persisted.days[idx]) {
+        persisted.days[idx].achieved = true
+        persisted.days[idx].rewardClaimed = false
+      }
+    }
+
+    persisted.lastCheckAt = toISO(startOfTodayLocal())
+
+    await savePersisted(persisted)
+    dispatch(setDays(persisted.days))
+    dispatch(setLastCheckAt(persisted.lastCheckAt))
+
+    onReward?.(nextDay)
   },
 }

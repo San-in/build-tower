@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
+    zIndex: Z_INDEX_TYPE.high,
   },
   contentContainer: {
     alignItems: 'center',

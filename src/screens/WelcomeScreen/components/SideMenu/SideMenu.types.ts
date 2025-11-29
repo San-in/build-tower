@@ -3,4 +3,5 @@ export type SideMenuProps = {
   handleAwards: () => void
   handleCalendar: () => void
   handleSettings: () => void
+  handleClose: () => void
 }

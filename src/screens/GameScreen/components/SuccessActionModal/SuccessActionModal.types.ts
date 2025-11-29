@@ -7,7 +7,7 @@ export type SuccessActionModalProps = {
   isVisible: boolean
   onPress: () => void
   title: string
-  image:
+  image?:
     | string
     | number
     | Array<string>
@@ -18,4 +18,5 @@ export type SuccessActionModalProps = {
     | undefined
   imageStyle?: StyleProp<ImageStyle>
   children?: ReactNode
+  titleSize?: number
 }

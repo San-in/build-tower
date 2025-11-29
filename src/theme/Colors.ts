@@ -174,6 +174,7 @@ export const COLORS = {
   gradientGold_1: 'rgb(255,215,0)',
   gradientGold_2: 'rgb(244,212,43)',
   gradientGold_3: 'rgb(244,216,100)',
+  gradientGold_4: 'rgb(243,227,147)',
 
   gradientGreen_1: 'rgb(19,103,22)',
   gradientGreen_2: 'rgb(21,115,24)',
