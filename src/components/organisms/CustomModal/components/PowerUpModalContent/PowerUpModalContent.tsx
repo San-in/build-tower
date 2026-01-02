@@ -2,6 +2,7 @@ import { Button, OutlinedText } from '@components/atoms'
 import { PowerUpIcon } from '@components/molecules/PowerUpIcon'
 import { POWER_UP_BLOCK_MANIPULATION_LIMITS } from '@constants'
 import { useAppSelector } from '@store/hooks'
+import { selectMarket } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import {
   BUTTON_TYPE,
@@ -30,35 +31,31 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
 }) => {
   const [powerUp, setPowerUp] = useState<POWER_UP_GRADE | null>(null)
 
-  const availablePowerUps = {
-    [POWER_UP_TYPE.AddRandomBlocks]: {
-      [POWER_UP_GRADE.Bronze]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.AddRandomBlocks_Bronze]
-      ),
-      [POWER_UP_GRADE.Silver]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.AddRandomBlocks_Silver]
-      ),
-      [POWER_UP_GRADE.Gold]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.AddRandomBlocks_Gold]
-      ),
-    },
-    [POWER_UP_TYPE.RemoveRandomBlocks]: {
-      [POWER_UP_GRADE.Bronze]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.RemoveRandomBlocks_Bronze]
-      ),
-      [POWER_UP_GRADE.Silver]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.RemoveRandomBlocks_Silver]
-      ),
-      [POWER_UP_GRADE.Gold]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.RemoveRandomBlocks_Gold]
-      ),
-    },
-    [POWER_UP_TYPE.AddExtraStep]: {
-      [POWER_UP_GRADE.Base]: useAppSelector(
-        ({ market }) => market[MARKET_PRODUCT.AddExtraStep]
-      ),
-    },
-  }[type]
+  const market = useAppSelector(selectMarket)
+
+  const availablePowerUps = useMemo(
+    () =>
+      ({
+        [POWER_UP_TYPE.AddRandomBlocks]: {
+          [POWER_UP_GRADE.Bronze]:
+            market[MARKET_PRODUCT.AddRandomBlocks_Bronze],
+          [POWER_UP_GRADE.Silver]:
+            market[MARKET_PRODUCT.AddRandomBlocks_Silver],
+          [POWER_UP_GRADE.Gold]: market[MARKET_PRODUCT.AddRandomBlocks_Gold],
+        },
+        [POWER_UP_TYPE.RemoveRandomBlocks]: {
+          [POWER_UP_GRADE.Bronze]:
+            market[MARKET_PRODUCT.RemoveRandomBlocks_Bronze],
+          [POWER_UP_GRADE.Silver]:
+            market[MARKET_PRODUCT.RemoveRandomBlocks_Silver],
+          [POWER_UP_GRADE.Gold]: market[MARKET_PRODUCT.RemoveRandomBlocks_Gold],
+        },
+        [POWER_UP_TYPE.AddExtraStep]: {
+          [POWER_UP_GRADE.Base]: market[MARKET_PRODUCT.AddExtraStep],
+        },
+      })[type],
+    [market, type]
+  )
 
   const isSelectedPowerUpAvailable = useMemo(
     () => powerUp && availablePowerUps[powerUp],

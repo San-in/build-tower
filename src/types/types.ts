@@ -1,10 +1,10 @@
 import { FC, SVGProps } from 'react'
 
 import {
-  CALENDAR_SPECIAL_PRIZE,
   FORTUNE_WHEEL_MODAL_TYPE,
   LEVEL_DIFFICULTY,
   MARKET_PRODUCT,
+  MARKET_SPECIAL_PRIZE,
   OPERATOR,
   POWER_UP_GRADE,
   POWER_UP_TYPE,
@@ -104,10 +104,10 @@ export type PowerUpInfo = {
   price: number
 }
 
-export type CalendarPrize = MARKET_PRODUCT | CALENDAR_SPECIAL_PRIZE
+export type MarketPrize = MARKET_PRODUCT | MARKET_SPECIAL_PRIZE
 
 export type CalendarReward = {
   day: number
-  prize: CalendarPrize
+  prize: MarketPrize
   quantity: number
 }

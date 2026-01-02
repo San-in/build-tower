@@ -2,12 +2,14 @@ import { RootStackWrapperProps } from '@components/wrappers/RootStackWrapper/Roo
 import { useSettings } from '@providers'
 import { bananasService, levelService, marketService } from '@services'
 import { useAppDispatch } from '@store/hooks'
+import { checkAndUpdateOnAppStart } from '@store/slices/userActivitySlice'
 import { COLORS, GlobalStyles } from '@theme'
 import * as Font from 'expo-font'
 import React, { FC, useEffect, useState } from 'react'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 
+import { awardsService } from '../../../services/awardsServices'
 import { userActivityService } from '../../../services/userActivityService'
 import { toastConfig } from '../ToastWrapper/toastConfig'
 import { styles } from './RootStackWrapper.styles'
@@ -28,20 +30,23 @@ const RootStackWrapper: FC<RootStackWrapperProps> = ({ children }) => {
   useEffect(() => {
     const loadApp = async () => {
       try {
+        await loadFonts()
         await Promise.all([
-          loadFonts(),
-          levelService.initLevels(dispatch),
-          bananasService.initBananas(dispatch),
-          marketService.initMarket(dispatch),
-          userActivityService.initUserActivity(dispatch),
+          dispatch(bananasService.hydrateBananas()),
+          dispatch(marketService.hydrateMarket()),
+          dispatch(levelService.hydrateLevels()),
+          dispatch(awardsService.hydrateAwards()),
+          dispatch(userActivityService.hydrateUserActivity()),
         ])
-        await userActivityService.checkAndUpdateOnAppStart(dispatch)
+
+        dispatch(checkAndUpdateOnAppStart())
       } catch (error) {
         console.warn(error)
       } finally {
         setAppLoaded(true)
       }
     }
+
     loadApp().then()
   }, [dispatch])
 

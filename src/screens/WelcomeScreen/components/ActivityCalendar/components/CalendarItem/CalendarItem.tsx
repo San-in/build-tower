@@ -1,7 +1,7 @@
 import { DoneIcon, GiftIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
-import { getDayInfoByDay } from '@store/slices/userActivitySlice'
+import { selectDayInfoByDay } from '@store/slices/userActivitySlice'
 import { COLORS } from '@theme'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -20,7 +20,8 @@ const CalendarItem: FC<CalendarItemProps> = ({
   onSelect,
   isSelected,
 }) => {
-  const dayInfo = useAppSelector((state) => getDayInfoByDay(state, day))
+  const selectDayInfo = useMemo(() => selectDayInfoByDay(day), [day])
+  const dayInfo = useAppSelector(selectDayInfo)
   const { rewardClaimed, achieved } = dayInfo || {}
 
   const handleSelect = () =>
@@ -48,7 +49,7 @@ const CalendarItem: FC<CalendarItemProps> = ({
     <MotiView
       animate={{
         scale: isSelected ? 1.1 : 1,
-        shadowColor: isSelected ? COLORS.yellow70 : COLORS.codeGrey,
+        shadowColor: isSelected ? COLORS.white40 : COLORS.codeGrey30,
       }}
       style={[
         styles.container,

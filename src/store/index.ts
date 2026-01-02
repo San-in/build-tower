@@ -1,5 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { bananasService, levelService, marketService } from '@services'
 
+import { awardsService } from '../services/awardsServices'
+import { userActivityService } from '../services/userActivityService'
+import awardsReducer from './slices/awardsSlice'
 import bananasReducer from './slices/bananasSlice'
 import levelsReducer from './slices/levelsSlice'
 import marketReducer from './slices/marketSlice'
@@ -11,8 +15,14 @@ export const store = configureStore({
     bananas: bananasReducer,
     market: marketReducer,
     userActivity: userActivityReducer,
+    awards: awardsReducer,
   },
 })
+awardsService.setupAwardsPersistence(store)
+bananasService.setupBananasPersistence(store)
+levelService.setupLevelsPersistence(store)
+marketService.setupMarketPersistence(store)
+userActivityService.setupUserActivityPersistence(store)
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

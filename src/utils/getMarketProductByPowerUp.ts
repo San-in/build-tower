@@ -7,6 +7,5 @@ export function getMarketProductByPowerUp(
   if (grade === POWER_UP_GRADE.Base && type === POWER_UP_TYPE.AddExtraStep) {
     return MARKET_PRODUCT.AddExtraStep
   }
-  const key = `${type}_${grade}` as keyof typeof MARKET_PRODUCT
-  return MARKET_PRODUCT[key]
+  return `${type}_${grade}` as MARKET_PRODUCT
 }

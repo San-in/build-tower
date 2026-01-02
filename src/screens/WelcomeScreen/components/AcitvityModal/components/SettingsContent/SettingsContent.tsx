@@ -1,6 +1,7 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { LanguageSelector } from '@components/molecules/LanguageSelector'
 import { useSettings } from '@providers'
+import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
 import React, { FC, memo } from 'react'
 import { Switch, View } from 'react-native'
@@ -17,7 +18,16 @@ const SettingsContent: FC<SettingsContentProps> = ({
     <View style={styles.container}>
       <View style={styles.soundContainer}>
         <OutlinedText fontSize={20}>Sounds: </OutlinedText>
-        <Switch onValueChange={toggleSound} value={soundEnabled} />
+        <Switch
+          ios_backgroundColor={COLORS.white}
+          onValueChange={toggleSound}
+          thumbColor={soundEnabled ? COLORS.white : COLORS.gradientOrange_1}
+          trackColor={{
+            true: COLORS.gradientOrange_1,
+            false: COLORS.white,
+          }}
+          value={soundEnabled}
+        />
       </View>
       <LanguageSelector
         isDisabled={true}

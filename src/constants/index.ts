@@ -1,16 +1,17 @@
 import { UKFlagIcon } from '@assets/icons/flags'
 import {
-  CALENDAR_SPECIAL_PRIZE,
   CalendarReward,
   Country,
   LEVEL_DIFFICULTY,
   LevelConfig,
   LevelId,
   MARKET_PRODUCT,
+  MARKET_SPECIAL_PRIZE,
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
 
+export const HOURS_IN_DAY = 24
 export const TOTAL_LEVELS = 30
 export const LEVEL_CARD_WIDTH = 200
 export const LEVEL_CARD_GAP = 20
@@ -1013,18 +1014,18 @@ export const MARKET_PRODUCT_DESCRIPTION: Record<MARKET_PRODUCT, string> = {
 export const STREAK_CALENDAR_DAYS = 14
 
 export const CALENDAR_REWARDS: Array<CalendarReward> = [
-  { day: 1, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 5 },
-  { day: 2, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 10 },
-  { day: 3, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 15 },
+  { day: 1, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 5 },
+  { day: 2, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 10 },
+  { day: 3, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 15 },
   { day: 4, prize: MARKET_PRODUCT.RemoveRandomBlocks_Bronze, quantity: 1 },
-  { day: 5, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 20 },
-  { day: 6, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 25 },
+  { day: 5, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 20 },
+  { day: 6, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 25 },
   { day: 7, prize: MARKET_PRODUCT.AddRandomBlocks_Bronze, quantity: 2 },
-  { day: 8, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 30 },
-  { day: 9, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 35 },
-  { day: 10, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 40 },
+  { day: 8, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 30 },
+  { day: 9, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 35 },
+  { day: 10, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 40 },
   { day: 11, prize: MARKET_PRODUCT.AddExtraStep, quantity: 2 },
-  { day: 12, prize: CALENDAR_SPECIAL_PRIZE.Bananas, quantity: 45 },
+  { day: 12, prize: MARKET_SPECIAL_PRIZE.Bananas, quantity: 45 },
   { day: 13, prize: MARKET_PRODUCT.RemoveRandomBlocks_Silver, quantity: 2 },
   { day: 14, prize: MARKET_PRODUCT.AddRandomBlocks_Gold, quantity: 1 },
 ]

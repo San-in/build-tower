@@ -1,5 +1,4 @@
 import { INITIAL_SPIN_QUANTITY } from '@constants'
-import { bananasService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import {
   BONUS_OPTION_TYPE,
@@ -16,6 +15,7 @@ import Element = React.JSX.Element
 import { Button, OutlinedText } from '@components/atoms'
 import { ModalCard } from '@components/molecules'
 import { CustomModal } from '@components/organisms/CustomModal'
+import { removeBananas, selectBananas } from '@store/slices/bananasSlice'
 
 import { UnlockOptionModalProps } from './UnlockOptionModal.types'
 
@@ -29,7 +29,8 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 }) => {
   const [selectedOption, setSelectedOption] =
     useState<BONUS_OPTION_TYPE | null>(null)
-  const bananas = useAppSelector((state) => state.bananas.bananas)
+
+  const bananas = useAppSelector(selectBananas)
 
   const enabledBananasText = useMemo(
     () =>
@@ -119,7 +120,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
-      await bananasService.removeBananas(dispatch, price)
+      dispatch(removeBananas(price))
       setSelectedOption(null)
       onConfirm()
     }

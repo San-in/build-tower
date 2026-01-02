@@ -1,12 +1,16 @@
-import { ModalBorderBlueImg } from '@assets/images'
+import { ModalBorderOrangeImg } from '@assets/images'
 import { OutlinedText } from '@components/atoms'
 import { CALENDAR_REWARDS } from '@constants'
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
-import { bananasService, marketService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { getLastAchievedDayFromState } from '@store/slices/userActivitySlice'
+import { addBananas } from '@store/slices/bananasSlice'
+import { incrementProduct } from '@store/slices/marketSlice'
+import {
+  markRewardClaimedForDay,
+  selectLastAchievedDayFromState,
+} from '@store/slices/userActivitySlice'
 import { COLORS, GlobalStyles } from '@theme'
-import { CALENDAR_SPECIAL_PRIZE, CalendarPrize, MARKET_PRODUCT } from '@types'
+import { MARKET_PRODUCT, MARKET_SPECIAL_PRIZE, MarketPrize } from '@types'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, {
@@ -19,7 +23,6 @@ import React, {
 } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 
-import { userActivityService } from '../../../../services/userActivityService'
 import { SuccessActionModal } from '../../../GameScreen/components'
 import { styles } from './ActivityCalendar.styles'
 import { ActivityCalendarProps, PrizeModalData } from './ActivityCalendar.types'
@@ -30,20 +33,20 @@ const ITEM_WIDTH = 100
 const ITEM_GAP = 15
 const DEFAULT_GET_PRIZE_MODAL_DATA: PrizeModalData = {
   isVisible: false,
-  prize: CALENDAR_SPECIAL_PRIZE.Bananas,
+  prize: MARKET_SPECIAL_PRIZE.Bananas,
   count: 0,
   day: 1,
 }
 
 const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
   const dispatch = useAppDispatch()
-  const lastAvailableDay = useAppSelector(getLastAchievedDayFromState)
-  const snapPoints = useMemo(() => ['10%', '30%'], [])
+
+  const lastAvailableDay = useAppSelector(selectLastAchievedDayFromState)
   const targetIndex = useMemo(
     () => Math.max(lastAvailableDay - 2, 0),
     [lastAvailableDay]
   )
-
+  const snapPoints = useMemo(() => ['10%', '30%'], [])
   const [selectedDay, setSelectedDay] = useState(lastAvailableDay)
   const [getPrizeModalData, setGetPrizeModalData] = useState<PrizeModalData>(
     DEFAULT_GET_PRIZE_MODAL_DATA
@@ -74,26 +77,27 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
       isAchieved: boolean
       isRewardClaimed: boolean
       day: number
-      prize: CalendarPrize
+      prize: MarketPrize
       quantity: number
     }) => {
       if (isAchieved && !isRewardClaimed) {
         if (Object.values(MARKET_PRODUCT).includes(prize as MARKET_PRODUCT)) {
-          await marketService.increment(
-            dispatch,
-            prize as MARKET_PRODUCT,
-            quantity
+          dispatch(
+            incrementProduct({
+              product: prize as MARKET_PRODUCT,
+              count: quantity,
+            })
           )
         } else {
-          await bananasService.addBananas(dispatch, quantity)
+          dispatch(addBananas(quantity))
         }
 
         setGetPrizeModalData({ isVisible: true, prize, count: quantity, day })
         setTimeout(() => {
-          userActivityService.claimRewardForDay(dispatch, day)
+          dispatch(markRewardClaimedForDay(day))
         }, 1000)
       }
-      setSelectedDay((prev) => (prev === day ? 0 : day))
+      setSelectedDay((prev: number) => (prev === day ? 0 : day))
     },
     [dispatch]
   )
@@ -130,7 +134,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
             cachePolicy="disk"
             contentFit="cover"
             priority="high"
-            source={ModalBorderBlueImg}
+            source={ModalBorderOrangeImg}
             style={[StyleSheet.absoluteFill, styles.bottomSheetImage]}
             transition={100}
           />
@@ -139,11 +143,11 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
           </OutlinedText>
           <LinearGradient
             colors={[
-              COLORS.blue90,
-              COLORS.gradientBlue_3,
-              COLORS.gradientBlue_3,
-              COLORS.gradientBlue_2,
-              COLORS.blue90,
+              COLORS.tango90,
+              COLORS.gradientOrange_3,
+              COLORS.gradientOrange_4,
+              COLORS.gradientOrange_3,
+              COLORS.tango90,
             ]}
             end={{ x: 1, y: 1 }}
             start={{ x: 0, y: 0 }}

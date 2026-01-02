@@ -1,4 +1,4 @@
-import { CalendarPrize } from '@types'
+import { MarketPrize } from '@types'
 
 export type ActivityCalendarProps = {
   isOpen: boolean
@@ -6,7 +6,7 @@ export type ActivityCalendarProps = {
 }
 export type PrizeModalData = {
   isVisible: boolean
-  prize: CalendarPrize
+  prize: MarketPrize
   count: number
   day: number
 }

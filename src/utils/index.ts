@@ -3,6 +3,7 @@ export { calculateExpectedLevelConditions } from './calculateExpectedLevelCondit
 export { calculateIsLevelAvailable } from './calculateIsLevelAvailable'
 export { calculateWheelResult } from './calculateWheelResult'
 export { OperatorType } from './checkOperatorType'
+export { formatLevelToRomanNum } from './formatLevelToRomanNum'
 export { generateInitialLevels } from './generateInitialLevels'
 export { generateRandomNumber } from './generateRandomNumber'
 export { generateRandomOperator } from './generateRandomOperator'

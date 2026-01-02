@@ -1,6 +1,7 @@
 import { BananasIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
+import { selectBananas } from '@store/slices/bananasSlice'
 import { MARKET_PRODUCT } from '@types'
 import React, { FC, memo, useCallback, useState } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
@@ -12,7 +13,8 @@ const PRODUCTS = Object.values(MARKET_PRODUCT)
 
 const MarketContent: FC = () => {
   const { height } = useWindowDimensions()
-  const bananas = useAppSelector((state) => state.bananas.bananas)
+
+  const bananas = useAppSelector(selectBananas)
   const [selectedProduct, setSelectedProduct] = useState<MARKET_PRODUCT | null>(
     null
   )
@@ -38,8 +40,8 @@ const MarketContent: FC = () => {
         style={[
           styles.contentContainer,
           {
-            minHeight: height * 0.7,
-            maxHeight: height * 0.9,
+            minHeight: height * 0.5,
+            maxHeight: height * 0.7,
           },
         ]}
       >

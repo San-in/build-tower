@@ -8,7 +8,7 @@ import {
 } from '@assets/icons'
 import { IconButton } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
-import { getHasUnclaimedRewards } from '@store/slices/userActivitySlice'
+import { selectIsHasUnclaimedRewards } from '@store/slices/userActivitySlice'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { View } from 'react-native'
@@ -27,7 +27,7 @@ const SideMenu: FC<SideMenuProps> = ({
   handleClose,
 }) => {
   const [isMenuExpanded, setIsMenuExpanded] = useState(false)
-  const hasUserUnclaimedRewards = useAppSelector(getHasUnclaimedRewards)
+  const hasUserUnclaimedRewards = useAppSelector(selectIsHasUnclaimedRewards)
 
   const toggleMenu = () => {
     if (isMenuExpanded) {

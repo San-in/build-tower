@@ -44,13 +44,22 @@ import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
-import { bananasService, levelService, marketService } from '@services'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { getLevelById, Level } from '@store/slices/levelsSlice'
+import { addBananas } from '@store/slices/bananasSlice'
 import {
+  selectLevelById,
+  updateLevelRatingAndUnlockNext,
+} from '@store/slices/levelsSlice'
+import {
+  decrementProduct,
+  incrementProduct,
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
+import {
+  selectWelcomeBonusClaimed,
+  setWelcomeBonusClaimed,
+} from '@store/slices/userActivitySlice'
 import {
   FortuneWheelModalState,
   GAME_MODAL_TYPE,
@@ -92,7 +101,6 @@ import React, {
 } from 'react'
 import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 
-import { userActivityService } from '../../services/userActivityService'
 import {
   BlockTowerCreator,
   BuildTowerSplash,
@@ -134,16 +142,14 @@ const GameScreen: FC = () => {
   const scrollViewRef = useRef<ScrollView>(null)
   const lastMonkeyAnimationRef = useRef<MONKEY_ANIMATION_TYPE | null>(null)
 
-  const { stars } = useAppSelector(getLevelById(level)) as Level
-  const isWelcomeBonusClaimed = useAppSelector(
-    (s) => s.userActivity.welcomeBonusClaimed
-  )
+  const stars = useAppSelector(selectLevelById(level))?.stars ?? 0
+  const isWelcomeBonusClaimed = useAppSelector(selectWelcomeBonusClaimed)
   const totalRemoveBlocksPowerUps = useAppSelector(
     selectTotalRemoveRandomBlocks
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market[MARKET_PRODUCT.AddExtraStep] || 0
+    (state) => state.market[MARKET_PRODUCT.AddExtraStep]
   )
   const backgroundImage = getLevelBackground(level)
   const assetsToPreload = useMemo(
@@ -322,16 +328,15 @@ const GameScreen: FC = () => {
       level: LevelId
     }) => {
       if (consolationPrize) {
-        await bananasService.addBananas(dispatch, consolationPrize)
+        dispatch(addBananas(consolationPrize))
         return
       }
       const calculatedPrize = isDoublePrize ? prize * 2 : prize
-      await levelService.updateLevelRatingAndUnlockNext(
-        dispatch,
-        level,
-        earnedStars
+      dispatch(
+        updateLevelRatingAndUnlockNext({ levelId: level, stars: earnedStars })
       )
-      await bananasService.addBananas(dispatch, calculatedPrize)
+
+      dispatch(addBananas(calculatedPrize))
     },
     [dispatch]
   )
@@ -362,21 +367,21 @@ const GameScreen: FC = () => {
   }
 
   const handleRemovePowerUp = useCallback(
-    async (type: MARKET_PRODUCT) => {
-      await marketService.decrement(dispatch, type)
+    (type: MARKET_PRODUCT) => {
+      dispatch(decrementProduct(type))
     },
     [dispatch]
   )
 
   const handleAddPowerUp = useCallback(
-    async (type: MARKET_PRODUCT) => {
-      await marketService.increment(dispatch, type)
+    (type: MARKET_PRODUCT) => {
+      dispatch(incrementProduct({ product: type, count: 1 }))
     },
     [dispatch]
   )
 
   // const handleAddBananas = async (quantity: number) => {
-  //   await bananasService.addBananas(dispatch, quantity)
+  //   dispatch(addBananas(quantity))
   // }
 
   const handleRemoveUserBlocks = (number: number) => {
@@ -401,11 +406,11 @@ const GameScreen: FC = () => {
 
   // CALLBACKS WITH DEPENDENCIES
 
-  const handleGetWelcomeBonus = useCallback(async () => {
-    await handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)
-    await handleAddPowerUp(MARKET_PRODUCT.AddRandomBlocks_Bronze)
-    await handleAddPowerUp(MARKET_PRODUCT.RemoveRandomBlocks_Bronze)
-    await userActivityService.setWelcomeBonus(dispatch, true)
+  const handleGetWelcomeBonus = useCallback(() => {
+    handleAddPowerUp(MARKET_PRODUCT.AddExtraStep)
+    handleAddPowerUp(MARKET_PRODUCT.AddRandomBlocks_Bronze)
+    handleAddPowerUp(MARKET_PRODUCT.RemoveRandomBlocks_Bronze)
+    dispatch(setWelcomeBonusClaimed(true))
     handleCloseSuccessActionModal()
   }, [dispatch, handleAddPowerUp])
 
@@ -666,6 +671,7 @@ const GameScreen: FC = () => {
 
   const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
     if (isLevelFinished) {
+      console.log(1111)
       setTimeout(() => {
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
       }, 400)
@@ -1166,6 +1172,7 @@ const GameScreen: FC = () => {
     focusedTower,
     contentVisible,
   ])
+  console.log(monkeyAnimationData)
 
   useEffect(() => {
     if (!contentVisible) {
@@ -1284,31 +1291,33 @@ const GameScreen: FC = () => {
                     animationKey={animationRestartKey}
                     isVisible={isPrizeVisible}
                   />
-                  {isLevelFinished && (
-                    <View style={styles.monkeyStageInitTowerContainer}>
-                      <MotiView
-                        animate={{
-                          opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
-                        }}
-                        from={{ opacity: 0 }}
-                        style={styles.monkeyStageInitTower}
-                        transition={{
-                          type: 'timing',
-                          duration: 200,
-                          delay: 300,
-                        }}
-                      >
-                        <MonkeyAnimation
-                          isVisible={monkeyAnimationData.isVisible}
-                          loop={monkeyAnimationLoop}
-                          onFinish={monkeyAnimationCallback}
-                          size={monkeyAnimationSize}
-                          speed={monkeyAnimationSpeed}
-                          type={monkeyAnimationData.type}
-                        />
-                      </MotiView>
-                    </View>
-                  )}
+                  {isLevelFinished &&
+                    MONKEY_ANIMATION_TYPE.Celebration ===
+                      monkeyAnimationData.type && (
+                      <View style={styles.monkeyStageInitTowerContainer}>
+                        <MotiView
+                          animate={{
+                            opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
+                          }}
+                          from={{ opacity: 0 }}
+                          style={styles.monkeyStageInitTower}
+                          transition={{
+                            type: 'timing',
+                            duration: 200,
+                            delay: 300,
+                          }}
+                        >
+                          <MonkeyAnimation
+                            isVisible={monkeyAnimationData.isVisible}
+                            loop={monkeyAnimationLoop}
+                            onFinish={monkeyAnimationCallback}
+                            size={monkeyAnimationSize}
+                            speed={monkeyAnimationSpeed}
+                            type={monkeyAnimationData.type}
+                          />
+                        </MotiView>
+                      </View>
+                    )}
 
                   <BlockTowerCreator
                     isScaled={isScaledTower}

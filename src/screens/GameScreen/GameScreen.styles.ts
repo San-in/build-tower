@@ -33,7 +33,10 @@ export const styles = StyleSheet.create({
     right: -180,
     zIndex: Z_INDEX_TYPE.extra_high,
   },
-  monkeyStageInitTower: { marginTop: 'auto' },
+  monkeyStageInitTower: {
+    marginTop: 'auto',
+    transform: [{ translateY: 10 }],
+  },
   monkeyStageInitTowerContainer: {
     left: -10,
     position: 'absolute',

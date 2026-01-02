@@ -1,7 +1,7 @@
-import { CalendarPrize } from '@types'
+import { MarketPrize } from '@types'
 
 export type CalendarPrizeIconProps = {
-  type: CalendarPrize
+  type: MarketPrize
   count: number
   size?: number
 }

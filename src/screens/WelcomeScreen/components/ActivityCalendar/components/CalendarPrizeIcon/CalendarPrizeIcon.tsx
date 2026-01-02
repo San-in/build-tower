@@ -2,7 +2,7 @@ import { BananasIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
 import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { EMPTY_FUNCTION } from '@constants'
-import { CALENDAR_SPECIAL_PRIZE } from '@types'
+import { MARKET_SPECIAL_PRIZE } from '@types'
 import { getPowerUpInfoByMarketProduct } from '@utils'
 import React, { FC, memo } from 'react'
 import { View } from 'react-native'
@@ -14,7 +14,7 @@ const CalendarPrizeIcon: FC<CalendarPrizeIconProps> = ({
   count,
   size = 40,
 }) => {
-  if (type === CALENDAR_SPECIAL_PRIZE.Bananas) {
+  if (type === MARKET_SPECIAL_PRIZE.Bananas) {
     return (
       <View>
         <OutlinedText

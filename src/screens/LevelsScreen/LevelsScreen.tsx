@@ -8,7 +8,8 @@ import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppSelector } from '@store/hooks'
-import { getAllAvailableLevels } from '@store/slices/levelsSlice'
+import { selectBananas } from '@store/slices/bananasSlice'
+import { selectAvailableLevels } from '@store/slices/levelsSlice'
 import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
 import { getLevelIcon } from '@utils'
@@ -34,8 +35,8 @@ const ASSET_KEYS = {
 }
 
 const LevelsScreen = () => {
-  const availableLevels = useAppSelector(getAllAvailableLevels)
-  const bananas = useAppSelector(({ bananas }) => bananas.bananas)
+  const availableLevels = useAppSelector(selectAvailableLevels)
+  const bananas = useAppSelector(selectBananas)
 
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
   const insets = useSafeAreaInsets()

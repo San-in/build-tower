@@ -1,4 +1,4 @@
-import { CalendarPrize } from '@types'
+import { MarketPrize } from '@types'
 type onSelectCalendarItem = ({
   isAchieved,
   isRewardClaimed,
@@ -9,13 +9,13 @@ type onSelectCalendarItem = ({
   isAchieved: boolean
   isRewardClaimed: boolean
   day: number
-  prize: CalendarPrize
+  prize: MarketPrize
   quantity: number
 }) => void
 
 export type CalendarItemProps = {
   day: number
-  prize: CalendarPrize
+  prize: MarketPrize
   quantity: number
   itemWidth?: number
   isSelected?: boolean

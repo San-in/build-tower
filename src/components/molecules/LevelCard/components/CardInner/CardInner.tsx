@@ -9,7 +9,7 @@ import {
 import { LevelCardProps } from '@components/molecules/LevelCard/LevelCard.types'
 import { LEVEL_NAMES } from '@constants'
 import { useAppSelector } from '@store/hooks'
-import { getLevelById, Level } from '@store/slices/levelsSlice'
+import { selectLevelById } from '@store/slices/levelsSlice'
 import { COLORS, GlobalStyles } from '@theme'
 import { getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
@@ -19,7 +19,6 @@ import React, {
   memo,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -28,10 +27,11 @@ import { Pressable, StyleSheet, View } from 'react-native'
 import { styles } from './CardInner.styles'
 
 const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
-  const selectLevel = useMemo(() => getLevelById(level), [level])
-  const { isAvailable, stars, difficulty } = useAppSelector(
-    selectLevel
-  ) as Level
+  const levelData = useAppSelector(selectLevelById(level))
+  if (!levelData) {
+    return null
+  }
+  const { isAvailable, stars, difficulty } = levelData
 
   const iconSrc = isAvailable ? getLevelIcon(level) : LockImg
 

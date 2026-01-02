@@ -1,53 +1,65 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { AppDispatch } from '@store/index'
+import type { Store } from '@reduxjs/toolkit'
+import type { AppDispatch, RootState } from '@store/index'
 import {
-  decrementProduct,
-  incrementProduct,
-  initialState,
+  createInitialMarketState,
   MarketState,
-  resetMarket,
   setAllProducts,
 } from '@store/slices/marketSlice'
-import { MARKET_PRODUCT } from '@types'
 
 const STORAGE_KEY = 'market_purchases'
 
-export const marketService = {
-  async initMarket(dispatch: AppDispatch) {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY)
+const isValidMarketState = (value: unknown): value is MarketState =>
+  !!value && typeof value === 'object'
 
-    if (raw) {
-      const products: MarketState = JSON.parse(raw)
-      dispatch(setAllProducts(products))
-    } else {
-      dispatch(resetMarket())
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(initialState))
+const loadPersistedMarket = async (): Promise<MarketState> => {
+  const raw = await AsyncStorage.getItem(STORAGE_KEY)
+  if (!raw) {
+    return createInitialMarketState()
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    if (!isValidMarketState(parsed)) {
+      return createInitialMarketState()
     }
-  },
+    return parsed as MarketState
+  } catch {
+    return createInitialMarketState()
+  }
+}
 
-  async reset(dispatch: AppDispatch) {
-    dispatch(resetMarket())
-    await AsyncStorage.removeItem(STORAGE_KEY)
-  },
+const savePersistedMarket = async (data: MarketState) =>
+  AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 
-  async increment(
-    dispatch: AppDispatch,
-    product: MARKET_PRODUCT,
-    count: number = 1
-  ) {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY)
-    const products: MarketState = raw ? JSON.parse(raw) : { ...initialState }
-    products[product] = (products[product] || 0) + count
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(products))
-    dispatch(incrementProduct({ product, count }))
-  },
+const hydrateMarket = () => async (dispatch: AppDispatch) => {
+  const persisted = await loadPersistedMarket()
+  dispatch(setAllProducts(persisted))
+}
 
-  async decrement(dispatch: AppDispatch, product: MARKET_PRODUCT) {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY)
-    const products: MarketState = raw ? JSON.parse(raw) : { ...initialState }
-    products[product] = Math.max((products[product] || 0) - 1, 0)
+const setupMarketPersistence = (store: Store<RootState>) => {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  let lastSerialized = ''
 
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(products))
-    dispatch(decrementProduct(product))
-  },
+  store.subscribe(() => {
+    const market = store.getState().market
+    const serialized = JSON.stringify(market)
+
+    if (serialized === lastSerialized) {
+      return
+    }
+    lastSerialized = serialized
+
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      savePersistedMarket(market).catch(() => {})
+    }, 250)
+  })
+}
+
+export const marketService = {
+  hydrateMarket,
+  setupMarketPersistence,
 }

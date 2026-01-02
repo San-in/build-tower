@@ -4,7 +4,7 @@ import { MARKET_PRODUCT } from '@types'
 
 export type MarketState = Record<MARKET_PRODUCT, number>
 
-export const initialState: MarketState = {
+export const createInitialMarketState = (): MarketState => ({
   [MARKET_PRODUCT.AddRandomBlocks_Bronze]: 0,
   [MARKET_PRODUCT.AddRandomBlocks_Silver]: 0,
   [MARKET_PRODUCT.AddRandomBlocks_Gold]: 0,
@@ -12,7 +12,9 @@ export const initialState: MarketState = {
   [MARKET_PRODUCT.RemoveRandomBlocks_Silver]: 0,
   [MARKET_PRODUCT.RemoveRandomBlocks_Gold]: 0,
   [MARKET_PRODUCT.AddExtraStep]: 0,
-}
+})
+
+const initialState: MarketState = createInitialMarketState()
 
 const marketSlice = createSlice({
   name: 'market',
@@ -28,7 +30,7 @@ const marketSlice = createSlice({
       state[payload] = Math.max(0, state[payload] - 1)
     },
     setAllProducts: (state, { payload }: PayloadAction<MarketState>) => payload,
-    resetMarket: () => initialState,
+    resetMarket: () => createInitialMarketState(),
   },
 })
 

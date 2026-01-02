@@ -3,12 +3,13 @@ import { IconButton, OutlinedText } from '@components/atoms'
 import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { HeaderProps } from '@components/molecules/Header/Header.types'
 import { useAppSelector } from '@store/hooks'
+import { selectBananas } from '@store/slices/bananasSlice'
 import {
   selectTotalAddRandomBlocks,
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
-import { POWER_UP_TYPE } from '@types'
+import { MARKET_PRODUCT, POWER_UP_TYPE } from '@types'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -23,13 +24,13 @@ const Header: FC<HeaderProps> = ({
   onAddExtraStepPress,
   level,
 }) => {
-  const bananas = useAppSelector((state) => state.bananas.bananas)
+  const bananas = useAppSelector(selectBananas)
   const totalRemoveBlocksPowerUps = useAppSelector(
     selectTotalRemoveRandomBlocks
   )
   const totalAddBlocksPowerUps = useAppSelector(selectTotalAddRandomBlocks)
   const addExtraStepPowerUps = useAppSelector(
-    (state) => state.market?.add_extra_step
+    (state) => state.market[MARKET_PRODUCT.AddExtraStep]
   )
 
   const levelTitle = `Level ${String(level)}`

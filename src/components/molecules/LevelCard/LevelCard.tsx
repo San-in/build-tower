@@ -1,7 +1,7 @@
 import { OutlinedText } from '@components/atoms'
 import { CardInner } from '@components/molecules/LevelCard/components'
 import { useAppSelector } from '@store/hooks'
-import { getLevelById, Level } from '@store/slices/levelsSlice'
+import { selectLevelById } from '@store/slices/levelsSlice'
 import { COLORS } from '@theme'
 import { LEVEL_DIFFICULTY } from '@types'
 import { MotiView } from 'moti'
@@ -14,8 +14,12 @@ import { LevelCardProps } from './LevelCard.types'
 const SHAKE_KEYFRAMES: Array<number> = [0, -4, 4, -2, 2, 0]
 
 const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
-  const selectLevel = useMemo(() => getLevelById(level), [level])
-  const { isAvailable, difficulty } = useAppSelector(selectLevel) as Level
+  const levelData = useAppSelector(selectLevelById(level))
+  if (!levelData) {
+    return null
+  }
+  const { isAvailable, difficulty } = levelData
+
   const infoMessage = useMemo(
     () =>
       ({
@@ -23,7 +27,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
         [LEVEL_DIFFICULTY.Medium]:
           'Earn at least 2 stars on every previous level!',
         [LEVEL_DIFFICULTY.Hard]:
-          'Master all previous levels with 3  stars to proceed!',
+          'Master all previous levels with 3 stars to proceed!',
       })[difficulty],
     [difficulty]
   )

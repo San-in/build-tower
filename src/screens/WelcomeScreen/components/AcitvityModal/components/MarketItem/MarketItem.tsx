@@ -1,8 +1,9 @@
 import { Button, OutlinedText } from '@components/atoms'
 import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { EMPTY_FUNCTION } from '@constants'
-import { bananasService, marketService } from '@services'
-import { useAppSelector } from '@store/hooks'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { removeBananas } from '@store/slices/bananasSlice'
+import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, POWER_UP_GRADE } from '@types'
 import { getPowerUpInfoByMarketProduct } from '@utils'
@@ -19,8 +20,9 @@ const MarketItem: FC<MarketItemProps> = ({
   isSelected,
   totalBananas,
 }) => {
-  const dispatch = useDispatch()
-  const countPowerUps = useAppSelector((state) => state.market?.[product])
+  const dispatch = useAppDispatch()
+
+  const countPowerUps = useAppSelector((state) => state.market[product])
   const { price, description, type, grade } =
     getPowerUpInfoByMarketProduct(product)
 
@@ -40,8 +42,8 @@ const MarketItem: FC<MarketItemProps> = ({
       if (totalBananas < price) {
         return
       }
-      await marketService.increment(dispatch, type)
-      await bananasService.removeBananas(dispatch, price)
+      dispatch(incrementProduct({ product: type, count: 1 }))
+      dispatch(removeBananas(price))
     },
     [dispatch, price, totalBananas]
   )
