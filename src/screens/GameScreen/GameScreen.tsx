@@ -671,7 +671,6 @@ const GameScreen: FC = () => {
 
   const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
     if (isLevelFinished) {
-      console.log(1111)
       setTimeout(() => {
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
       }, 400)
@@ -1172,7 +1171,7 @@ const GameScreen: FC = () => {
     focusedTower,
     contentVisible,
   ])
-  console.log(monkeyAnimationData)
+  console.warn(monkeyAnimationData)
 
   useEffect(() => {
     if (!contentVisible) {

@@ -10,14 +10,7 @@ import { COLORS } from '@theme'
 import { MARKET_PRODUCT, MarketPrize } from '@types'
 import { formatLevelToRomanNum } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   DimensionValue,
   Pressable,
@@ -179,8 +172,7 @@ const AwardBottomSheet = ({
                 if (isSingleLevelAward) {
                   return null
                 }
-                console.log('INSIDE')
-                console.log(currentRenderedLevel)
+
                 return (
                   <View
                     key={index}

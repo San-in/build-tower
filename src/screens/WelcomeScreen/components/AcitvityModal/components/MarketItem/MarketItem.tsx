@@ -9,7 +9,6 @@ import { MARKET_PRODUCT, POWER_UP_GRADE } from '@types'
 import { getPowerUpInfoByMarketProduct } from '@utils'
 import React, { FC, memo, useCallback, useMemo } from 'react'
 import { Pressable, View } from 'react-native'
-import { useDispatch } from 'react-redux'
 
 import { styles } from './MarketItem.styles'
 import { MarketItemProps } from './MarketItem.types'

@@ -51,7 +51,7 @@ const AwardsContent: FC<{
             paddingHorizontal: 10,
           }}
         >
-          {awardsDetails.map(({ config: { icon }, progress }, index) => {
+          {awardsDetails.map(({ config: { icon }, progress }) => {
             const { currentLevel, type } = progress
             const isUnblocked = Boolean(currentLevel)
 

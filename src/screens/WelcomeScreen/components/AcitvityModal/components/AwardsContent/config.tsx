@@ -2,7 +2,6 @@ import {
   AddBlocksMasterIcon,
   AddExtraStepIconIcon,
   AwardsCollectionerIcon,
-  BananasIcon,
   CompleteLevelIcon,
   EarlyClearIcon,
   NoPowerUpsIcon,
