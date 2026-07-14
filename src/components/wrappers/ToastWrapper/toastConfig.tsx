@@ -16,8 +16,8 @@ const createToast =
       style={styles.toast}
     >
       <View>
-        {text1 && <OutlinedText fontSize={16}>{text1}</OutlinedText>}
-        {text2 && <OutlinedText fontSize={14}>{text2}</OutlinedText>}
+        {text1 && <OutlinedText fontSize={12}>{text1}</OutlinedText>}
+        {text2 && <OutlinedText fontSize={10}>{text2}</OutlinedText>}
       </View>
     </LinearGradient>
   )

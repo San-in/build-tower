@@ -35,12 +35,11 @@ export const styles = StyleSheet.create({
   },
   monkeyStageInitTower: {
     marginTop: 'auto',
-    transform: [{ translateY: 10 }],
+    transform: [{ translateY: -2 }],
   },
   monkeyStageInitTowerContainer: {
     left: -10,
     position: 'absolute',
-    top: -35,
     transform: [{ scaleX: -1 }],
   },
   monkeyStageUserTowerContainer: {

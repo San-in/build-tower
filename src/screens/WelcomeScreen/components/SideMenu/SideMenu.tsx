@@ -1,13 +1,13 @@
 import {
   AwardsIcon,
   CalendarIcon,
-  ExclamationRoundIcon,
   MarketIcon,
   MenuIcon,
   SettingsIcon,
 } from '@assets/icons'
 import { IconButton } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
+import { selectIsHasUnclaimedAwards } from '@store/slices/awardsSlice'
 import { selectIsHasUnclaimedRewards } from '@store/slices/userActivitySlice'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
@@ -28,6 +28,12 @@ const SideMenu: FC<SideMenuProps> = ({
 }) => {
   const [isMenuExpanded, setIsMenuExpanded] = useState(false)
   const hasUserUnclaimedRewards = useAppSelector(selectIsHasUnclaimedRewards)
+  const hasUserUnclaimedAwards = useAppSelector(selectIsHasUnclaimedAwards)
+  const isMenuIconWithNotify = useMemo(
+    () =>
+      !isMenuExpanded && (hasUserUnclaimedRewards || hasUserUnclaimedAwards),
+    [isMenuExpanded, hasUserUnclaimedRewards, hasUserUnclaimedAwards]
+  )
 
   const toggleMenu = () => {
     if (isMenuExpanded) {
@@ -51,10 +57,10 @@ const SideMenu: FC<SideMenuProps> = ({
       {
         icon: <AwardsIcon height={ICON_SIZE} key="i3" width={ICON_SIZE} />,
         callback: handleAwards,
-        withNotify: false,
+        withNotify: hasUserUnclaimedAwards,
       },
       {
-        icon: <MarketIcon height={ICON_SIZE} key="i4å" width={ICON_SIZE} />,
+        icon: <MarketIcon height={ICON_SIZE} key="i4" width={ICON_SIZE} />,
         callback: handleMarket,
         withNotify: false,
       },
@@ -64,6 +70,7 @@ const SideMenu: FC<SideMenuProps> = ({
       handleCalendar,
       handleMarket,
       handleSettings,
+      hasUserUnclaimedAwards,
       hasUserUnclaimedRewards,
     ]
   )
@@ -86,6 +93,7 @@ const SideMenu: FC<SideMenuProps> = ({
           </MotiView>
         }
         onPress={toggleMenu}
+        withNotify={isMenuIconWithNotify}
       />
 
       <AnimatePresence>
@@ -104,28 +112,16 @@ const SideMenu: FC<SideMenuProps> = ({
                   exit={{ opacity: 0, translateX: -10 }}
                   from={{ opacity: 0, translateX: -10 }}
                   key={idx}
-                  style={styles.menuListItemContainer}
                   transition={{
                     type: 'timing',
                     duration: 100,
                     delay: 50 * idx,
                   }}
                 >
-                  <MotiView
-                    animate={{ opacity: Number(withNotify) }}
-                    style={styles.menuListItemIcon}
-                    transition={{
-                      type: 'timing',
-                      duration: 100,
-                    }}
-                  >
-                    <ExclamationRoundIcon height={20} width={20} />
-                  </MotiView>
-
                   <IconButton
                     icon={icon}
                     onPress={callback}
-                    style={withNotify && styles.menuListItemWithNotify}
+                    withNotify={withNotify}
                   />
                 </MotiView>
               ))}

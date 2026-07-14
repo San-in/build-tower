@@ -87,7 +87,10 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
       >
         <View style={styles.labelContainer}>
           <OutlinedText
-            fontSize={20}
+            adjustsFontSizeToFit
+            containerStyle={styles.labelAutoFit}
+            fontSize={14}
+            numberOfLines={1}
             style={!isAvailable ? GlobalStyles.invisible : GlobalStyles.visible}
           >
             {LEVEL_NAMES[level]}
@@ -117,7 +120,13 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
         </View>
 
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
-          <OutlinedText fontSize={stars ? 25 : 30} style={styles.levelLabel}>
+          <OutlinedText
+            adjustsFontSizeToFit
+            containerStyle={styles.labelAutoFit}
+            fontSize={stars ? 18 : 22}
+            numberOfLines={1}
+            style={styles.levelLabel}
+          >
             {`Level ${level}`}
           </OutlinedText>
           {isAvailable && (

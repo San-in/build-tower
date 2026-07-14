@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
   },
+  emoji: { fontSize: 14 },
   infoMessage: { flexDirection: 'row', gap: 5 },
   infoMessageContainer: {
     alignSelf: 'flex-start',

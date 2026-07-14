@@ -10,4 +10,6 @@ export type IconButtonProps = {
   labelSize?: number
   label?: string
   isDisabled?: boolean
+  withNotify?: boolean
+  numberOfLines?: number
 }

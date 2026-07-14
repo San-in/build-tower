@@ -21,7 +21,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
   const [isConfettiVisible, setIsConfettiVisible] = useState(false)
 
   useEffect(() => {
-    let timeoutId: number
+    let timeoutId: ReturnType<typeof setTimeout>
     if (
       isVisible &&
       confettiRef?.current &&

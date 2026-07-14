@@ -96,7 +96,7 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
           <View style={styles.phraseContainer}>
             <OutlinedText
               color={COLORS.yellow}
-              fontSize={12}
+              fontSize={10}
               strokeColor={COLORS.brown}
             >
               {phrase}

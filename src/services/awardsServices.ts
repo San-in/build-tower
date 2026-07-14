@@ -23,7 +23,7 @@ const loadPersistedAwards = async (): Promise<AwardsState> => {
     if (!isValidAwardsState(parsed)) {
       return createInitialAwardsState()
     }
-    return parsed as AwardsState
+    return { ...createInitialAwardsState(), ...(parsed as AwardsState) }
   } catch {
     return createInitialAwardsState()
   }

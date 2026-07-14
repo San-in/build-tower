@@ -18,9 +18,9 @@ export const calculateWheelResult = ({
     case OPERATOR.Minus:
       return value - operand < 1 ? 1 : value - operand
     case OPERATOR.Multiply:
-      return value * operand
+      return Math.round(value * operand)
     case OPERATOR.Division:
-      return value / operand < 1 ? 1 : value / operand
+      return value / operand < 1 ? 1 : Math.round(value / operand)
     default:
       console.warn(`Unsupported operator: ${operator}`)
       return value

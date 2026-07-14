@@ -436,7 +436,7 @@ const GameScreen: FC = () => {
   const handleUseAddExtraPowerUp = useCallback(async () => {
     handleCloseActionModal()
 
-    await handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
+    handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
     setImmediate(() => {
       setStep((prevState) => Math.max(prevState - 1, 1))
       Toast({
@@ -712,8 +712,8 @@ const GameScreen: FC = () => {
     const [firstOperator, secondOperator] = getOptionOperators(
       userBlockValue === 1,
       isUserNeedHelp,
-      isMultiplePlusBlocked,
-      isMultipleBlocked
+      isMultipleBlocked,
+      isMultiplePlusBlocked
     )
 
     const firstNumber = getOptionNumberByOperator({
@@ -837,7 +837,7 @@ const GameScreen: FC = () => {
         handleCloseActionModal()
         if (marketProduct) {
           setTimeout(async () => {
-            await handleRemovePowerUp(marketProduct)
+            handleRemovePowerUp(marketProduct)
           }, 1000)
         }
       }
@@ -1171,7 +1171,6 @@ const GameScreen: FC = () => {
     focusedTower,
     contentVisible,
   ])
-  console.warn(monkeyAnimationData)
 
   useEffect(() => {
     if (!contentVisible) {
@@ -1189,7 +1188,7 @@ const GameScreen: FC = () => {
   }, [contentVisible, focusedTower, initialBlockValue])
 
   useEffect(() => {
-    let timerId: number
+    let timerId: ReturnType<typeof setTimeout>
     if (isStarsGifVisible) {
       timerId = setTimeout(() => setIsStarsGifVisible(false), 2000)
     }
@@ -1293,7 +1292,12 @@ const GameScreen: FC = () => {
                   {isLevelFinished &&
                     MONKEY_ANIMATION_TYPE.Celebration ===
                       monkeyAnimationData.type && (
-                      <View style={styles.monkeyStageInitTowerContainer}>
+                      <View
+                        style={[
+                          styles.monkeyStageInitTowerContainer,
+                          { bottom: initialBlockValue * BLOCK_DIMENSION - 12 },
+                        ]}
+                      >
                         <MotiView
                           animate={{
                             opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,

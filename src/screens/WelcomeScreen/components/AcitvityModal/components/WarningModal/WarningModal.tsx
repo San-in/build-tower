@@ -26,13 +26,13 @@ const WarningModal: FC<WarningModalProps> = ({
       <Button
         onPress={handleClose}
         style={styles.button}
-        textSize={15}
+        textSize={12}
         title={'KEEP'}
       />
       <Button
         onPress={handleConfirm}
         style={styles.button}
-        textSize={15}
+        textSize={12}
         title={'RESET'}
         type={BUTTON_TYPE.Error}
       />

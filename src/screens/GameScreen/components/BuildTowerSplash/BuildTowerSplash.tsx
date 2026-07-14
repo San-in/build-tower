@@ -64,6 +64,7 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
         />
 
         <Button
+          numberOfLines={2}
           onPress={handlePressButton}
           style={styles.button}
           title={buttonLabel}

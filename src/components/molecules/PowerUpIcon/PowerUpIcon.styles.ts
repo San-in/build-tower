@@ -13,4 +13,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
+  symbol: {
+    includeFontPadding: false,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
 })

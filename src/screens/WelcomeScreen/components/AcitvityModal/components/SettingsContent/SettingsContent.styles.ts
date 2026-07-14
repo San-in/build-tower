@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: { width: '100%' },
-  resetButton: { alignSelf: 'center', marginTop: 20, maxWidth: '60%' },
+  resetButton: { alignSelf: 'center', marginTop: 20, maxWidth: '80%' },
   resetButtonContainer: { paddingHorizontal: 10 },
   soundContainer: {
     alignItems: 'center',

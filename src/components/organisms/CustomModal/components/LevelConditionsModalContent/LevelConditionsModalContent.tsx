@@ -69,7 +69,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
                 ? `${-((prizes.at(-1) ?? 0) - (prizes[item] ?? 0))}`
                 : `${prizes[item]}`}
             </OutlinedText>
-            <BananasIcon height={25} width={25} />
+            <BananasIcon height={30} width={30} />
 
             <OutlinedText fontSize={20} style={styles.rewardsPrizeContainer}>
               for
@@ -83,7 +83,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
               >
                 {`${blocks[item]}`}
               </OutlinedText>
-              <BlockIcon size={20} />
+              <BlockIcon size={25} />
             </View>
           </View>
         ))}
@@ -138,7 +138,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={onConfirm}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={confirmButtonText}
           type={BUTTON_TYPE.Warning}
         />

@@ -15,5 +15,8 @@ export const calculateExpectedLevelConditions = (
     third = second - 1
   }
 
+  second = Math.max(1, second)
+  third = Math.max(1, third)
+
   return [start, second, third]
 }

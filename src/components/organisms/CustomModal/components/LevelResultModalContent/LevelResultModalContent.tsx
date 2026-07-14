@@ -136,6 +136,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         icon={<CardsIcon height={30} width={30} />}
         isDisabled={true}
         label={'Double'}
+        numberOfLines={1}
         onPress={() =>
           onGetDoublePrize({ prize: displayedPrize, stars: displayedStars })
         }
@@ -147,6 +148,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         icon={<HomeIcon height={30} width={30} />}
         label={'Home'}
         labelStyles={styles.buttonLabel}
+        numberOfLines={1}
         onPress={onGoHome}
         style={styles.iconContainer}
       />
@@ -158,6 +160,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         isDisabled={isResetStepsDisabled}
         label={'Reset Steps'}
         labelStyles={styles.buttonLabel}
+        numberOfLines={2}
         onPress={onResetSteps}
         style={[
           styles.iconContainer,
@@ -170,6 +173,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         icon={<RestartIcon height={30} width={30} />}
         label={'Restart'}
         labelStyles={styles.buttonLabel}
+        numberOfLines={1}
         onPress={() =>
           onRestartLevel({
             prize: displayedPrize,
@@ -188,6 +192,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         icon={<ReceiveIcon height={30} width={30} />}
         label={'Get Prize'}
         labelStyles={styles.buttonLabel}
+        numberOfLines={2}
         onPress={() =>
           onGetPrize({
             prize: displayedPrize,
@@ -280,7 +285,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         <Text style={styles.textIcon}>{headerContent.icon}</Text>
         <OutlinedText
           color={COLORS.gradientGold_1}
-          fontSize={40}
+          fontSize={35}
           offset={2}
           strokeColor={COLORS.brown}
         >
@@ -288,7 +293,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         </OutlinedText>
       </View>
       <View style={styles.subTitle}>
-        <OutlinedText fontSize={24}>{headerContent.subTitle}</OutlinedText>
+        <OutlinedText fontSize={20}>{headerContent.subTitle}</OutlinedText>
       </View>
       {!!displayedStars && <StarsRow stars={displayedStars} />}
       {isLevelPassed ? (
@@ -302,11 +307,11 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
               <View style={styles.consolationPrizeContainer}>
                 <OutlinedText
                   color={COLORS.gradientGold_1}
-                  fontSize={40}
+                  fontSize={35}
                   strokeColor={COLORS.brown}
                   style={styles.prizeLabel}
                 >{`${calculateConsolationPrize(prize)}`}</OutlinedText>
-                <BananasIcon height={40} width={40} />
+                <BananasIcon height={35} width={35} />
               </View>
             </View>
           )}

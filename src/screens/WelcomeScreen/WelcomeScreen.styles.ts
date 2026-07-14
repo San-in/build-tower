@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   sideMenuContainer: { alignItems: 'center', height: '100%', width: '100%' },
   startButton: { marginTop: 100 },
-  title: {
+  titleWrapper: {
     marginTop: 450,
     transform: [{ rotate: '7deg' }],
   },

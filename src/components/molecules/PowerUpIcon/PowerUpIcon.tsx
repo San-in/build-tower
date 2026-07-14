@@ -12,7 +12,7 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
   size = 50,
   type,
   color,
-  textSize,
+  textSize = 24,
   textStyle,
 }) => {
   const powerUpType = {
@@ -73,15 +73,13 @@ const PowerUpIcon: FC<PowerUpIconProps> = ({
           },
         ]}
       >
-        <View
-          style={[
-            {
-              bottom: size / 20,
-            },
-            textStyle,
-          ]}
-        >
-          <OutlinedText fontSize={textSize}>{powerUpType}</OutlinedText>
+        <View style={textStyle}>
+          <OutlinedText
+            fontSize={textSize}
+            style={[styles.symbol, { lineHeight: textSize }]}
+          >
+            {powerUpType}
+          </OutlinedText>
         </View>
       </LinearGradient>
     </View>

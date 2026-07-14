@@ -75,33 +75,33 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   const infoMessage: Element = {
     [INFO_UNLOCK_OPTION_MODAL_KEY.Empty]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={13}>Choose at least one option</OutlinedText>
-        <Text>😉</Text>
+        <OutlinedText fontSize={12}>Choose at least one option</OutlinedText>
+        <Text style={styles.emoji}>😉</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledAd]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={13}>Ads are resting right now...</OutlinedText>
-        <Text>🛌</Text>
+        <OutlinedText fontSize={12}>Ads are resting right now...</OutlinedText>
+        <Text style={styles.emoji}>🛌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledBananas]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={13}>You need more bananas</OutlinedText>
-        <Text>🙈🍌</Text>
+        <OutlinedText fontSize={12}>You need more bananas</OutlinedText>
+        <Text style={styles.emoji}>🙈🍌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledAd]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={13}>Watch a short ad & go!</OutlinedText>
-        <Text>🎬</Text>
+        <OutlinedText fontSize={12}>Watch a short ad & go!</OutlinedText>
+        <Text style={styles.emoji}>🎬</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledBananas]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={13}>{`${price}`}</OutlinedText>
-        <Text>🍌</Text>
-        <OutlinedText fontSize={13}>
+        <OutlinedText fontSize={12}>{`${price}`}</OutlinedText>
+        <Text style={styles.emoji}>🍌</Text>
+        <OutlinedText fontSize={12}>
           {enabledBananasText || '- a good price'}
         </OutlinedText>
       </View>
@@ -163,7 +163,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={handleClose}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={'CANCEL'}
           type={BUTTON_TYPE.Error}
         />
@@ -172,7 +172,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
           isDisabled={!!isConfirmDisabled}
           onPress={handleConfirmPress}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={'OK'}
           type={BUTTON_TYPE.Info}
         />

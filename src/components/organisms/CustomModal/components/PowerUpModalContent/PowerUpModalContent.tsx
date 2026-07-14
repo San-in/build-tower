@@ -68,12 +68,12 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
     }
 
     if (!isSelectedPowerUpAvailable) {
-      return `You don't have any ${powerUp.toUpperCase()} cards. 
+      return `You don't have any ${String(powerUp).toUpperCase()} cards. 
 Get some in the MonkeyMarket.`
     }
 
-    return `${powerUp} card will ${type === POWER_UP_TYPE.AddRandomBlocks ? 'ADD' : 'REMOVE'} 
-    ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].max} random blocks`
+    return `${String(powerUp).toUpperCase()} card will ${type === POWER_UP_TYPE.AddRandomBlocks ? 'ADD' : 'REMOVE'}
+${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].max} random blocks`
   }
 
   const getHeaderBackground = (
@@ -166,7 +166,7 @@ Get some in the MonkeyMarket.`
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={'CANCEL'}
           type={BUTTON_TYPE.Error}
         />
@@ -175,7 +175,7 @@ Get some in the MonkeyMarket.`
           isDisabled={!isSelectedPowerUpAvailable}
           onPress={() => onConfirm({ grade: powerUp, type })}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={'OK'}
           type={BUTTON_TYPE.Info}
         />

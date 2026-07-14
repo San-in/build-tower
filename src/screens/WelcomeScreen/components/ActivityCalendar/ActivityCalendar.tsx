@@ -81,6 +81,8 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
       quantity: number
     }) => {
       if (isAchieved && !isRewardClaimed) {
+        dispatch(markRewardClaimedForDay(day))
+
         if (Object.values(MARKET_PRODUCT).includes(prize as MARKET_PRODUCT)) {
           dispatch(
             incrementProduct({
@@ -93,9 +95,6 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
         }
 
         setGetPrizeModalData({ isVisible: true, prize, count: quantity, day })
-        setTimeout(() => {
-          dispatch(markRewardClaimedForDay(day))
-        }, 1000)
       }
       setSelectedDay((prev: number) => (prev === day ? 0 : day))
     },

@@ -50,7 +50,7 @@ const ModalCard: FC<ModalCardProps> = ({
       >
         {option === BONUS_OPTION_TYPE.Bananas ? (
           <>
-            <BananasWithBGIcon height={60} width={60} />
+            <BananasWithBGIcon height={50} width={50} />
             <OutlinedText fontSize={20}>{`${price}`}</OutlinedText>
           </>
         ) : (

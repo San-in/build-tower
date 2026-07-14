@@ -64,7 +64,6 @@
     "removeComments": true,
     "noEmit": true,
     "pretty": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "types": [
       "expo",

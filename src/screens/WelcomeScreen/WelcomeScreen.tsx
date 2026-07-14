@@ -25,8 +25,6 @@ import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
-import { useAppDispatch } from '@store/hooks'
-import { increaseRepeatsForAward } from '@store/slices/awardsSlice'
 import { COLORS, GlobalStyles } from '@theme'
 import { MARKET_SPECIAL_PRIZE, SCREENS } from '@types'
 import { Image } from 'expo-image'
@@ -43,7 +41,6 @@ import {
   SuccessAwardClaimedModal,
 } from './components'
 import { ACTIVITY_MODAL_TYPES } from './components/AcitvityModal/ActivityModal.types'
-import { AWARD_TYPE } from './components/AcitvityModal/components/AwardsContent/config'
 import { SuccessAwardClaimedModalProps } from './components/SuccessAwardClaimedModal/SuccessAwardClaimedModal'
 import { styles } from './WelcomeScreen.styles'
 
@@ -99,7 +96,6 @@ const WelcomeScreen = () => {
     useMemo(() => Object.values(ASSET_KEYS), [])
   )
 
-  const dispatch = useAppDispatch()
   const [activityModalConfig, setActivityModalConfig] = useState<ActivityModal>(
     INITIAL_ACTIVITY_MODAL_STATE
   )
@@ -190,15 +186,16 @@ const WelcomeScreen = () => {
                 handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
               }
             />
-            <OutlinedText
-              color={COLORS.yellow}
-              fontSize={60}
-              offset={5}
-              strokeColor={COLORS.brown}
-              style={styles.title}
-            >
-              BuildTower
-            </OutlinedText>
+            <View style={styles.titleWrapper}>
+              <OutlinedText
+                color={COLORS.yellow}
+                fontSize={50}
+                offset={5}
+                strokeColor={COLORS.brown}
+              >
+                BuildTower
+              </OutlinedText>
+            </View>
 
             <MotiView
               animate={{ opacity: Number(bgReady) }}
@@ -211,12 +208,6 @@ const WelcomeScreen = () => {
                 onPress={handleStartButtonPress}
                 textSize={27}
                 title="START"
-              />
-              <Button
-                onPress={() =>
-                  dispatch(increaseRepeatsForAward(AWARD_TYPE.EARLY_CLEAR))
-                }
-                title="Add Award"
               />
             </MotiView>
           </MotiView>

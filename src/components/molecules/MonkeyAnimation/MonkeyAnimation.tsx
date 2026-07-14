@@ -16,7 +16,10 @@ export const MonkeyAnimation: FC<MonkeyAnimationProps> = ({
   size = 100,
   loop = false,
 }) => {
-  const handleAnimationFinish = () => {
+  const handleAnimationFinish = (isCancelled?: boolean) => {
+    if (isCancelled) {
+      return
+    }
     onFinish()
   }
 

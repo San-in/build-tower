@@ -15,22 +15,25 @@ const SHAKE_KEYFRAMES: Array<number> = [0, -4, 4, -2, 2, 0]
 
 const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
   const levelData = useAppSelector(selectLevelById(level))
+  const difficulty = levelData?.difficulty
+
+  const infoMessage = useMemo(() => {
+    if (!difficulty) {
+      return ''
+    }
+    return {
+      [LEVEL_DIFFICULTY.Easy]: 'Clear the previous level to unlock!',
+      [LEVEL_DIFFICULTY.Medium]:
+        'Earn at least 2 stars on the previous level to unlock!',
+      [LEVEL_DIFFICULTY.Hard]:
+        'Earn 3 stars on the previous level to unlock!',
+    }[difficulty]
+  }, [difficulty])
+
   if (!levelData) {
     return null
   }
-  const { isAvailable, difficulty } = levelData
-
-  const infoMessage = useMemo(
-    () =>
-      ({
-        [LEVEL_DIFFICULTY.Easy]: 'Complete all previous levels to unlock!',
-        [LEVEL_DIFFICULTY.Medium]:
-          'Earn at least 2 stars on every previous level!',
-        [LEVEL_DIFFICULTY.Hard]:
-          'Master all previous levels with 3 stars to proceed!',
-      })[difficulty],
-    [difficulty]
-  )
+  const { isAvailable } = levelData
 
   return (
     <View>

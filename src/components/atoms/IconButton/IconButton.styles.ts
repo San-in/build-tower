@@ -3,7 +3,15 @@ import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  container: { alignItems: 'center', flexDirection: 'column', gap: 4 },
+  container: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 4,
+  },
+  containerWithNotify: {
+    borderColor: COLORS.roofTerracotta,
+    borderWidth: 2,
+  },
   disableShadow: {
     backgroundColor: COLORS.codeGrey70,
     borderRadius: 16,
@@ -13,6 +21,12 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: Z_INDEX_TYPE.high,
+  },
+  exclamationIconContainer: {
+    position: 'absolute',
+    right: -10,
+    top: -10,
+    zIndex: Z_INDEX_TYPE.medium,
   },
   iconContainer: {
     backgroundColor: COLORS.codeGrey30,
@@ -24,5 +38,10 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.codeGrey10,
     transform: [{ scale: 0.85 }],
   },
-  labelContainer: { alignItems: 'center', flexDirection: 'row', gap: 2 },
+  labelContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 2,
+  },
+  lock: { fontSize: 14 },
 })

@@ -23,7 +23,7 @@ const loadPersistedMarket = async (): Promise<MarketState> => {
     if (!isValidMarketState(parsed)) {
       return createInitialMarketState()
     }
-    return parsed as MarketState
+    return { ...createInitialMarketState(), ...(parsed as MarketState) }
   } catch {
     return createInitialMarketState()
   }

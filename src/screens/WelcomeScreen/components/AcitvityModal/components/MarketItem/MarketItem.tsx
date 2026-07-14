@@ -61,12 +61,12 @@ const MarketItem: FC<MarketItemProps> = ({
         count={countPowerUps}
         isDisabled={true}
         onPress={EMPTY_FUNCTION}
-        size={60}
+        size={50}
         type={type}
       />
 
       <View style={styles.descriptionContainer}>
-        <OutlinedText fontSize={10} style={styles.description}>
+        <OutlinedText fontSize={8} style={styles.description}>
           {description}
         </OutlinedText>
       </View>
@@ -76,8 +76,8 @@ const MarketItem: FC<MarketItemProps> = ({
         onPress={() => handleBuyPowerUp(product)}
         textIcon={' 🍌'}
         textIconStyle={styles.buttonIcon}
-        textSize={14}
-        title={`BUY ${price}`}
+        textSize={12}
+        title={`${price}`}
       />
     </Pressable>
   )

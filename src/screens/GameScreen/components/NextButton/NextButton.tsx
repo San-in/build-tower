@@ -20,7 +20,7 @@ const NextButton: FC<NextButtonProps> = ({
     const wasDisabled = prevDisabled.current
     const becameEnabled = !isDisabled
 
-    let timeoutId: number
+    let timeoutId: ReturnType<typeof setTimeout>
 
     if (wasDisabled && becameEnabled) {
       setShouldShake(true)
@@ -58,7 +58,7 @@ const NextButton: FC<NextButtonProps> = ({
           onPress={onPress}
           textSize={16}
           title={isLoading ? 'BUILDING...' : 'NEXT STEP  →'}
-          type={BUTTON_TYPE.Warning}
+          type={BUTTON_TYPE.Success}
         />
       </MotiView>
     </View>

@@ -21,7 +21,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title={cancelButtonText}
           type={BUTTON_TYPE.Error}
         />
@@ -30,7 +30,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
         buttonContainerStyle={styles.buttonContent}
         onPress={onConfirm}
         style={[styles.button, !onCancel && styles.buttonRestricted]}
-        textSize={15}
+        textSize={12}
         title={confirmButtonText}
       />
     </View>

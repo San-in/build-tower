@@ -188,7 +188,7 @@ const CustomModal: FC<CustomModalProps> = ({
             >
               <View style={styles.contentContainer}>
                 {!!title && (
-                  <OutlinedText fontSize={26} offset={2}>
+                  <OutlinedText fontSize={20} offset={2}>
                     {title}
                   </OutlinedText>
                 )}

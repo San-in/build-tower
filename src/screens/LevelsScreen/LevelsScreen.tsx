@@ -180,13 +180,20 @@ const LevelsScreen = () => {
             style={GlobalStyles.transparent}
           />
           <View style={styles.bananasCounter}>
-            <OutlinedText fontSize={25}>{`${bananas}`}</OutlinedText>
-            <BananasIcon height={35} width={35} />
+            <OutlinedText fontSize={35}>{`${bananas}`}</OutlinedText>
+            <BananasIcon height={55} width={55} />
           </View>
         </View>
 
         <View style={styles.modalContentContainer}>
-          <OutlinedText style={styles.title}>Choose level</OutlinedText>
+          <OutlinedText
+            adjustsFontSizeToFit
+            containerStyle={styles.titleContainer}
+            numberOfLines={1}
+            style={styles.title}
+          >
+            Choose level
+          </OutlinedText>
 
           <FlatList
             horizontal

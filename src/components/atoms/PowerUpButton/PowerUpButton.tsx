@@ -18,8 +18,7 @@ const PowerUpButton = memo(
     isDisabled,
   }: PowerUpButtonProps) => {
     const k = size / 30
-    const textSize =
-      type === POWER_UP_TYPE.AddExtraStep ? size / 2.2 : size / 1.5
+    const textSize = type === POWER_UP_TYPE.AddExtraStep ? size / 3.5 : size / 2
 
     return (
       <Pressable
@@ -34,8 +33,8 @@ const PowerUpButton = memo(
           type={type}
         />
         {!!count && (
-          <View style={[styles.powerUpCounter]}>
-            <OutlinedText fontSize={11 * k}>{String(count)}</OutlinedText>
+          <View style={styles.powerUpCounter}>
+            <OutlinedText fontSize={10 * k}>{String(count)}</OutlinedText>
           </View>
         )}
       </Pressable>

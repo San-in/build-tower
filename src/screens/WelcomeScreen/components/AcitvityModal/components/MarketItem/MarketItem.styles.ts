@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     transform: [{ scale: 1 }],
   },
   buttonContainer: { paddingHorizontal: 5 },
-  buttonIcon: { fontSize: 14 },
+  buttonIcon: { fontSize: 12 },
   container: {
     alignItems: 'center',
     backgroundColor: COLORS.codeGrey20,
@@ -30,5 +30,5 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   description: { textAlign: 'left' },
-  descriptionContainer: { maxWidth: '44%' },
+  descriptionContainer: { maxWidth: '60%' },
 })

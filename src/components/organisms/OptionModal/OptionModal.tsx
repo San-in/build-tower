@@ -45,7 +45,7 @@ const OptionModal: FC<OptionModalProps> = ({
             </OutlinedText>
             <OutlinedText
               color={COLORS.brown}
-              fontSize={30}
+              fontSize={28}
               strokeColor={COLORS.yellow}
             >
               {`${step}`}
@@ -53,7 +53,7 @@ const OptionModal: FC<OptionModalProps> = ({
           </View>
 
           <OutlinedText
-            fontSize={40}
+            fontSize={30}
             strokeColor={COLORS.brown}
             style={styles.subTitle}
           >
@@ -77,8 +77,10 @@ const OptionModal: FC<OptionModalProps> = ({
           </View>
           <View style={styles.actionTextContainer}>
             <OutlinedText
+              adjustsFontSizeToFit={true}
               color={COLORS.brown}
-              fontSize={18}
+              fontSize={15}
+              numberOfLines={1}
               strokeColor={COLORS.yellow}
             >
               Bananas love brave monkeys!

@@ -7,7 +7,7 @@ import { FC, useMemo } from 'react'
 import { useStyles } from './ProgressBadge.styles'
 import { ProgressBadgeProps } from './ProgressBadge.types'
 
-const CIRCLE_SIZE = 120
+const CIRCLE_SIZE = 130
 
 const ProgressBadge: FC<ProgressBadgeProps> = ({
   animationKey,
@@ -39,7 +39,7 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
   const fontSize = useMemo(() => {
     const maxNumber = Math.max(userValue, initialValue)
     return (
-      [maxNumber > 999 && 12, maxNumber > 99 && 16].filter(Boolean)[0] || 22
+      [maxNumber > 999 && 12, maxNumber > 99 && 14].filter(Boolean)[0] || 18
     )
   }, [initialValue, userValue])
 

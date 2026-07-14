@@ -12,29 +12,72 @@ const OutlinedText = ({
   strokeColor = COLORS.codeGrey,
   offset = 1.5,
   style,
+  containerStyle,
+  numberOfLines,
+  adjustsFontSizeToFit,
 }: OutlinedTextProps) => {
-  const directions = [
-    { x: -offset, y: -offset },
-    { x: offset, y: -offset },
-    { x: -offset, y: offset },
-    { x: offset, y: offset },
-  ]
+  const scaledFontSize = fontSize
+  const scaledOffset = offset
+  const autoFit = Boolean(adjustsFontSizeToFit)
+
   const [textDimensions, setTextDimensions] = useState({})
+  const [containerWidth, setContainerWidth] = useState(0)
+  const [naturalWidth, setNaturalWidth] = useState(0)
+
+  const fitRatio =
+    autoFit && containerWidth > 0 && naturalWidth > containerWidth
+      ? containerWidth / naturalWidth
+      : 1
+
+  const finalFontSize = scaledFontSize * fitRatio
+  const finalOffset = scaledOffset * fitRatio
+  const directions = [
+    { x: -finalOffset, y: -finalOffset },
+    { x: finalOffset, y: -finalOffset },
+    { x: -finalOffset, y: finalOffset },
+    { x: finalOffset, y: finalOffset },
+  ]
 
   return (
-    <View style={styles.container}>
+    <View
+      onLayout={
+        autoFit
+          ? ({ nativeEvent }) => setContainerWidth(nativeEvent.layout.width)
+          : undefined
+      }
+      style={[styles.container, containerStyle]}
+    >
+      {autoFit && (
+        <Text
+          numberOfLines={1}
+          onLayout={({ nativeEvent }) =>
+            setNaturalWidth(nativeEvent.layout.width)
+          }
+          style={[styles.measure, { fontSize: scaledFontSize }, style]}
+        >
+          {children}
+        </Text>
+      )}
       {directions.map(({ x, y }, index) => (
         <Text
           key={index}
+          numberOfLines={numberOfLines}
           style={[
             styles.frontText,
-            {
-              left: x,
-              top: y,
-              color: strokeColor,
-              fontSize,
-            },
-            textDimensions,
+            autoFit && styles.strokeStretch,
+            autoFit
+              ? {
+                  transform: [{ translateX: x }, { translateY: y }],
+                  color: strokeColor,
+                  fontSize: finalFontSize,
+                }
+              : {
+                  left: x,
+                  top: y,
+                  color: strokeColor,
+                  fontSize: finalFontSize,
+                },
+            autoFit ? null : textDimensions,
             style,
           ]}
         >
@@ -42,13 +85,18 @@ const OutlinedText = ({
         </Text>
       ))}
       <Text
-        onLayout={({ nativeEvent }) => {
-          setTextDimensions({
-            width: nativeEvent.layout.width,
-            height: nativeEvent.layout.height,
-          })
-        }}
-        style={[styles.text, { color, fontSize }, style]}
+        numberOfLines={numberOfLines}
+        onLayout={
+          autoFit
+            ? undefined
+            : ({ nativeEvent }) => {
+                setTextDimensions({
+                  width: nativeEvent.layout.width,
+                  height: nativeEvent.layout.height,
+                })
+              }
+        }
+        style={[styles.text, { color, fontSize: finalFontSize }, style]}
       >
         {children}
       </Text>

@@ -17,4 +17,5 @@ export type ButtonProps = PressableProps & {
   textSize?: number
   textIcon?: string
   textIconStyle?: StyleProp<TextStyle>
+  numberOfLines?: number
 }

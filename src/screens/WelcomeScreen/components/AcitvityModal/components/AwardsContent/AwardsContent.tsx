@@ -40,62 +40,33 @@ const AwardsContent: FC<{
           },
         ]}
       >
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            rowGap: 20,
-            columnGap: 10,
-            justifyContent: 'space-around',
-            paddingVertical: 20,
-            paddingHorizontal: 10,
-          }}
-        >
+        <View style={styles.grid}>
           {awardsDetails.map(({ config: { icon }, progress }) => {
             const { currentLevel, type } = progress
             const isUnblocked = Boolean(currentLevel)
+            const iconOpacity = isUnblocked ? 1 : 0.7
 
             return (
               <Pressable
                 key={type}
                 onPress={() => setSelectedAward({ isVisible: true, progress })}
                 style={({ pressed }) => [
+                  styles.card,
                   {
-                    position: 'relative',
-                    padding: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
                     backgroundColor: pressed
                       ? COLORS.codeGrey40
                       : COLORS.codeGrey20,
-                    borderRadius: 20,
-
-                    elevation: 4,
                     shadowColor: isUnblocked
                       ? COLORS.yellow40
                       : COLORS.codeGrey,
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 5,
                   },
                 ]}
               >
-                <View
-                  style={{
-                    opacity: isUnblocked ? 1 : 0.7,
-                    width: 50,
-                    aspectRatio: 1,
-                  }}
-                >
+                <View style={[styles.iconWrapper, { opacity: iconOpacity }]}>
                   {icon}
                 </View>
                 <View
-                  style={{
-                    position: 'absolute',
-                    top: -5,
-                    right: 5,
-                    opacity: Number(isUnblocked),
-                  }}
+                  style={[styles.romanBadge, { opacity: Number(isUnblocked) }]}
                 >
                   <OutlinedText fontSize={15}>
                     {formatLevelToRomanNum(currentLevel)}

@@ -72,7 +72,7 @@ const StepBar: FC<StepBarProps> = ({
                 </MotiView>
                 <View style={styles.stepLabel}>
                   <OutlinedText
-                    fontSize={isLastVisibleStep && !isLastStep ? 18 : 12}
+                    fontSize={isLastVisibleStep && !isLastStep ? 14 : 12}
                   >{`${index + 1}`}</OutlinedText>
                 </View>
               </View>

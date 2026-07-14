@@ -2,6 +2,17 @@ import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
+  card: {
+    alignItems: 'center',
+    borderRadius: 20,
+    elevation: 4,
+    justifyContent: 'center',
+    padding: 10,
+    position: 'relative',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+  },
   container: {
     alignItems: 'center',
     alignSelf: 'flex-end',
@@ -24,5 +35,23 @@ export const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
   },
+  grid: {
+    columnGap: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    rowGap: 20,
+  },
+  iconWrapper: {
+    aspectRatio: 1,
+    width: 50,
+  },
   productsListContainer: {},
+  romanBadge: {
+    position: 'absolute',
+    right: 5,
+    top: -5,
+  },
 })

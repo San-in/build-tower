@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     gap: 5,
     marginHorizontal: 5,
   },
-  buttonLabel: { flexWrap: 'wrap', width: 50 },
+  buttonLabel: { flexWrap: 'wrap', maxWidth: 75 },
 
   buttonsContainer: {
     alignItems: 'flex-start',

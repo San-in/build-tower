@@ -10,6 +10,12 @@ import {
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
+import * as Device from 'expo-device'
+import { Platform } from 'react-native'
+
+export const IS_TABLET =
+  Device.deviceType === Device.DeviceType.TABLET ||
+  (Platform.OS === 'ios' && Platform.isPad)
 
 export const HOURS_IN_DAY = 24
 export const TOTAL_LEVELS = 30
@@ -827,9 +833,9 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     fistTower: {
       start: 8,
       fortuneWheelData: [
-        '*3.5',
-        '*3',
-        '*2.5',
+        'x3.5',
+        'x3',
+        'x2.5',
         '+14',
         '+15',
         '+17',
@@ -858,7 +864,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     fistTower: {
       start: 9,
       fortuneWheelData: [
-        '*3',
+        'x3',
         '+13',
         '+14',
         '+11',
@@ -889,8 +895,8 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     fistTower: {
       start: 10,
       fortuneWheelData: [
-        '*2.5',
-        '*3',
+        'x2.5',
+        'x3',
         '+12',
         '+14',
         '+16',

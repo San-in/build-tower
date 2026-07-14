@@ -106,7 +106,7 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
                     ]}
                   >
                     <CurrentIcon />
-                    <OutlinedText fontSize={20}>
+                    <OutlinedText fontSize={14}>
                       {currentLanguageData.label}
                     </OutlinedText>
                   </Pressable>

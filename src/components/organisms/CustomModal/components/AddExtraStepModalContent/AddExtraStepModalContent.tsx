@@ -20,7 +20,7 @@ const AddExtraStepModalContent: FC<AddExtraStepModalContentProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={15}
+          textSize={12}
           title="CANCEL"
           type={BUTTON_TYPE.Error}
         />
@@ -29,7 +29,7 @@ const AddExtraStepModalContent: FC<AddExtraStepModalContentProps> = ({
         buttonContainerStyle={styles.buttonContent}
         onPress={onConfirm}
         style={[styles.button, !onCancel && styles.buttonRestricted]}
-        textSize={15}
+        textSize={12}
         title="OK"
         type={BUTTON_TYPE.Info}
       />

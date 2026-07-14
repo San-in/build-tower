@@ -1,6 +1,5 @@
 import { CheckGreenIcon, GiftIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
-import { Z_INDEX_TYPE } from '@constants'
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import { useAppDispatch } from '@store/hooks'
 import { setPrizeClaimed, SingleAwardState } from '@store/slices/awardsSlice'
@@ -24,6 +23,9 @@ import {
   getAwardConfigByType,
 } from '../AcitvityModal/components/AwardsContent/config'
 import { SuccessAwardClaimedModalProps } from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
+import { styles } from './AwardBottomSheet.styles'
+
+const GIFT_ICON_SIZE = 25
 
 const AwardBottomSheet = ({
   isVisible,
@@ -82,11 +84,8 @@ const AwardBottomSheet = ({
   return (
     <BottomSheet
       enablePanDownToClose
-      backgroundStyle={{
-        backgroundColor: COLORS.gradientPurple_2,
-        borderWidth: 1,
-      }}
-      handleIndicatorStyle={{ backgroundColor: COLORS.white }}
+      backgroundStyle={styles.background}
+      handleIndicatorStyle={styles.handleIndicator}
       index={-1}
       onChange={() => {
         onClose()
@@ -94,16 +93,9 @@ const AwardBottomSheet = ({
       ref={awardDetailsBottomSheetRef}
       snapPoints={['98%']}
     >
-      <BottomSheetView
-        style={{
-          flex: 1,
-          height: '100%',
-        }}
-      >
+      <BottomSheetView style={styles.container}>
         {!progress ? (
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
+          <View style={styles.emptyContainer}>
             <OutlinedText fontSize={18}>
               No available information... Please, refresh the page
             </OutlinedText>
@@ -114,35 +106,14 @@ const AwardBottomSheet = ({
               onClose()
               awardDetailsBottomSheetRef?.current?.close()
             }}
-            style={{
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingTop: 10,
-              paddingBottom: 30,
-              paddingHorizontal: 10,
-              gap: 5,
-            }}
+            style={styles.content}
           >
             <OutlinedText fontSize={24}>{name || ''}</OutlinedText>
-            <View
-              style={{
-                aspectRatio: 1,
-                marginTop: 30,
-                flex: 1,
-              }}
-            >
-              {icon}
-            </View>
+            <View style={styles.iconWrapper}>{icon}</View>
             <ScrollView
-              contentContainerStyle={{
-                alignItems: 'center',
-                zIndex: Z_INDEX_TYPE.high,
-              }}
+              contentContainerStyle={styles.scrollContent}
               horizontal={true}
-              style={{
-                flexDirection: 'row',
-              }}
+              style={styles.scrollView}
             >
               {Array.from({ length: maxLevel || 1 }).map((_, index) => {
                 const currentRenderedLevel = index + 1
@@ -176,19 +147,14 @@ const AwardBottomSheet = ({
                 return (
                   <View
                     key={index}
-                    style={{
-                      height: 20,
-                      width: 50,
-                      backgroundColor: COLORS.codeGrey20,
-                      borderRightWidth: 1,
-                      elevation: 4,
-                      shadowColor: isLevelReachedMax
-                        ? COLORS.white40
-                        : COLORS.yellow40,
-                      shadowOffset: { width: 2, height: 5 },
-                      shadowOpacity: 0.5,
-                      shadowRadius: 15,
-                    }}
+                    style={[
+                      styles.levelBar,
+                      {
+                        shadowColor: isLevelReachedMax
+                          ? COLORS.white40
+                          : COLORS.yellow40,
+                      },
+                    ]}
                   >
                     {isAvailable && (
                       <Pressable
@@ -224,16 +190,8 @@ const AwardBottomSheet = ({
                           }
                         }}
                         style={({ pressed }) => [
+                          styles.giftPressable,
                           {
-                            position: 'absolute',
-                            top: -35,
-                            left: '50%',
-
-                            borderWidth: 1,
-                            padding: 2,
-                            borderRadius: 50,
-                            borderColor: COLORS.white50,
-                            backgroundColor: COLORS.yellow10,
                             transform: [
                               { translateX: '-50%' },
                               { scale: pressed ? 0.9 : 1 },
@@ -242,33 +200,23 @@ const AwardBottomSheet = ({
                         ]}
                       >
                         <GiftIcon
-                          height={25}
+                          height={GIFT_ICON_SIZE}
                           opacity={!isPrizeClaimed ? 1 : 0.2}
-                          width={25}
+                          width={GIFT_ICON_SIZE}
                         />
                         {isPrizeClaimed && (
-                          <View
-                            style={{
-                              position: 'absolute',
-                              top: 0,
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
+                          <View style={styles.checkOverlay}>
                             <CheckGreenIcon
-                              height={25}
+                              height={GIFT_ICON_SIZE}
                               stroke={COLORS.white}
                               strokeWidth={0.5}
-                              width={25}
+                              width={GIFT_ICON_SIZE}
                             />
                           </View>
                         )}
                       </Pressable>
                     )}
-                    <View style={{ position: 'absolute', top: 25, right: 0 }}>
+                    <View style={styles.romanContainer}>
                       <OutlinedText fontSize={12}>
                         {formatLevelToRomanNum(index + 1)}
                       </OutlinedText>
@@ -281,37 +229,32 @@ const AwardBottomSheet = ({
                       }
                       end={{ x: 1, y: 0 }}
                       start={{ x: 0, y: 0 }}
-                      style={{
-                        width: getGradientWidth(),
-                        height: '100%',
-                        position: 'absolute',
-                      }}
+                      style={[
+                        styles.gradientBar,
+                        { width: getGradientWidth() },
+                      ]}
                     />
                   </View>
                 )
               })}
             </ScrollView>
 
-            <OutlinedText fontSize={15}>{description || ''}</OutlinedText>
+            <OutlinedText fontSize={12}>{description || ''}</OutlinedText>
             <View
-              style={{
-                marginTop: 20,
-                alignSelf: 'flex-end',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                opacity: Number(!isLevelReachedMax),
-              }}
+              style={[
+                styles.descriptionRow,
+                { opacity: Number(!isLevelReachedMax) },
+              ]}
             >
-              <OutlinedText fontSize={12}>To next level: </OutlinedText>
+              <OutlinedText fontSize={10}>To next level: </OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={15}
+                fontSize={12}
                 strokeColor={COLORS.brown}
               >
                 {String(currentLevelTarget - currentRepeats)}
               </OutlinedText>
-              <OutlinedText fontSize={12}> repeats</OutlinedText>
+              <OutlinedText fontSize={10}> repeats</OutlinedText>
             </View>
           </Pressable>
         )}
@@ -326,7 +269,7 @@ const AwardBottomSheet = ({
           ]}
           end={{ x: 1, y: 1 }}
           start={{ x: 0, y: 0 }}
-          style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
+          style={[StyleSheet.absoluteFill, styles.backgroundGradient]}
         />
       </BottomSheetView>
     </BottomSheet>

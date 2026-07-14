@@ -48,6 +48,10 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
 
+  labelAutoFit: {
+    alignItems: 'center',
+    width: '100%',
+  },
   labelContainer: {
     alignItems: 'center',
     justifyContent: 'center',

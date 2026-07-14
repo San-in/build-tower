@@ -20,6 +20,7 @@ const Button: FC<ButtonProps> = ({
   buttonContainerStyle,
   textIcon,
   textIconStyle,
+  numberOfLines,
   ...props
 }) => {
   const [isPressed, setIsPressed] = useState(false)
@@ -151,7 +152,9 @@ const Button: FC<ButtonProps> = ({
           )}
         </Animated.View>
         <View style={styles.titleContainer}>
-          <OutlinedText fontSize={textSize}>{title}</OutlinedText>
+          <OutlinedText fontSize={textSize} numberOfLines={numberOfLines}>
+            {title}
+          </OutlinedText>
           {textIcon && <Text style={textIconStyle}>{textIcon}</Text>}
         </View>
       </Pressable>

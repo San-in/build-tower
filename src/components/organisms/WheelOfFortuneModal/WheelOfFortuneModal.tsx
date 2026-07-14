@@ -132,16 +132,16 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
         <>
           <View style={styles.headerContent}>
             <View style={styles.initialResultContainer}>
-              <OutlinedText fontSize={25}>You start from</OutlinedText>
+              <OutlinedText fontSize={22}>You start from</OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={45}
+                fontSize={40}
                 strokeColor={COLORS.gradientBronze_1}
               >{`${initialResult}`}</OutlinedText>
             </View>
             <BlockIcon />
           </View>
-          <OutlinedText fontSize={25}>Spin for building tower</OutlinedText>
+          <OutlinedText fontSize={22}>Spin for building tower</OutlinedText>
         </>
       ) : (
         <>
@@ -225,7 +225,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
               fontSize={70}
               strokeColor={COLORS.brown}
             >{`${wheelResult}`}</OutlinedText>
-            <BlockIcon />
+            <BlockIcon size={60} />
           </View>
         </SuccessActionInfoModal>
         <MotiView
@@ -279,6 +279,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   isDisabled={!spinCounter || !wheelWinnerSector}
                   onPress={handleOpenTryAgainModal}
                   style={styles.button}
+                  textSize={12}
                   title="TRY AGAIN"
                   type={BUTTON_TYPE.Info}
                 />
@@ -287,6 +288,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   isDisabled={!wheelWinnerSector}
                   onPress={handleConfirmPress}
                   style={styles.button}
+                  textSize={12}
                   title="CONFIRM"
                 />
               </View>

@@ -201,7 +201,12 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
           >
             {Boolean(result) && (
               <>
-                <OutlinedText fontSize={20} offset={2}>
+                <OutlinedText
+                  adjustsFontSizeToFit={true}
+                  fontSize={16}
+                  numberOfLines={1}
+                  offset={1}
+                >
                   Result:
                 </OutlinedText>
                 <OutlinedText

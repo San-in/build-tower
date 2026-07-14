@@ -52,4 +52,9 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   title: { marginBottom: 12 },
+  titleContainer: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    marginHorizontal: 16,
+  },
 })

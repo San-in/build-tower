@@ -36,6 +36,7 @@ const SettingsContent: FC<SettingsContentProps> = ({
       />
       <Button
         buttonContainerStyle={styles.resetButtonContainer}
+        numberOfLines={1}
         onPress={onPressResetProgress}
         style={styles.resetButton}
         textSize={12}
