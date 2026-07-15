@@ -1,4 +1,5 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -7,14 +8,14 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: COLORS.yellow10,
     borderColor: COLORS.white,
-    borderRadius: 10,
+    borderRadius: formatTabletElementsSize(10, 1.4),
     borderWidth: 1,
     elevation: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 5,
     position: 'absolute',
-    right: 10,
+    right: '8%',
     shadowColor: COLORS.yellow20,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.55,

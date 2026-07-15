@@ -10,6 +10,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAssetsReady } from '@hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -176,7 +177,10 @@ const CustomModal: FC<CustomModalProps> = ({
                   pressed && styles.closeIconPressed,
                 ]}
               >
-                <CloseCrossIcon height={40} width={40} />
+                <CloseCrossIcon
+                  height={formatTabletElementsSize(40, 1.5)}
+                  width={formatTabletElementsSize(40, 1.5)}
+                />
               </Pressable>
             )}
 
@@ -188,7 +192,10 @@ const CustomModal: FC<CustomModalProps> = ({
             >
               <View style={styles.contentContainer}>
                 {!!title && (
-                  <OutlinedText fontSize={20} offset={2}>
+                  <OutlinedText
+                    fontSize={formatTabletElementsSize(20)}
+                    offset={2}
+                  >
                     {title}
                   </OutlinedText>
                 )}

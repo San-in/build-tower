@@ -1,4 +1,5 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -46,7 +47,7 @@ export const styles = StyleSheet.create({
   },
   iconWrapper: {
     aspectRatio: 1,
-    width: 50,
+    width: formatTabletElementsSize(50),
   },
   productsListContainer: {},
   romanBadge: {

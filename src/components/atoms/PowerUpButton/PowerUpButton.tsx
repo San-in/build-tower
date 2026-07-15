@@ -1,5 +1,6 @@
 import { OutlinedText } from '@components/atoms/OutlinedText'
 import { POWER_UP_GRADE, POWER_UP_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import React, { memo } from 'react'
 import { Pressable, View } from 'react-native'
 
@@ -18,7 +19,10 @@ const PowerUpButton = memo(
     isDisabled,
   }: PowerUpButtonProps) => {
     const k = size / 30
-    const textSize = type === POWER_UP_TYPE.AddExtraStep ? size / 3.5 : size / 2
+    const textSize =
+      type === POWER_UP_TYPE.AddExtraStep
+        ? formatTabletElementsSize(size, 1.5) / 3.5
+        : formatTabletElementsSize(size, 1.2) / 2
 
     return (
       <Pressable

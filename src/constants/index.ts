@@ -33,7 +33,7 @@ export const Z_INDEX_TYPE: Record<Z_INDEX_PRIORITY, number> = {
 
 export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
   1: {
-    fistTower: {
+    firstTower: {
       start: 1,
       fortuneWheelData: [
         '+6',
@@ -64,7 +64,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   2: {
-    fistTower: {
+    firstTower: {
       start: 2,
       fortuneWheelData: [
         '+5',
@@ -95,7 +95,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   3: {
-    fistTower: {
+    firstTower: {
       start: 3,
       fortuneWheelData: [
         '+5',
@@ -126,7 +126,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   4: {
-    fistTower: {
+    firstTower: {
       start: 4,
       fortuneWheelData: ['+4', 'x3', '+5', 'x4', '+6', 'x2', '+7', '+8', '+9'],
     },
@@ -147,7 +147,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   5: {
-    fistTower: {
+    firstTower: {
       start: 5,
       fortuneWheelData: [
         '+4',
@@ -178,7 +178,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   6: {
-    fistTower: {
+    firstTower: {
       start: 6,
       fortuneWheelData: ['+3', 'x2', '+5', '+6', '+8', '+7', '+9', '+11', '+4'],
     },
@@ -199,7 +199,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   7: {
-    fistTower: {
+    firstTower: {
       start: 7,
       fortuneWheelData: ['+3', '+4', 'x2', '+5', '+6', '+7', '+9', '+8', '+11'],
     },
@@ -220,7 +220,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   8: {
-    fistTower: {
+    firstTower: {
       start: 8,
       fortuneWheelData: [
         '+2',
@@ -251,7 +251,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   9: {
-    fistTower: {
+    firstTower: {
       start: 9,
       fortuneWheelData: ['+2', '+4', '+3', 'x2', '+7', '+8', '+5', '+10', '+6'],
     },
@@ -272,7 +272,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   10: {
-    fistTower: {
+    firstTower: {
       start: 10,
       fortuneWheelData: [
         '+2',
@@ -303,7 +303,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Easy,
   },
   11: {
-    fistTower: {
+    firstTower: {
       start: 1,
       fortuneWheelData: [
         '+13',
@@ -334,7 +334,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   12: {
-    fistTower: {
+    firstTower: {
       start: 2,
       fortuneWheelData: [
         '+13',
@@ -365,7 +365,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   13: {
-    fistTower: {
+    firstTower: {
       start: 3,
       fortuneWheelData: [
         '+14',
@@ -396,7 +396,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   14: {
-    fistTower: {
+    firstTower: {
       start: 4,
       fortuneWheelData: [
         '+12',
@@ -427,7 +427,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   15: {
-    fistTower: {
+    firstTower: {
       start: 5,
       fortuneWheelData: [
         '+12',
@@ -458,7 +458,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   16: {
-    fistTower: {
+    firstTower: {
       start: 6,
       fortuneWheelData: [
         '+8',
@@ -489,7 +489,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   17: {
-    fistTower: {
+    firstTower: {
       start: 7,
       fortuneWheelData: [
         '+10',
@@ -520,7 +520,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   18: {
-    fistTower: {
+    firstTower: {
       start: 8,
       fortuneWheelData: [
         '+9',
@@ -547,11 +547,11 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 50,
-    attempts: 4,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   19: {
-    fistTower: {
+    firstTower: {
       start: 9,
       fortuneWheelData: [
         '+7',
@@ -578,11 +578,11 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 52,
-    attempts: 4,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   20: {
-    fistTower: {
+    firstTower: {
       start: 10,
       fortuneWheelData: [
         '+6',
@@ -609,11 +609,11 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
       end: 3,
     },
     prize: 54,
-    attempts: 4,
+    attempts: 5,
     difficulty: LEVEL_DIFFICULTY.Medium,
   },
   21: {
-    fistTower: {
+    firstTower: {
       start: 1,
       fortuneWheelData: [
         '+21',
@@ -644,7 +644,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   22: {
-    fistTower: {
+    firstTower: {
       start: 2,
       fortuneWheelData: [
         '+21',
@@ -675,7 +675,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   23: {
-    fistTower: {
+    firstTower: {
       start: 3,
       fortuneWheelData: [
         'x6',
@@ -706,7 +706,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   24: {
-    fistTower: {
+    firstTower: {
       start: 4,
       fortuneWheelData: [
         'x4.5',
@@ -737,7 +737,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   25: {
-    fistTower: {
+    firstTower: {
       start: 5,
       fortuneWheelData: [
         '+14',
@@ -768,7 +768,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   26: {
-    fistTower: {
+    firstTower: {
       start: 6,
       fortuneWheelData: [
         'x4.5',
@@ -799,7 +799,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   27: {
-    fistTower: {
+    firstTower: {
       start: 7,
       fortuneWheelData: [
         'x3',
@@ -830,7 +830,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   28: {
-    fistTower: {
+    firstTower: {
       start: 8,
       fortuneWheelData: [
         'x3.5',
@@ -861,7 +861,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   29: {
-    fistTower: {
+    firstTower: {
       start: 9,
       fortuneWheelData: [
         'x3',
@@ -892,7 +892,7 @@ export const LEVEL_CONFIG: Record<LevelId, LevelConfig> = {
     difficulty: LEVEL_DIFFICULTY.Hard,
   },
   30: {
-    fistTower: {
+    firstTower: {
       start: 10,
       fortuneWheelData: [
         'x2.5',
@@ -992,6 +992,12 @@ export const POWER_UP_BLOCK_MANIPULATION_LIMITS = {
     max: 1,
   },
 }
+// Max quantity of any single power-up a player may own (buy).
+export const POWER_UP_PURCHASE_LIMIT = 10
+// Once the player owns this many of a power-up, further purchases cost x2.
+export const POWER_UP_PRICE_X2_THRESHOLD = 5
+export const POWER_UP_PRICE_MULTIPLIER = 2
+
 export const MARKET_PRODUCT_PRICE: Record<MARKET_PRODUCT, number> = {
   [MARKET_PRODUCT.RemoveRandomBlocks_Gold]: 20,
   [MARKET_PRODUCT.RemoveRandomBlocks_Silver]: 15,

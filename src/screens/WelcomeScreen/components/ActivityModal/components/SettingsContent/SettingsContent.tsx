@@ -3,6 +3,7 @@ import { LanguageSelector } from '@components/molecules/LanguageSelector'
 import { useSettings } from '@providers'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import React, { FC, memo } from 'react'
 import { Switch, View } from 'react-native'
 
@@ -17,10 +18,15 @@ const SettingsContent: FC<SettingsContentProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.soundContainer}>
-        <OutlinedText fontSize={20}>Sounds: </OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(20)}>
+          Sounds:
+        </OutlinedText>
         <Switch
           ios_backgroundColor={COLORS.white}
           onValueChange={toggleSound}
+          style={{
+            transform: [{ scale: formatTabletElementsSize(1, 1.5) }],
+          }}
           thumbColor={soundEnabled ? COLORS.white : COLORS.gradientOrange_1}
           trackColor={{
             true: COLORS.gradientOrange_1,
@@ -39,7 +45,7 @@ const SettingsContent: FC<SettingsContentProps> = ({
         numberOfLines={1}
         onPress={onPressResetProgress}
         style={styles.resetButton}
-        textSize={12}
+        textSize={formatTabletElementsSize(12)}
         title={'RESET PROGRESS'}
         type={BUTTON_TYPE.Error}
       />

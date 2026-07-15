@@ -11,6 +11,7 @@ import {
 } from '@store/slices/userActivitySlice'
 import { COLORS, GlobalStyles } from '@theme'
 import { MARKET_PRODUCT, MARKET_SPECIAL_PRIZE, MarketPrize } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, {
@@ -29,8 +30,8 @@ import { ActivityCalendarProps, PrizeModalData } from './ActivityCalendar.types'
 import { CalendarItem } from './components'
 import { CalendarPrizeIcon } from './components/CalendarPrizeIcon'
 
-const ITEM_WIDTH = 100
-const ITEM_GAP = 15
+const ITEM_WIDTH = formatTabletElementsSize(100)
+const ITEM_GAP = formatTabletElementsSize(15)
 const DEFAULT_GET_PRIZE_MODAL_DATA: PrizeModalData = {
   isVisible: false,
   prize: MARKET_SPECIAL_PRIZE.Bananas,
@@ -137,7 +138,10 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
             style={[StyleSheet.absoluteFill, styles.bottomSheetImage]}
             transition={100}
           />
-          <OutlinedText fontSize={24} style={styles.title}>
+          <OutlinedText
+            fontSize={formatTabletElementsSize(24)}
+            style={styles.title}
+          >
             Activity Calendar
           </OutlinedText>
           <LinearGradient

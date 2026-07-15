@@ -3,6 +3,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectDayInfoByDay } from '@store/slices/userActivitySlice'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
 import { FC, useMemo } from 'react'
@@ -11,6 +12,8 @@ import { Pressable, View } from 'react-native'
 import { CalendarPrizeIcon } from '../CalendarPrizeIcon'
 import { styles } from './CalendarItem.styles'
 import { CalendarItemProps } from './CalendarItem.types'
+
+const STATUS_ICON_SIZE = formatTabletElementsSize(25)
 
 const CalendarItem: FC<CalendarItemProps> = ({
   day,
@@ -71,9 +74,9 @@ const CalendarItem: FC<CalendarItemProps> = ({
           ]}
         >
           {rewardClaimed ? (
-            <DoneIcon height={25} width={25} />
+            <DoneIcon height={STATUS_ICON_SIZE} width={STATUS_ICON_SIZE} />
           ) : (
-            <GiftIcon height={25} width={25} />
+            <GiftIcon height={STATUS_ICON_SIZE} width={STATUS_ICON_SIZE} />
           )}
         </View>
         <LinearGradient
@@ -94,7 +97,11 @@ const CalendarItem: FC<CalendarItemProps> = ({
               },
             ]}
           >
-            <CalendarPrizeIcon count={quantity} type={prize} />
+            <CalendarPrizeIcon
+              count={quantity}
+              size={formatTabletElementsSize(40)}
+              type={prize}
+            />
           </View>
           <View
             style={[
@@ -105,7 +112,7 @@ const CalendarItem: FC<CalendarItemProps> = ({
             ]}
           >
             <OutlinedText
-              fontSize={15}
+              fontSize={formatTabletElementsSize(15)}
               style={styles.cardText}
             >{`Day ${day}`}</OutlinedText>
           </View>

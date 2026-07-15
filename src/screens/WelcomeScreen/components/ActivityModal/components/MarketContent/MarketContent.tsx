@@ -3,6 +3,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectBananas } from '@store/slices/bananasSlice'
 import { MARKET_PRODUCT } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import React, { FC, memo, useCallback, useState } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
 
@@ -33,8 +34,14 @@ const MarketContent: FC = () => {
   return (
     <>
       <View style={styles.container}>
-        <OutlinedText fontSize={15}>{`${bananas}`}</OutlinedText>
-        <BananasIcon height={20} transform="scale(-1,1)" width={20} />
+        <OutlinedText
+          fontSize={formatTabletElementsSize(15, 2.5)}
+        >{`${bananas}`}</OutlinedText>
+        <BananasIcon
+          height={formatTabletElementsSize(20)}
+          transform="scale(-1,1)"
+          width={formatTabletElementsSize(20)}
+        />
       </View>
       <ScrollView
         style={[

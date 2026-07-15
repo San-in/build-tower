@@ -39,7 +39,7 @@ export enum INFO_UNLOCK_OPTION_MODAL_KEY {
 
 export enum GAME_MODAL_TYPE {
   Home = 'home',
-  Reset = 'reset ',
+  Reset = 'reset',
   AddBlocks = 'add_blocks',
   RemoveBlocks = 'remove_blocks',
   RemoveBlocksWarning = 'remove_blocks_warning',
@@ -50,7 +50,7 @@ export enum GAME_MODAL_TYPE {
 }
 export enum MODAL_TYPE {
   Orange = 'orange',
-  Green = 'green ',
+  Green = 'green',
   Purple = 'purple',
   Blue = 'blue',
 }

@@ -5,7 +5,7 @@ import {
   AWARD_TYPE,
   AwardConfig,
   reachAwardsConditions,
-} from '../../screens/WelcomeScreen/components/AcitvityModal/components/AwardsContent/config'
+} from '../../screens/WelcomeScreen/components/ActivityModal/components/AwardsContent/config'
 
 export type AwardLevelState = {
   isAvailable: boolean

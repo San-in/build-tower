@@ -3,7 +3,7 @@ import { OutlinedText } from '@components/atoms'
 import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { EMPTY_FUNCTION } from '@constants'
 import { MARKET_SPECIAL_PRIZE } from '@types'
-import { getPowerUpInfoByMarketProduct } from '@utils'
+import { formatTabletElementsSize, getPowerUpInfoByMarketProduct } from '@utils'
 import React, { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -12,7 +12,7 @@ import { CalendarPrizeIconProps } from './CalendarPrizeIcon.types'
 const CalendarPrizeIcon: FC<CalendarPrizeIconProps> = ({
   type,
   count,
-  size = 40,
+  size = formatTabletElementsSize(40),
 }) => {
   if (type === MARKET_SPECIAL_PRIZE.Bananas) {
     return (

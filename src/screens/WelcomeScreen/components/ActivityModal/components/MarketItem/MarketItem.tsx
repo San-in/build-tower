@@ -1,12 +1,17 @@
 import { Button, OutlinedText } from '@components/atoms'
 import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
-import { EMPTY_FUNCTION } from '@constants'
+import {
+  EMPTY_FUNCTION,
+  POWER_UP_PRICE_MULTIPLIER,
+  POWER_UP_PRICE_X2_THRESHOLD,
+  POWER_UP_PURCHASE_LIMIT,
+} from '@constants'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { removeBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, POWER_UP_GRADE } from '@types'
-import { getPowerUpInfoByMarketProduct } from '@utils'
+import { formatTabletElementsSize, getPowerUpInfoByMarketProduct } from '@utils'
 import React, { FC, memo, useCallback, useMemo } from 'react'
 import { Pressable, View } from 'react-native'
 
@@ -25,6 +30,15 @@ const MarketItem: FC<MarketItemProps> = ({
   const { price, description, type, grade } =
     getPowerUpInfoByMarketProduct(product)
 
+  // First POWER_UP_PRICE_X2_THRESHOLD units are full price; the next ones cost
+  // x2; buying is blocked once the player owns POWER_UP_PURCHASE_LIMIT.
+  const isMaxed = countPowerUps >= POWER_UP_PURCHASE_LIMIT
+  const currentPrice =
+    countPowerUps >= POWER_UP_PRICE_X2_THRESHOLD
+      ? price * POWER_UP_PRICE_MULTIPLIER
+      : price
+  const isBuyDisabled = isMaxed || totalBananas < currentPrice
+
   const borderColor = useMemo(
     () =>
       ({
@@ -38,13 +52,13 @@ const MarketItem: FC<MarketItemProps> = ({
 
   const handleBuyPowerUp = useCallback(
     async (type: MARKET_PRODUCT) => {
-      if (totalBananas < price) {
+      if (isBuyDisabled) {
         return
       }
       dispatch(incrementProduct({ product: type, count: 1 }))
-      dispatch(removeBananas(price))
+      dispatch(removeBananas(currentPrice))
     },
-    [dispatch, price, totalBananas]
+    [dispatch, currentPrice, isBuyDisabled]
   )
 
   return (
@@ -61,23 +75,26 @@ const MarketItem: FC<MarketItemProps> = ({
         count={countPowerUps}
         isDisabled={true}
         onPress={EMPTY_FUNCTION}
-        size={50}
+        size={formatTabletElementsSize(50)}
         type={type}
       />
 
       <View style={styles.descriptionContainer}>
-        <OutlinedText fontSize={8} style={styles.description}>
+        <OutlinedText
+          fontSize={formatTabletElementsSize(8, 3)}
+          style={styles.description}
+        >
           {description}
         </OutlinedText>
       </View>
       <Button
         buttonContainerStyle={styles.buttonContainer}
-        isDisabled={totalBananas < price}
+        isDisabled={isBuyDisabled}
         onPress={() => handleBuyPowerUp(product)}
-        textIcon={' 🍌'}
+        textIcon={isMaxed ? undefined : ' 🍌'}
         textIconStyle={styles.buttonIcon}
-        textSize={12}
-        title={`${price}`}
+        textSize={formatTabletElementsSize(12, 2.5)}
+        title={isMaxed ? 'MAX' : `${currentPrice}`}
       />
     </Pressable>
   )

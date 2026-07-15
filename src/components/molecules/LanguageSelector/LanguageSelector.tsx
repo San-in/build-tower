@@ -10,6 +10,7 @@ import { styles } from '@components/molecules/LanguageSelector/LanguageSelector.
 import { LanguageSelectorProps } from '@components/molecules/LanguageSelector/LanguageSelector.types'
 import { COLORS } from '@theme'
 import { LANGUAGES } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import React, { FC, memo, useMemo, useState } from 'react'
 import { Pressable, ScrollView, View } from 'react-native'
@@ -77,7 +78,9 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
         }}
       >
         <View style={[styles.wrapper, containerStyle]}>
-          <OutlinedText fontSize={20}>Language: </OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(20)}>
+            Language:
+          </OutlinedText>
 
           <View style={styles.dropdownWrapper}>
             <AnimatePresence>
@@ -106,7 +109,7 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
                     ]}
                   >
                     <CurrentIcon />
-                    <OutlinedText fontSize={14}>
+                    <OutlinedText fontSize={formatTabletElementsSize(14)}>
                       {currentLanguageData.label}
                     </OutlinedText>
                   </Pressable>
@@ -144,7 +147,9 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
                               ]}
                             >
                               <Icon />
-                              <OutlinedText fontSize={18}>
+                              <OutlinedText
+                                fontSize={formatTabletElementsSize(18)}
+                              >
                                 {option.label}
                               </OutlinedText>
                             </Pressable>
@@ -169,7 +174,7 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
       >
         <OutlinedText
           color={COLORS.gradientOrange_1}
-          fontSize={12}
+          fontSize={formatTabletElementsSize(12)}
           strokeColor={COLORS.codeGrey}
         >
           Temporary unavailable

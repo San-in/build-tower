@@ -1,5 +1,5 @@
 import { CheckBoxCheckedIcon } from '@assets/icons'
-import { CheckBoxProps } from '@components/atoms/СheckBox/CheckBox.types'
+import { CheckBoxProps } from '@components/atoms/CheckBox/CheckBox.types'
 import { COLORS, TextStyles } from '@theme'
 import React, { FC, memo, useEffect, useRef } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'

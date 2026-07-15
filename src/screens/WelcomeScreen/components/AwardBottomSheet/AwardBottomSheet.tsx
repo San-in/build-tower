@@ -7,7 +7,7 @@ import { addBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, MarketPrize } from '@types'
-import { formatLevelToRomanNum } from '@utils'
+import { formatLevelToRomanNum, formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
@@ -21,7 +21,7 @@ import {
 import {
   AWARD_TYPE,
   getAwardConfigByType,
-} from '../AcitvityModal/components/AwardsContent/config'
+} from '../ActivityModal/components/AwardsContent/config'
 import { SuccessAwardClaimedModalProps } from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
 import { styles } from './AwardBottomSheet.styles'
 
@@ -108,7 +108,9 @@ const AwardBottomSheet = ({
             }}
             style={styles.content}
           >
-            <OutlinedText fontSize={24}>{name || ''}</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              {name || ''}
+            </OutlinedText>
             <View style={styles.iconWrapper}>{icon}</View>
             <ScrollView
               contentContainerStyle={styles.scrollContent}
@@ -217,7 +219,9 @@ const AwardBottomSheet = ({
                       </Pressable>
                     )}
                     <View style={styles.romanContainer}>
-                      <OutlinedText fontSize={12}>
+                      <OutlinedText
+                        fontSize={formatTabletElementsSize(12, 2.5)}
+                      >
                         {formatLevelToRomanNum(index + 1)}
                       </OutlinedText>
                     </View>
@@ -239,22 +243,28 @@ const AwardBottomSheet = ({
               })}
             </ScrollView>
 
-            <OutlinedText fontSize={12}>{description || ''}</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(12, 2.5)}>
+              {description || ''}
+            </OutlinedText>
             <View
               style={[
                 styles.descriptionRow,
                 { opacity: Number(!isLevelReachedMax) },
               ]}
             >
-              <OutlinedText fontSize={10}>To next level: </OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(10, 2.5)}>
+                To next level:
+              </OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={12}
+                fontSize={formatTabletElementsSize(12, 2.5)}
                 strokeColor={COLORS.brown}
               >
                 {String(currentLevelTarget - currentRepeats)}
               </OutlinedText>
-              <OutlinedText fontSize={10}> repeats</OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(10, 2.5)}>
+                repeats
+              </OutlinedText>
             </View>
           </Pressable>
         )}

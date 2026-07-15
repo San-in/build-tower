@@ -1,4 +1,5 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -9,7 +10,7 @@ export const styles = StyleSheet.create({
     transform: [{ scale: 1 }],
   },
   buttonContainer: { paddingHorizontal: 5 },
-  buttonIcon: { fontSize: 12 },
+  buttonIcon: { fontSize: formatTabletElementsSize(12, 2.5) },
   container: {
     alignItems: 'center',
     backgroundColor: COLORS.codeGrey20,
@@ -18,7 +19,8 @@ export const styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
     flex: 1,
-    gap: 5,
+    gap: formatTabletElementsSize(5),
+    justifyContent: 'space-between',
     paddingLeft: 5,
     paddingRight: 65,
     paddingVertical: 5,

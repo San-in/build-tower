@@ -1,5 +1,6 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     aspectRatio: 0.9,
     borderColor: COLORS.white,
-    borderWidth: 3,
+    borderWidth: formatTabletElementsSize(3),
     elevation: 5,
     flex: 1,
     justifyContent: 'center',
@@ -39,7 +40,7 @@ export const styles = StyleSheet.create({
   statusIconContainer: {
     backgroundColor: COLORS.white90,
     borderColor: COLORS.green80,
-    borderRadius: 50,
+    borderRadius: formatTabletElementsSize(50),
     borderWidth: 2,
     padding: 5,
     position: 'absolute',

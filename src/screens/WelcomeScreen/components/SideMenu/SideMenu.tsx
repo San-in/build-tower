@@ -9,6 +9,7 @@ import { IconButton } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectIsHasUnclaimedAwards } from '@store/slices/awardsSlice'
 import { selectIsHasUnclaimedRewards } from '@store/slices/userActivitySlice'
+import { formatTabletElementsSize } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { View } from 'react-native'
@@ -16,8 +17,8 @@ import { View } from 'react-native'
 import { styles } from './SideMenu.styles'
 import { SideMenuProps } from './SideMenu.types'
 
-const ICON_SIZE = 35
-const ICON_MENU_SIZE = 40
+const ICON_SIZE = formatTabletElementsSize(35)
+const ICON_MENU_SIZE = formatTabletElementsSize(40)
 
 const SideMenu: FC<SideMenuProps> = ({
   handleCalendar,

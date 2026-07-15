@@ -1,4 +1,4 @@
-import { Z_INDEX_TYPE } from '@constants'
+import { IS_TABLET, Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
   sideMenuContainer: { alignItems: 'center', height: '100%', width: '100%' },
   startButton: { marginTop: 100 },
   titleWrapper: {
-    marginTop: 450,
+    marginTop: IS_TABLET ? 750 : 450,
     transform: [{ rotate: '7deg' }],
   },
 })

@@ -1,4 +1,4 @@
-import { Z_INDEX_TYPE } from '@constants'
+import { IS_TABLET, Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
 import { StyleSheet } from 'react-native'
 
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     overflow: 'hidden',
-    padding: 15,
+    padding: IS_TABLET ? 25 : 15,
     width: '100%',
   },
   gradientContainer: {

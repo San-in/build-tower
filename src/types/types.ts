@@ -49,7 +49,7 @@ export type OperatorRange = {
 }
 
 export type LevelConfig = {
-  fistTower: TowerConfig
+  firstTower: TowerConfig
   secondTower: TowerConfig
   simpleOperators: OperatorRange
   multiplicativeOperators: OperatorRange

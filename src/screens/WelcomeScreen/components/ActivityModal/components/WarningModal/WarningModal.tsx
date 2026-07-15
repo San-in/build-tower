@@ -1,6 +1,7 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { CustomModal } from '@components/organisms'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import React, { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -13,12 +14,13 @@ const WarningModal: FC<WarningModalProps> = ({
   handleConfirm,
 }) => (
   <CustomModal
+    containerStyles={styles.modal}
     handleClose={handleClose}
     isMonkeyVisible={false}
     modalVisible={isVisible}
     title={'Are you sure?'}
   >
-    <OutlinedText fontSize={15}>
+    <OutlinedText fontSize={formatTabletElementsSize(15)}>
       All your progress will be lost — levels, rewards, bananas, and market
       purchases.
     </OutlinedText>
@@ -26,13 +28,13 @@ const WarningModal: FC<WarningModalProps> = ({
       <Button
         onPress={handleClose}
         style={styles.button}
-        textSize={12}
+        textSize={formatTabletElementsSize(12)}
         title={'KEEP'}
       />
       <Button
         onPress={handleConfirm}
         style={styles.button}
-        textSize={12}
+        textSize={formatTabletElementsSize(12)}
         title={'RESET'}
         type={BUTTON_TYPE.Error}
       />

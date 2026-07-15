@@ -1,5 +1,6 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -24,15 +25,15 @@ export const styles = StyleSheet.create({
     gap: 5,
     height: '100%',
     justifyContent: 'space-between',
-    paddingBottom: 30,
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingBottom: formatTabletElementsSize(30, 2.5),
+    paddingHorizontal: formatTabletElementsSize(10, 2.5),
+    paddingTop: formatTabletElementsSize(10, 2.5),
   },
   descriptionRow: {
     alignItems: 'center',
     alignSelf: 'flex-end',
     flexDirection: 'row',
-    gap: 3,
+    gap: formatTabletElementsSize(3, 2.5),
     marginTop: 20,
   },
   emptyContainer: {
@@ -66,16 +67,16 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.codeGrey20,
     borderRightWidth: 1,
     elevation: 4,
-    height: 20,
+    height: formatTabletElementsSize(20),
     shadowOffset: { width: 2, height: 5 },
     shadowOpacity: 0.5,
     shadowRadius: 15,
-    width: 50,
+    width: formatTabletElementsSize(50),
   },
   romanContainer: {
     position: 'absolute',
     right: 0,
-    top: 25,
+    top: formatTabletElementsSize(25, 1.5),
   },
   scrollContent: {
     alignItems: 'center',

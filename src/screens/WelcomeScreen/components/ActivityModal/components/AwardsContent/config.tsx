@@ -249,7 +249,7 @@ export const reachAwardsConditions: Array<AwardConfig> = [
   },
   {
     type: AWARD_TYPE.ADD_EXTRA_STEP_MASTER,
-    name: 'Add Extra Step Master',
+    name: 'Extra Step Master',
     description: 'Use the Add Extra Step power-up.',
     icon: <AddExtraStepIconIcon height={'100%'} width={'100%'} />,
     maxLevel: 5,

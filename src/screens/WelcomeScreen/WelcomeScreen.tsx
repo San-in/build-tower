@@ -27,6 +27,7 @@ import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { COLORS, GlobalStyles } from '@theme'
 import { MARKET_SPECIAL_PRIZE, SCREENS } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
@@ -40,7 +41,7 @@ import {
   SideMenu,
   SuccessAwardClaimedModal,
 } from './components'
-import { ACTIVITY_MODAL_TYPES } from './components/AcitvityModal/ActivityModal.types'
+import { ACTIVITY_MODAL_TYPES } from './components/ActivityModal/ActivityModal.types'
 import { SuccessAwardClaimedModalProps } from './components/SuccessAwardClaimedModal/SuccessAwardClaimedModal'
 import { styles } from './WelcomeScreen.styles'
 
@@ -189,7 +190,7 @@ const WelcomeScreen = () => {
             <View style={styles.titleWrapper}>
               <OutlinedText
                 color={COLORS.yellow}
-                fontSize={50}
+                fontSize={formatTabletElementsSize(50)}
                 offset={5}
                 strokeColor={COLORS.brown}
               >
@@ -206,7 +207,7 @@ const WelcomeScreen = () => {
             >
               <Button
                 onPress={handleStartButtonPress}
-                textSize={27}
+                textSize={formatTabletElementsSize(27)}
                 title="START"
               />
             </MotiView>

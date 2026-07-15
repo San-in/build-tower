@@ -231,7 +231,7 @@ const GameScreen: FC = () => {
   // LOCAL CONSTANT
   const {
     attempts,
-    fistTower,
+    firstTower,
     secondTower,
     simpleOperators,
     multiplicativeOperators,
@@ -360,9 +360,9 @@ const GameScreen: FC = () => {
       isVisible: true,
       type: buildModalData.type,
       sectors: isFirstTower
-        ? fistTower.fortuneWheelData
+        ? firstTower.fortuneWheelData
         : secondTower.fortuneWheelData,
-      start: isFirstTower ? fistTower.start : secondTower.start,
+      start: isFirstTower ? firstTower.start : secondTower.start,
     })
   }
 
