@@ -23,7 +23,7 @@ import {
   calculateExpectedLevelConditions,
   getLevelResult,
 } from '@utils'
-import { FC, memo, useMemo } from 'react'
+import { FC, memo, useCallback, useMemo } from 'react'
 import { Text, View } from 'react-native'
 
 import { styles } from './LevelResultModalContent.styles'
@@ -130,6 +130,37 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     return map[levelResult]
   }, [levelResult])
 
+  const consolationPrize = useMemo(
+    () =>
+      isShouldShowConsolationPrize ? calculateConsolationPrize(prize) : undefined,
+    [isShouldShowConsolationPrize, prize]
+  )
+
+  const handleGetDoublePrize = useCallback(
+    () => onGetDoublePrize({ prize: displayedPrize, stars: displayedStars }),
+    [onGetDoublePrize, displayedPrize, displayedStars]
+  )
+
+  const handleRestartLevel = useCallback(
+    () =>
+      onRestartLevel({
+        prize: displayedPrize,
+        stars: displayedStars,
+        consolationPrize,
+      }),
+    [onRestartLevel, displayedPrize, displayedStars, consolationPrize]
+  )
+
+  const handleGetPrize = useCallback(
+    () =>
+      onGetPrize({
+        prize: displayedPrize,
+        stars: displayedStars,
+        consolationPrize,
+      }),
+    [onGetPrize, displayedPrize, displayedStars, consolationPrize]
+  )
+
   const buttonsSet = [
     isLevelPassed && displayedPrize && (
       <IconButton
@@ -137,9 +168,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         isDisabled={true}
         label={'Double'}
         numberOfLines={1}
-        onPress={() =>
-          onGetDoublePrize({ prize: displayedPrize, stars: displayedStars })
-        }
+        onPress={handleGetDoublePrize}
         style={[styles.iconContainer]}
       />
     ),
@@ -174,15 +203,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Restart'}
         labelStyles={styles.buttonLabel}
         numberOfLines={1}
-        onPress={() =>
-          onRestartLevel({
-            prize: displayedPrize,
-            stars: displayedStars,
-            consolationPrize: isShouldShowConsolationPrize
-              ? calculateConsolationPrize(prize)
-              : undefined,
-          })
-        }
+        onPress={handleRestartLevel}
         style={styles.iconContainer}
       />
     ),
@@ -193,15 +214,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Get Prize'}
         labelStyles={styles.buttonLabel}
         numberOfLines={2}
-        onPress={() =>
-          onGetPrize({
-            prize: displayedPrize,
-            stars: displayedStars,
-            consolationPrize: isShouldShowConsolationPrize
-              ? calculateConsolationPrize(prize)
-              : undefined,
-          })
-        }
+        onPress={handleGetPrize}
         style={[
           styles.iconContainer,
           isShouldShowConsolationPrize ? styles.priorityIcon : {},
@@ -310,7 +323,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
                   fontSize={35}
                   strokeColor={COLORS.brown}
                   style={styles.prizeLabel}
-                >{`${calculateConsolationPrize(prize)}`}</OutlinedText>
+                >{`${consolationPrize}`}</OutlinedText>
                 <BananasIcon height={35} width={35} />
               </View>
             </View>

@@ -34,6 +34,9 @@ const ASSET_KEYS = {
   ASSETS: 'assets',
 }
 
+const separatorStyle = { width: ITEM_GAP }
+const ItemSeparator = () => <View style={separatorStyle} />
+
 const LevelsScreen = () => {
   const availableLevels = useAppSelector(selectAvailableLevels)
   const bananas = useAppSelector(selectBananas)
@@ -147,14 +150,29 @@ const LevelsScreen = () => {
 
   const keyExtractor = useCallback((lvl: LevelId) => String(lvl), [])
 
+  const handleBgLoaded = useCallback(
+    () => assetLoaded(ASSET_KEYS.BG),
+    [assetLoaded]
+  )
+
+  const handleScrollToIndexFailed = useCallback(
+    ({ index }: { index: number }) => {
+      requestAnimationFrame(() => {
+        const offset = getOffsetForIndex(index)
+        listRef.current?.scrollToOffset({ offset, animated: false })
+      })
+    },
+    [getOffsetForIndex]
+  )
+
   return (
     <View style={styles.backgroundImage}>
       <Image
         allowDownscaling
         cachePolicy="disk"
         contentFit="cover"
-        onError={() => assetLoaded(ASSET_KEYS.BG)}
-        onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+        onError={handleBgLoaded}
+        onLoadEnd={handleBgLoaded}
         priority="high"
         source={BackgroundImg}
         style={[StyleSheet.absoluteFill, styles.image]}
@@ -198,7 +216,7 @@ const LevelsScreen = () => {
           <FlatList
             horizontal
             removeClippedSubviews
-            ItemSeparatorComponent={() => <View style={{ width: ITEM_GAP }} />}
+            ItemSeparatorComponent={ItemSeparator}
             ListFooterComponent={<View style={{ width: sideSpacer }} />}
             ListHeaderComponent={<View style={{ width: sideSpacer }} />}
             contentContainerStyle={styles.levelsList}
@@ -212,12 +230,7 @@ const LevelsScreen = () => {
             keyExtractor={keyExtractor}
             maxToRenderPerBatch={8}
             onLayout={handleListLayout}
-            onScrollToIndexFailed={({ index }) => {
-              requestAnimationFrame(() => {
-                const offset = getOffsetForIndex(index)
-                listRef.current?.scrollToOffset({ offset, animated: false })
-              })
-            }}
+            onScrollToIndexFailed={handleScrollToIndexFailed}
             ref={listRef}
             renderItem={renderItem}
             showsHorizontalScrollIndicator={false}

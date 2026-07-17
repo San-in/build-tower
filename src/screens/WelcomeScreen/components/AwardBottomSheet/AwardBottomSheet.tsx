@@ -20,6 +20,7 @@ import {
 
 import {
   AWARD_TYPE,
+  AwardLevelCondition,
   getAwardConfigByType,
 } from '../ActivityModal/components/AwardsContent/config'
 import { SuccessAwardClaimedModalProps } from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
@@ -75,6 +76,41 @@ const AwardBottomSheet = ({
     },
     [dispatch]
   )
+  const handleCloseSheet = useCallback(() => {
+    onClose()
+    awardDetailsBottomSheetRef?.current?.close()
+  }, [onClose])
+
+  const handleClaimAward = useCallback(
+    async (
+      level: number,
+      conditions: AwardLevelCondition | undefined,
+      isPrizeClaimed: boolean
+    ) => {
+      if (isPrizeClaimed) {
+        return
+      }
+      if (conditions?.prizeType && conditions?.prizeCount && type) {
+        onAwardClaimModalShow({
+          isVisible: true,
+          typePrize: conditions.prizeType,
+          countPrize: conditions.prizeCount,
+          title: `${name} - ${formatLevelToRomanNum(level)}`,
+        })
+        await handleGetAward({
+          count: conditions.prizeCount,
+          typePrize: conditions.prizeType,
+        })
+        dispatch(setPrizeClaimed({ type, level }))
+
+        setTimeout(() => {
+          awardDetailsBottomSheetRef?.current?.close()
+        }, 800)
+      }
+    },
+    [type, name, onAwardClaimModalShow, handleGetAward, dispatch]
+  )
+
   useEffect(() => {
     if (isVisible && progress) {
       awardDetailsBottomSheetRef?.current?.expand()
@@ -101,13 +137,7 @@ const AwardBottomSheet = ({
             </OutlinedText>
           </View>
         ) : (
-          <Pressable
-            onPress={() => {
-              onClose()
-              awardDetailsBottomSheetRef?.current?.close()
-            }}
-            style={styles.content}
-          >
+          <Pressable onPress={handleCloseSheet} style={styles.content}>
             <OutlinedText fontSize={formatTabletElementsSize(20)}>
               {name || ''}
             </OutlinedText>
@@ -160,37 +190,13 @@ const AwardBottomSheet = ({
                   >
                     {isAvailable && (
                       <Pressable
-                        onPress={async () => {
-                          if (isPrizeClaimed) {
-                            return
-                          }
-                          if (
-                            currentLevelConditions?.prizeType &&
-                            currentLevelConditions?.prizeCount &&
-                            type
-                          ) {
-                            onAwardClaimModalShow({
-                              isVisible: true,
-                              typePrize: currentLevelConditions.prizeType,
-                              countPrize: currentLevelConditions.prizeCount,
-                              title: `${name} - ${formatLevelToRomanNum(currentRenderedLevel)}`,
-                            })
-                            await handleGetAward({
-                              count: currentLevelConditions.prizeCount,
-                              typePrize: currentLevelConditions.prizeType,
-                            })
-                            dispatch(
-                              setPrizeClaimed({
-                                type,
-                                level: currentRenderedLevel,
-                              })
-                            )
-
-                            setTimeout(async () => {
-                              awardDetailsBottomSheetRef?.current?.close()
-                            }, 800)
-                          }
-                        }}
+                        onPress={() =>
+                          handleClaimAward(
+                            currentRenderedLevel,
+                            currentLevelConditions,
+                            isPrizeClaimed
+                          )
+                        }
                         style={({ pressed }) => [
                           styles.giftPressable,
                           {

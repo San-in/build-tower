@@ -133,6 +133,27 @@ const WelcomeScreen = () => {
   }
   const handleCloseActivityModal = () =>
     setActivityModalConfig((prevState) => ({ ...prevState, isVisible: false }))
+  const handleReopenActivityModal = () =>
+    setActivityModalConfig((prevState) => ({ ...prevState, isVisible: true }))
+  const handleCloseCalendar = () => setIsCalendarOpen(false)
+  const handleOpenMarket = () =>
+    handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
+  const handleOpenSettings = () =>
+    handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
+
+  const handleAwardClaimModalShow = (
+    data: Omit<SuccessAwardClaimedModalProps, 'onPress'>
+  ) => {
+    setSuccessAwardClaimedModal(data)
+    handleCloseActivityModal()
+  }
+  const handleAwardClaimModalPress = () => {
+    setSuccessAwardClaimedModal((prevState) => ({
+      ...prevState,
+      isVisible: false,
+    }))
+    handleReopenActivityModal()
+  }
 
   useEffect(() => {
     if (preloaded) {
@@ -179,13 +200,9 @@ const WelcomeScreen = () => {
             <SideMenu
               handleAwards={handleAwardsIconPress}
               handleCalendar={handleCalendarIconPress}
-              handleClose={() => setIsCalendarOpen(false)}
-              handleMarket={() =>
-                handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
-              }
-              handleSettings={() =>
-                handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
-              }
+              handleClose={handleCloseCalendar}
+              handleMarket={handleOpenMarket}
+              handleSettings={handleOpenSettings}
             />
             <View style={styles.titleWrapper}>
               <OutlinedText
@@ -216,37 +233,16 @@ const WelcomeScreen = () => {
       </SafeAreaView>
       <ActivityModal
         isVisible={activityModalConfig.isVisible}
-        onAwardClaimModalShow={(data) => {
-          setSuccessAwardClaimedModal(data)
-          handleCloseActivityModal()
-        }}
+        onAwardClaimModalShow={handleAwardClaimModalShow}
         onClose={handleCloseActivityModal}
-        onReopen={() => {
-          setActivityModalConfig((prevState) => ({
-            ...prevState,
-            isVisible: true,
-          }))
-        }}
+        onReopen={handleReopenActivityModal}
         type={activityModalConfig.type}
       />
-      <ActivityCalendar
-        isOpen={isCalendarOpen}
-        onClose={() => setIsCalendarOpen(false)}
-      />
+      <ActivityCalendar isOpen={isCalendarOpen} onClose={handleCloseCalendar} />
       <SuccessAwardClaimedModal
         countPrize={countPrize}
         isVisible={isAwardsModalVisible}
-        onPress={() => {
-          setSuccessAwardClaimedModal((prevState) => ({
-            ...prevState,
-            isVisible: false,
-          }))
-
-          setActivityModalConfig((prevState) => ({
-            ...prevState,
-            isVisible: true,
-          }))
-        }}
+        onPress={handleAwardClaimModalPress}
         title={awardModalTitle}
         typePrize={typePrize}
       />
