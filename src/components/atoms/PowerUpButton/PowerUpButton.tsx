@@ -13,7 +13,7 @@ const PowerUpButton = memo(
     type,
     onPress,
     count,
-    size = 30,
+    size = formatTabletElementsSize(30),
     style,
     color = POWER_UP_GRADE.Base,
     isDisabled,
@@ -36,9 +36,11 @@ const PowerUpButton = memo(
           textSize={textSize}
           type={type}
         />
-        {!!count && (
+        {Boolean(count) && (
           <View style={styles.powerUpCounter}>
-            <OutlinedText fontSize={10 * k}>{String(count)}</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(10) * k}>
+              {String(count)}
+            </OutlinedText>
           </View>
         )}
       </Pressable>

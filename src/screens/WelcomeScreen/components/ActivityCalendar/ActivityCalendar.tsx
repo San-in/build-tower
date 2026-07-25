@@ -1,7 +1,11 @@
 import { ModalBorderOrangeImg } from '@assets/images'
 import { OutlinedText } from '@components/atoms'
 import { CALENDAR_REWARDS } from '@constants'
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { addBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
@@ -60,6 +64,18 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
       onClose()
     }
   }
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior={'close'}
+      />
+    ),
+    []
+  )
 
   const handleSuccessModalPress = () =>
     setGetPrizeModalData((prevState) => ({
@@ -121,6 +137,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
     <>
       <BottomSheet
         enablePanDownToClose
+        backdropComponent={renderBackdrop}
         backgroundStyle={GlobalStyles.transparent}
         handleIndicatorStyle={GlobalStyles.transparent}
         index={-1}
@@ -193,21 +210,31 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
         isVisible={isVisible}
         onPress={handleSuccessModalPress}
         title={'Congratulations!'}
-        titleSize={30}
+        titleSize={formatTabletElementsSize(30)}
       >
         <View style={styles.successModalContentContainer}>
-          <OutlinedText fontSize={20}>Reward for completing </OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(20)}>
+            Reward for completing
+          </OutlinedText>
           <OutlinedText
             color={COLORS.yellow}
-            fontSize={20}
+            fontSize={formatTabletElementsSize(20)}
             strokeColor={COLORS.brown}
           >{`${day} day${day > 1 ? 's' : ''}`}</OutlinedText>
-          <OutlinedText fontSize={20}>streak: </OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(20)}>
+            streak:
+          </OutlinedText>
         </View>
         <View style={styles.successModalIconContainer}>
-          <CalendarPrizeIcon count={count} size={100} type={prize} />
+          <CalendarPrizeIcon
+            count={count}
+            size={formatTabletElementsSize(100)}
+            type={prize}
+          />
         </View>
-        <OutlinedText fontSize={25}>TAP TO CLAIM REWARD</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(25)}>
+          TAP TO CLAIM REWARD
+        </OutlinedText>
       </SuccessActionModal>
     </>
   )

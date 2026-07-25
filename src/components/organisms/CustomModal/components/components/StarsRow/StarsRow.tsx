@@ -1,4 +1,5 @@
 import { StarIcon } from '@assets/icons'
+import { formatTabletElementsSize } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -8,7 +9,11 @@ import { StarsRowProps } from './StarsRow.types'
 const StarsRow: FC<StarsRowProps> = ({ stars }) => (
   <View style={styles.container}>
     {Array.from({ length: stars }).map((_, index) => (
-      <StarIcon height={30} key={index} width={30} />
+      <StarIcon
+        height={formatTabletElementsSize(30)}
+        key={index}
+        width={formatTabletElementsSize(30)}
+      />
     ))}
   </View>
 )

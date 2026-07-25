@@ -2,6 +2,7 @@ import { OutlinedText } from '@components/atoms'
 import { PowerUpIconProps } from '@components/molecules/PowerUpIcon/PowerUpIcon.types'
 import { COLORS } from '@theme'
 import { POWER_UP_GRADE, POWER_UP_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
@@ -9,10 +10,10 @@ import { View } from 'react-native'
 import { styles } from './PowerUpIcon.styles'
 
 const PowerUpIcon: FC<PowerUpIconProps> = ({
-  size = 50,
+  size = formatTabletElementsSize(50),
   type,
   color,
-  textSize = 24,
+  textSize = formatTabletElementsSize(24),
   textStyle,
 }) => {
   const powerUpType = {

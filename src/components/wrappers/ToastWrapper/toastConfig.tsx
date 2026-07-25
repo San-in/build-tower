@@ -1,6 +1,7 @@
 import { OutlinedText } from '@components/atoms'
 import { styles } from '@components/wrappers/ToastWrapper/Toast.styles'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import React from 'react'
 import { View } from 'react-native'
@@ -16,8 +17,16 @@ const createToast =
       style={styles.toast}
     >
       <View>
-        {text1 && <OutlinedText fontSize={12}>{text1}</OutlinedText>}
-        {text2 && <OutlinedText fontSize={10}>{text2}</OutlinedText>}
+        {text1 && (
+          <OutlinedText fontSize={formatTabletElementsSize(16, 2.5)}>
+            {text1}
+          </OutlinedText>
+        )}
+        {text2 && (
+          <OutlinedText fontSize={formatTabletElementsSize(13, 2.5)}>
+            {text2}
+          </OutlinedText>
+        )}
       </View>
     </LinearGradient>
   )

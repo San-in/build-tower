@@ -75,7 +75,7 @@ const Input: FC<InputProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      {!!icon && <View style={styles.iconContainer}>{icon}</View>}
+      {Boolean(icon) && <View style={styles.iconContainer}>{icon}</View>}
       <View
         style={[styles.inputContainer, !isFocused && styles.transparentBorder]}
       >
@@ -107,7 +107,7 @@ const Input: FC<InputProps> = ({
           value={value}
           {...props}
         />
-        {!!supportingText && (
+        {Boolean(supportingText) && (
           <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
             {supportingText}
           </Text>

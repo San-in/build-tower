@@ -2,6 +2,7 @@ import { AdIcon, BananasWithBGIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
 import { COLORS } from '@theme'
 import { BONUS_OPTION_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
 import { FC, memo } from 'react'
@@ -50,11 +51,19 @@ const ModalCard: FC<ModalCardProps> = ({
       >
         {option === BONUS_OPTION_TYPE.Bananas ? (
           <>
-            <BananasWithBGIcon height={50} width={50} />
-            <OutlinedText fontSize={20}>{`${price}`}</OutlinedText>
+            <BananasWithBGIcon
+              height={formatTabletElementsSize(50)}
+              width={formatTabletElementsSize(50)}
+            />
+            <OutlinedText
+              fontSize={formatTabletElementsSize(20)}
+            >{`${price}`}</OutlinedText>
           </>
         ) : (
-          <AdIcon height={70} width={70} />
+          <AdIcon
+            height={formatTabletElementsSize(70)}
+            width={formatTabletElementsSize(70)}
+          />
         )}
       </LinearGradient>
     </MotiView>

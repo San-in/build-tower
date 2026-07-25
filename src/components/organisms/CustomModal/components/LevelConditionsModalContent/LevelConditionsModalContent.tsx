@@ -5,6 +5,7 @@ import { BUTTON_TYPE } from '@types'
 import {
   calculateConsolationPrize,
   calculateExpectedLevelConditions,
+  formatTabletElementsSize,
 } from '@utils'
 import { FC, memo, useMemo } from 'react'
 import { View } from 'react-native'
@@ -30,29 +31,43 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <View style={styles.title}>
-          <OutlinedText fontSize={16}>Your first tower:</OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(16)}>
+            Your first tower:
+          </OutlinedText>
           <OutlinedText
             color={COLORS.gradientGold_1}
-            fontSize={30}
+            fontSize={formatTabletElementsSize(30)}
             strokeColor={COLORS.brown}
           >
             {`${initialBlocksQuantity}`}
           </OutlinedText>
-          <BlockIcon size={25} />
+          <BlockIcon size={formatTabletElementsSize(25)} />
         </View>
-        <OutlinedText fontSize={10}>
+        <OutlinedText fontSize={formatTabletElementsSize(10)}>
           (build the second as close as you can)
         </OutlinedText>
-        <OutlinedText fontSize={stars ? 18 : 25} style={styles.rewardsTitle}>
+        <OutlinedText
+          fontSize={
+            stars ? formatTabletElementsSize(18) : formatTabletElementsSize(25)
+          }
+          style={styles.rewardsTitle}
+        >
           {stars ? 'YOUR BEST RESULT' : 'REWARDS'}
         </OutlinedText>
         <View style={styles.starsContainer}>
           {Array.from({ length: stars }, (_, i) => i).map((item) => (
-            <StarIcon height={35} key={item} width={35} />
+            <StarIcon
+              height={formatTabletElementsSize(35)}
+              key={item}
+              width={formatTabletElementsSize(35)}
+            />
           ))}
         </View>
-        {!!stars && !isLevelCompletedWithThreeStars && (
-          <OutlinedText fontSize={20} style={styles.rewardsTitle}>
+        {Boolean(stars) && !isLevelCompletedWithThreeStars && (
+          <OutlinedText
+            fontSize={formatTabletElementsSize(20)}
+            style={styles.rewardsTitle}
+          >
             You can still get
           </OutlinedText>
         )}
@@ -61,7 +76,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
           <View key={`${item} - ${prizes}`} style={styles.rewardsLine}>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={25}
+              fontSize={formatTabletElementsSize(25)}
               strokeColor={COLORS.brown}
               style={styles.rewardsPrize}
             >
@@ -69,64 +84,83 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
                 ? `${-((prizes.at(-1) ?? 0) - (prizes[item] ?? 0))}`
                 : `${prizes[item]}`}
             </OutlinedText>
-            <BananasIcon height={30} width={30} />
+            <BananasIcon
+              height={formatTabletElementsSize(30)}
+              width={formatTabletElementsSize(30)}
+            />
 
-            <OutlinedText fontSize={20} style={styles.rewardsPrizeContainer}>
+            <OutlinedText
+              fontSize={formatTabletElementsSize(20)}
+              style={styles.rewardsPrizeContainer}
+            >
               for
             </OutlinedText>
 
             <View style={styles.rewardsBlocksQuantity}>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={25}
+                fontSize={formatTabletElementsSize(25)}
                 strokeColor={COLORS.brown}
               >
                 {`${blocks[item]}`}
               </OutlinedText>
-              <BlockIcon size={25} />
+              <BlockIcon size={formatTabletElementsSize(25)} />
             </View>
           </View>
         ))}
 
         {isLevelCompletedWithThreeStars ? (
           <View style={styles.completedLevelText}>
-            <OutlinedText fontSize={12}>
+            <OutlinedText fontSize={formatTabletElementsSize(12)}>
               You’ve already completed this level, but you’ll still get a bonus
               for replaying:
             </OutlinedText>
             <View style={styles.consolationPrizeContainer}>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={25}
+                fontSize={formatTabletElementsSize(25)}
                 strokeColor={COLORS.brown}
               >
                 {`${calculateConsolationPrize(prize)}`}
               </OutlinedText>
-              <BananasIcon height={25} width={25} />
+              <BananasIcon
+                height={formatTabletElementsSize(25)}
+                width={formatTabletElementsSize(25)}
+              />
             </View>
           </View>
         ) : (
           <View style={styles.failureCaseDescription}>
-            <OutlinedText fontSize={10}>More than</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(10)}>
+              More than
+            </OutlinedText>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={12}
+              fontSize={formatTabletElementsSize(12)}
               strokeColor={COLORS.brown}
             >
               {`${initialBlocksQuantity}`}
             </OutlinedText>
-            <OutlinedText fontSize={10}>or less than</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(10)}>
+              or less than
+            </OutlinedText>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={12}
+              fontSize={formatTabletElementsSize(12)}
               strokeColor={COLORS.brown}
             >
               {`${blocks.reverse()[stars]}`}
             </OutlinedText>
-            <OutlinedText fontSize={10} style={styles.failureCaseQuestionSign}>
+            <OutlinedText
+              fontSize={formatTabletElementsSize(10)}
+              style={styles.failureCaseQuestionSign}
+            >
               ?
             </OutlinedText>
-            <OutlinedText fontSize={10} style={styles.failureCaseQuestionSign}>
+            <OutlinedText
+              fontSize={formatTabletElementsSize(10)}
+              style={styles.failureCaseQuestionSign}
+            >
               No reward — but you can try again!
             </OutlinedText>
           </View>
@@ -138,7 +172,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={onConfirm}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={confirmButtonText}
           type={BUTTON_TYPE.Warning}
         />

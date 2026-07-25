@@ -1,4 +1,5 @@
 import { Z_INDEX_TYPE } from '@constants'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -9,13 +10,13 @@ export const styles = StyleSheet.create({
   },
   innerCircleContainer: {
     flexDirection: 'row',
-    gap: 5,
+    gap: formatTabletElementsSize(5),
     position: 'absolute',
     transform: [{ translateY: '-50%' }],
   },
   knobIconContainer: {
     position: 'absolute',
-    top: -35,
+    top: formatTabletElementsSize(-35),
     zIndex: Z_INDEX_TYPE.minimal,
   },
 })

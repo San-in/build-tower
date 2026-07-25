@@ -1,5 +1,6 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -9,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   bottomGround: {
     backgroundColor: COLORS.codeGrey,
-    height: 100,
+    height: formatTabletElementsSize(100, 1.5),
     width: '100%',
   },
   image: {
@@ -24,60 +25,63 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-end',
     maxWidth: '76%',
-    minWidth: 275,
+    minWidth: formatTabletElementsSize(275),
     transform: [{ translateY: '15%' }],
   },
   monkeyStageGroundContainer: {
-    bottom: -30,
+    bottom: formatTabletElementsSize(-30),
     position: 'absolute',
-    right: -180,
+    right: formatTabletElementsSize(-180),
     zIndex: Z_INDEX_TYPE.extra_high,
   },
   monkeyStageInitTower: {
     marginTop: 'auto',
-    transform: [{ translateY: -2 }],
+    transform: [{ translateY: formatTabletElementsSize(-2) }],
   },
   monkeyStageInitTowerContainer: {
-    left: -10,
+    left: formatTabletElementsSize(-10),
     position: 'absolute',
     transform: [{ scaleX: -1 }],
   },
   monkeyStageUserTowerContainer: {
     position: 'absolute',
-    right: -15,
+    right: formatTabletElementsSize(-15),
     zIndex: Z_INDEX_TYPE.extra_high,
   },
   progressBadgeContainer: {
     alignItems: 'flex-end',
-    gap: 80,
+    gap: formatTabletElementsSize(80, 1.5),
     position: 'absolute',
-    right: 25,
-    top: 120,
+    right: formatTabletElementsSize(25),
+    top: formatTabletElementsSize(120, 1.5),
   },
-  starsGif: { height: 100, width: 100 },
+  starsGif: {
+    height: formatTabletElementsSize(100),
+    width: formatTabletElementsSize(100),
+  },
   starsGifBackdrop: {
     alignSelf: 'flex-end',
     backgroundColor: COLORS.yellow20,
     borderColor: COLORS.yellow40,
-    borderRadius: 20,
-    borderWidth: 1,
-    height: 80,
-    marginBottom: -5,
-    marginLeft: -60,
+    borderRadius: formatTabletElementsSize(20),
+    borderWidth: formatTabletElementsSize(1),
+    height: formatTabletElementsSize(80),
+    marginBottom: formatTabletElementsSize(-5),
+    marginLeft: formatTabletElementsSize(-60),
   },
   starsGifContainer: {
     flexDirection: 'row',
-    left: -50,
+    left: formatTabletElementsSize(-50),
     position: 'absolute',
-    top: -30,
+    top: formatTabletElementsSize(-30),
     zIndex: Z_INDEX_TYPE.high,
   },
   towersContainer: {
     flexDirection: 'row',
     flex: 1,
-    gap: 50,
-    paddingHorizontal: 20,
-    paddingTop: 150,
+    gap: formatTabletElementsSize(50),
+    paddingHorizontal: formatTabletElementsSize(20),
+    paddingTop: formatTabletElementsSize(150),
     position: 'relative',
     width: '100%',
   },

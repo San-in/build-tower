@@ -10,6 +10,7 @@ import {
   POWER_UP_GRADE,
   POWER_UP_TYPE,
 } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
@@ -133,12 +134,18 @@ ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULA
                     colors={getHeaderBackground(grade)}
                     style={styles.cardContent}
                   >
-                    <OutlinedText fontSize={11}>{grade}</OutlinedText>
+                    <OutlinedText fontSize={formatTabletElementsSize(11)}>
+                      {grade}
+                    </OutlinedText>
                   </LinearGradient>
                   <View style={styles.powerUp}>
-                    <PowerUpIcon color={grade} type={type} />
+                    <PowerUpIcon
+                      color={grade}
+                      textSize={formatTabletElementsSize(24, 3)}
+                      type={type}
+                    />
                     <OutlinedText
-                      fontSize={20}
+                      fontSize={formatTabletElementsSize(20)}
                     >{`${availablePowerUps[grade]}`}</OutlinedText>
                   </View>
                 </LinearGradient>
@@ -157,7 +164,9 @@ ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULA
             key={powerUp}
             transition={{ duration: 200 }}
           >
-            <OutlinedText fontSize={12}>{getInfoMessage()}</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(12)}>
+              {getInfoMessage()}
+            </OutlinedText>
           </MotiView>
         </AnimatePresence>
       </View>
@@ -166,7 +175,7 @@ ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULA
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={'CANCEL'}
           type={BUTTON_TYPE.Error}
         />
@@ -175,7 +184,7 @@ ${POWER_UP_BLOCK_MANIPULATION_LIMITS[powerUp].min} and ${POWER_UP_BLOCK_MANIPULA
           isDisabled={!isSelectedPowerUpAvailable}
           onPress={() => onConfirm({ grade: powerUp, type })}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={'OK'}
           type={BUTTON_TYPE.Info}
         />

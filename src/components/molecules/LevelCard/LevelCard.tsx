@@ -4,6 +4,7 @@ import { useAppSelector } from '@store/hooks'
 import { selectLevelById } from '@store/slices/levelsSlice'
 import { COLORS } from '@theme'
 import { LEVEL_DIFFICULTY } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import React, { FC, memo, useMemo } from 'react'
 import { View } from 'react-native'
@@ -25,8 +26,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
       [LEVEL_DIFFICULTY.Easy]: 'Clear the previous level to unlock!',
       [LEVEL_DIFFICULTY.Medium]:
         'Earn at least 2 stars on the previous level to unlock!',
-      [LEVEL_DIFFICULTY.Hard]:
-        'Earn 3 stars on the previous level to unlock!',
+      [LEVEL_DIFFICULTY.Hard]: 'Earn 3 stars on the previous level to unlock!',
     }[difficulty]
   }, [difficulty])
 
@@ -64,7 +64,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
       >
         <OutlinedText
           color={COLORS.white50}
-          fontSize={14}
+          fontSize={formatTabletElementsSize(14)}
           strokeColor={COLORS.gradientGrey_2}
         >
           {infoMessage}

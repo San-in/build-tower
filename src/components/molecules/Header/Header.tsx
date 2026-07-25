@@ -10,11 +10,14 @@ import {
 } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, POWER_UP_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { styles } from './Header.styles'
+
+const ICON_SIZE = formatTabletElementsSize(36)
 
 const Header: FC<HeaderProps> = ({
   onResetPress,
@@ -40,12 +43,22 @@ const Header: FC<HeaderProps> = ({
       <View style={styles.container}>
         <View style={styles.bananasExternalContainer}>
           <View style={styles.bananasContainer}>
-            <OutlinedText fontSize={22}>{`${bananas}`}</OutlinedText>
-            <BananasIcon height={35} transform="scale(-1,1)" width={35} />
+            <OutlinedText
+              fontSize={formatTabletElementsSize(22)}
+            >{`${bananas}`}</OutlinedText>
+            <BananasIcon
+              height={ICON_SIZE}
+              transform="scale(-1,1)"
+              width={ICON_SIZE}
+            />
           </View>
         </View>
         <View style={styles.contentContainer}>
-          {level && <OutlinedText fontSize={25}>{levelTitle}</OutlinedText>}
+          {level && (
+            <OutlinedText fontSize={formatTabletElementsSize(25)}>
+              {levelTitle}
+            </OutlinedText>
+          )}
           <View style={styles.powerUpsContainer}>
             <PowerUpButton
               count={totalAddBlocksPowerUps}
@@ -66,12 +79,12 @@ const Header: FC<HeaderProps> = ({
         </View>
         <View style={styles.actionButtonsContainer}>
           <IconButton
-            icon={<RestartIcon height={36} width={36} />}
+            icon={<RestartIcon height={ICON_SIZE} width={ICON_SIZE} />}
             onPress={onResetPress}
             style={{ backgroundColor: COLORS.roseWhite20 }}
           />
           <IconButton
-            icon={<HomeIcon height={36} width={36} />}
+            icon={<HomeIcon height={ICON_SIZE} width={ICON_SIZE} />}
             onPress={onHomePress}
             style={{ backgroundColor: COLORS.roseWhite20 }}
           />

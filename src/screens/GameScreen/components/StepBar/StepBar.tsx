@@ -1,5 +1,6 @@
 import { OutlinedText } from '@components/atoms'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import { FC } from 'react'
 import { View } from 'react-native'
@@ -31,7 +32,7 @@ const StepBar: FC<StepBarProps> = ({
         style={styles.contentContainer}
         transition={{ type: 'timing', duration: 2000 }}
       >
-        <OutlinedText fontSize={18}>
+        <OutlinedText fontSize={formatTabletElementsSize(18)}>
           {isLastStep ? 'Last step' : 'Step'}
         </OutlinedText>
 
@@ -72,7 +73,9 @@ const StepBar: FC<StepBarProps> = ({
                 </MotiView>
                 <View style={styles.stepLabel}>
                   <OutlinedText
-                    fontSize={isLastVisibleStep && !isLastStep ? 14 : 12}
+                    fontSize={formatTabletElementsSize(
+                      isLastVisibleStep && !isLastStep ? 14 : 12
+                    )}
                   >{`${index + 1}`}</OutlinedText>
                 </View>
               </View>

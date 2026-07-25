@@ -2,6 +2,7 @@ import { gradientsMap } from '@components/atoms/Button/gradinentsMap'
 import { OutlinedText } from '@components/atoms/OutlinedText'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -16,7 +17,7 @@ const Button: FC<ButtonProps> = ({
   style,
   onPress,
   type = BUTTON_TYPE.Success,
-  textSize = 20,
+  textSize = formatTabletElementsSize(20),
   buttonContainerStyle,
   textIcon,
   textIconStyle,

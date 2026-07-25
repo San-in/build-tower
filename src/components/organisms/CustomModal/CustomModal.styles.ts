@@ -1,13 +1,18 @@
 import { IS_TABLET, Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   background: {
     backgroundColor: COLORS.codeGrey50,
-    paddingHorizontal: 16,
+    paddingHorizontal: formatTabletElementsSize(16),
   },
-  buttonsContainer: { flexDirection: 'row', gap: 20, marginTop: 20 },
+  buttonsContainer: {
+    flexDirection: 'row',
+    gap: formatTabletElementsSize(20),
+    marginTop: formatTabletElementsSize(20),
+  },
   closeIcon: {
     opacity: 1,
     position: 'absolute',
@@ -24,31 +29,31 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
-    gap: 16,
+    gap: formatTabletElementsSize(16),
     overflow: 'hidden',
     padding: IS_TABLET ? 25 : 15,
     width: '100%',
   },
   gradientContainer: {
     borderColor: COLORS.white,
-    borderRadius: 18,
-    borderWidth: 4,
+    borderRadius: formatTabletElementsSize(18),
+    borderWidth: formatTabletElementsSize(4),
   },
   imageBackground: {
     borderColor: COLORS.codeGrey90,
-    borderRadius: 20,
-    borderWidth: 4,
+    borderRadius: formatTabletElementsSize(20),
+    borderWidth: formatTabletElementsSize(4),
     overflow: 'hidden',
-    padding: 15,
+    padding: formatTabletElementsSize(15),
     position: 'relative',
   },
   monkeyImage: {
-    height: 150,
+    height: formatTabletElementsSize(150),
     left: '50%',
     position: 'absolute',
-    top: -125,
+    top: formatTabletElementsSize(-125),
     transform: [{ translateX: '-50%' }],
-    width: 150,
+    width: formatTabletElementsSize(150),
     zIndex: Z_INDEX_TYPE.extra_high,
   },
   text: { alignSelf: 'flex-start', color: COLORS.codeGrey },

@@ -1,6 +1,7 @@
 import { BlockIcon } from '@components/atoms'
 import { BLOCK_DIMENSION } from '@constants'
 import { BLOCK_CREATOR_OPERATION } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, memo, useEffect, useMemo, useState } from 'react'
 import { useWindowDimensions, View } from 'react-native'
@@ -15,6 +16,7 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
     const [operation, setOperation] = useState<BLOCK_CREATOR_OPERATION>(
       BLOCK_CREATOR_OPERATION.Add
     )
+
     const ANIMATION_DELAY = quantity > 50 ? 40 : 60
 
     useEffect(() => {
@@ -53,7 +55,9 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
     const { height } = useWindowDimensions()
 
     const initialBlockDimensions = useMemo(() => {
-      const calculatedDimension = (height * 0.65) / quantity
+      const calculatedDimension = formatTabletElementsSize(
+        (height * 0.65) / quantity
+      )
       return Math.min(BLOCK_DIMENSION, calculatedDimension)
     }, [height, quantity])
 

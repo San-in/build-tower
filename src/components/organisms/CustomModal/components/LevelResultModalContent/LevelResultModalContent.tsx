@@ -21,6 +21,7 @@ import { LEVEL_RESULT, Star } from '@types'
 import {
   calculateConsolationPrize,
   calculateExpectedLevelConditions,
+  formatTabletElementsSize,
   getLevelResult,
 } from '@utils'
 import { FC, memo, useCallback, useMemo } from 'react'
@@ -132,7 +133,9 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
 
   const consolationPrize = useMemo(
     () =>
-      isShouldShowConsolationPrize ? calculateConsolationPrize(prize) : undefined,
+      isShouldShowConsolationPrize
+        ? calculateConsolationPrize(prize)
+        : undefined,
     [isShouldShowConsolationPrize, prize]
   )
 
@@ -164,7 +167,12 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
   const buttonsSet = [
     isLevelPassed && displayedPrize && (
       <IconButton
-        icon={<CardsIcon height={30} width={30} />}
+        icon={
+          <CardsIcon
+            height={formatTabletElementsSize(30)}
+            width={formatTabletElementsSize(30)}
+          />
+        }
         isDisabled={true}
         label={'Double'}
         numberOfLines={1}
@@ -174,7 +182,12 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     ),
     !(isLevelPassed && displayedPrize) && !isShouldShowConsolationPrize && (
       <IconButton
-        icon={<HomeIcon height={30} width={30} />}
+        icon={
+          <HomeIcon
+            height={formatTabletElementsSize(30)}
+            width={formatTabletElementsSize(30)}
+          />
+        }
         label={'Home'}
         labelStyles={styles.buttonLabel}
         numberOfLines={1}
@@ -185,7 +198,12 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
 
     !isGoldResult && (
       <IconButton
-        icon={<BuyIcon height={30} width={30} />}
+        icon={
+          <BuyIcon
+            height={formatTabletElementsSize(30)}
+            width={formatTabletElementsSize(30)}
+          />
+        }
         isDisabled={isResetStepsDisabled}
         label={'Reset Steps'}
         labelStyles={styles.buttonLabel}
@@ -199,7 +217,12 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     ),
     !(isGoldResult && displayedPrize) && (
       <IconButton
-        icon={<RestartIcon height={30} width={30} />}
+        icon={
+          <RestartIcon
+            height={formatTabletElementsSize(30)}
+            width={formatTabletElementsSize(30)}
+          />
+        }
         label={'Restart'}
         labelStyles={styles.buttonLabel}
         numberOfLines={1}
@@ -210,7 +233,12 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
 
     ((isLevelPassed && displayedPrize) || isShouldShowConsolationPrize) && (
       <IconButton
-        icon={<ReceiveIcon height={30} width={30} />}
+        icon={
+          <ReceiveIcon
+            height={formatTabletElementsSize(30)}
+            width={formatTabletElementsSize(30)}
+          />
+        }
         label={'Get Prize'}
         labelStyles={styles.buttonLabel}
         numberOfLines={2}
@@ -245,9 +273,15 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <View style={styles.mainContent}>
         {isTooHigh ? (
           <>
-            <OutlinedText fontSize={20}>It must be no</OutlinedText>
-            <OutlinedText fontSize={20}> higher</OutlinedText>
-            <OutlinedText fontSize={20}> than</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              It must be no
+            </OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              higher
+            </OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              than
+            </OutlinedText>
             <View style={styles.blockCounter}>
               <BlockWithValue
                 strokeColor={COLORS.brown}
@@ -255,9 +289,13 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
                 value={goldResult}
               />
             </View>
-            <OutlinedText fontSize={20}> but you have</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              but you have
+            </OutlinedText>
             <View style={styles.blockCounter}>
-              <OutlinedText fontSize={20}> already</OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(20)}>
+                already
+              </OutlinedText>
               <BlockWithValue
                 strokeColor={COLORS.gradientGold_1}
                 textColor={COLORS.roofTerracotta70}
@@ -267,7 +305,9 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
           </>
         ) : (
           <>
-            <OutlinedText fontSize={20}>You've got just</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              You've got just
+            </OutlinedText>
             <View style={styles.blockCounter}>
               <BlockWithValue
                 strokeColor={COLORS.gradientGold_1}
@@ -275,10 +315,16 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
                 value={userBlockValue}
               />
             </View>
-            <OutlinedText fontSize={20}> but it must be</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
+              but it must be
+            </OutlinedText>
             <View style={styles.blockCounter}>
-              <OutlinedText fontSize={20}> at</OutlinedText>
-              <OutlinedText fontSize={20}>least</OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(20)}>
+                at
+              </OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(20)}>
+                least
+              </OutlinedText>
               <BlockWithValue
                 strokeColor={COLORS.brown}
                 textColor={COLORS.gradientGold_1}
@@ -298,52 +344,65 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         <Text style={styles.textIcon}>{headerContent.icon}</Text>
         <OutlinedText
           color={COLORS.gradientGold_1}
-          fontSize={35}
-          offset={2}
+          fontSize={formatTabletElementsSize(35)}
+          offset={formatTabletElementsSize(2)}
           strokeColor={COLORS.brown}
         >
           {headerContent.text}
         </OutlinedText>
       </View>
       <View style={styles.subTitle}>
-        <OutlinedText fontSize={20}>{headerContent.subTitle}</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(20)}>
+          {headerContent.subTitle}
+        </OutlinedText>
       </View>
-      {!!displayedStars && <StarsRow stars={displayedStars} />}
+      {Boolean(displayedStars) && <StarsRow stars={displayedStars} />}
       {isLevelPassed ? (
         <View style={styles.prizeContainer}>
-          <OutlinedText fontSize={20}>{prizeMessage}</OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(20)}>
+            {prizeMessage}
+          </OutlinedText>
           {isShouldShowConsolationPrize && (
-            <View>
-              <OutlinedText fontSize={20}>
+            <View style={{ flex: 1 }}>
+              <OutlinedText fontSize={formatTabletElementsSize(20)}>
                 But here’s a little bonus for you:
               </OutlinedText>
               <View style={styles.consolationPrizeContainer}>
                 <OutlinedText
                   color={COLORS.gradientGold_1}
-                  fontSize={35}
+                  fontSize={formatTabletElementsSize(35)}
                   strokeColor={COLORS.brown}
                   style={styles.prizeLabel}
                 >{`${consolationPrize}`}</OutlinedText>
-                <BananasIcon height={35} width={35} />
+                <BananasIcon
+                  height={formatTabletElementsSize(35)}
+                  width={formatTabletElementsSize(35)}
+                />
               </View>
             </View>
           )}
-          {!!displayedPrize && (
+          {Boolean(displayedPrize) && (
             <View style={[styles.block, styles.prizeBlock]}>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={25}
+                fontSize={formatTabletElementsSize(25)}
                 strokeColor={COLORS.brown}
                 style={styles.prizeLabel}
               >{`${displayedPrize}`}</OutlinedText>
-              <BananasIcon height={30} width={30} />
+              <BananasIcon
+                height={formatTabletElementsSize(30)}
+                width={formatTabletElementsSize(30)}
+              />
             </View>
           )}
         </View>
       ) : (
         unsuccessfulCaseContent
       )}
-      <OutlinedText fontSize={16} style={styles.secondaryContent}>
+      <OutlinedText
+        fontSize={formatTabletElementsSize(16)}
+        style={styles.secondaryContent}
+      >
         {secondaryMessage}
       </OutlinedText>
       <View style={styles.buttonsContainer}>

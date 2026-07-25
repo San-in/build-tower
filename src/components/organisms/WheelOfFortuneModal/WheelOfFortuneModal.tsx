@@ -5,7 +5,11 @@ import { WheelOfFortuneRef } from '@components/organisms/WheelOfFortune/WheelOfF
 import { INITIAL_SPIN_QUANTITY } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
 import { BUTTON_TYPE, OPERATOR, POWER_UP_TYPE, TOWER } from '@types'
-import { calculateWheelResult, generateRandomNumber } from '@utils'
+import {
+  calculateWheelResult,
+  formatTabletElementsSize,
+  generateRandomNumber,
+} from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, View } from 'react-native'
@@ -132,33 +136,41 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
         <>
           <View style={styles.headerContent}>
             <View style={styles.initialResultContainer}>
-              <OutlinedText fontSize={22}>You start from</OutlinedText>
+              <OutlinedText fontSize={formatTabletElementsSize(22)}>
+                You start from
+              </OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={40}
+                fontSize={formatTabletElementsSize(40)}
                 strokeColor={COLORS.gradientBronze_1}
               >{`${initialResult}`}</OutlinedText>
             </View>
             <BlockIcon />
           </View>
-          <OutlinedText fontSize={22}>Spin for building tower</OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(22)}>
+            Spin for building tower
+          </OutlinedText>
         </>
       ) : (
         <>
           <View style={styles.headerContent}>
-            <OutlinedText fontSize={25}>Spin the wheel</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(25, 1.8)}>
+              Spin the wheel
+            </OutlinedText>
           </View>
-          <OutlinedText fontSize={25}>to find how many blocks to</OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(25, 1.8)}>
+            to find how many blocks to
+          </OutlinedText>
           <View style={styles.headerPowerUpContainer}>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={45}
+              fontSize={formatTabletElementsSize(45, 1.5)}
               strokeColor={COLORS.gradientBronze_1}
             >{`${type === POWER_UP_TYPE.RemoveRandomBlocks ? 'REMOVE' : 'ADD'}`}</OutlinedText>
             <BlockIcon />
           </View>
           {type === POWER_UP_TYPE.RemoveRandomBlocks && (
-            <OutlinedText fontSize={14}>
+            <OutlinedText fontSize={formatTabletElementsSize(14, 1.8)}>
               (at least 1 block will remain)
             </OutlinedText>
           )}
@@ -200,13 +212,14 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
       <MotiView
         animate={{
           backgroundColor: [
-            COLORS.codeGrey70,
             COLORS.codeGrey80,
             COLORS.codeGrey90,
+            COLORS.codeGrey90,
+            COLORS.codeGrey,
             COLORS.codeGrey,
           ],
         }}
-        from={{ backgroundColor: COLORS.codeGrey90 }}
+        from={{ backgroundColor: COLORS.codeGrey }}
         style={[GlobalStyles.centeredContainer, styles.backgroundContainer]}
         transition={{
           type: 'timing',
@@ -218,14 +231,16 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           isVisible={isWheelModalResultVisible}
           onPress={handleCloseWheelResult}
         >
-          <OutlinedText>Your result:</OutlinedText>
+          <OutlinedText fontSize={formatTabletElementsSize(32)}>
+            Your result:
+          </OutlinedText>
           <View style={styles.wheelResultText}>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={70}
+              fontSize={formatTabletElementsSize(70)}
               strokeColor={COLORS.brown}
             >{`${wheelResult}`}</OutlinedText>
-            <BlockIcon size={60} />
+            <BlockIcon size={formatTabletElementsSize(60)} />
           </View>
         </SuccessActionInfoModal>
         <MotiView
@@ -263,10 +278,12 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
             style={styles.spinCounterContainer}
             transition={{ type: 'timing', duration: 500 }}
           >
-            <OutlinedText fontSize={18}>Remaining spins: </OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(18)}>
+              Remaining spins:
+            </OutlinedText>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={20}
+              fontSize={formatTabletElementsSize(20)}
               strokeColor={COLORS.brown}
             >{` ${spinCounter}`}</OutlinedText>
           </MotiView>
@@ -279,7 +296,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   isDisabled={!spinCounter || !wheelWinnerSector}
                   onPress={handleOpenTryAgainModal}
                   style={styles.button}
-                  textSize={12}
+                  textSize={formatTabletElementsSize(12, 3)}
                   title="TRY AGAIN"
                   type={BUTTON_TYPE.Info}
                 />
@@ -288,7 +305,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
                   isDisabled={!wheelWinnerSector}
                   onPress={handleConfirmPress}
                   style={styles.button}
-                  textSize={12}
+                  textSize={formatTabletElementsSize(12, 3)}
                   title="CONFIRM"
                 />
               </View>

@@ -11,7 +11,7 @@ import { LEVEL_NAMES } from '@constants'
 import { useAppSelector } from '@store/hooks'
 import { selectLevelById } from '@store/slices/levelsSlice'
 import { COLORS, GlobalStyles } from '@theme'
-import { getLevelIcon } from '@utils'
+import { formatTabletElementsSize, getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, {
@@ -89,7 +89,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
           <OutlinedText
             adjustsFontSizeToFit
             containerStyle={styles.labelAutoFit}
-            fontSize={14}
+            fontSize={formatTabletElementsSize(14, 2.2)}
             numberOfLines={1}
             style={!isAvailable ? GlobalStyles.invisible : GlobalStyles.visible}
           >
@@ -123,7 +123,11 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
           <OutlinedText
             adjustsFontSizeToFit
             containerStyle={styles.labelAutoFit}
-            fontSize={stars ? 18 : 22}
+            fontSize={
+              stars
+                ? formatTabletElementsSize(18, 2.5)
+                : formatTabletElementsSize(22, 2.5)
+            }
             numberOfLines={1}
             style={styles.levelLabel}
           >
@@ -132,7 +136,11 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
           {isAvailable && (
             <View style={styles.ratingContainer}>
               {Array.from({ length: stars }, (_, i) => (
-                <StarIcon height={25} key={i} width={25} />
+                <StarIcon
+                  height={formatTabletElementsSize(25)}
+                  key={i}
+                  width={formatTabletElementsSize(25)}
+                />
               ))}
             </View>
           )}

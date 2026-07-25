@@ -7,6 +7,7 @@ import {
 import { OutlinedText } from '@components/atoms'
 import { COLORS } from '@theme'
 import { OPERATOR } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { FC, memo, useCallback, useMemo, useState } from 'react'
@@ -84,7 +85,9 @@ const OptionCard: FC<OptionCardProps> = ({ onPress, value, operator }) => {
           styles.container,
           {
             transform: [{ scale: pressed ? 0.95 : 1 }],
-            borderWidth: pressed ? 4 : 3,
+            borderWidth: pressed
+              ? formatTabletElementsSize(4)
+              : formatTabletElementsSize(3),
           },
         ]}
       >
@@ -106,8 +109,12 @@ const OptionCard: FC<OptionCardProps> = ({ onPress, value, operator }) => {
             start={{ x: 0, y: 0 }}
             style={[styles.contentContainer, { opacity: Number(bgReady) }]}
           >
-            <OutlinedText fontSize={50}>{operator}</OutlinedText>
-            <OutlinedText fontSize={50}>{`${value}`}</OutlinedText>
+            <OutlinedText fontSize={formatTabletElementsSize(50)}>
+              {operator}
+            </OutlinedText>
+            <OutlinedText
+              fontSize={formatTabletElementsSize(50)}
+            >{`${value}`}</OutlinedText>
           </LinearGradient>
         </View>
       </Pressable>

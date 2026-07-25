@@ -12,7 +12,7 @@ import { selectIsHasUnclaimedRewards } from '@store/slices/userActivitySlice'
 import { formatTabletElementsSize } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
-import { View } from 'react-native'
+import { Pressable, View } from 'react-native'
 
 import { styles } from './SideMenu.styles'
 import { SideMenuProps } from './SideMenu.types'
@@ -36,11 +36,17 @@ const SideMenu: FC<SideMenuProps> = ({
     [isMenuExpanded, hasUserUnclaimedRewards, hasUserUnclaimedAwards]
   )
 
+  const closeMenu = () => {
+    handleClose()
+    setIsMenuExpanded(false)
+  }
+
   const toggleMenu = () => {
     if (isMenuExpanded) {
-      handleClose()
+      closeMenu()
+    } else {
+      setIsMenuExpanded(true)
     }
-    setIsMenuExpanded((prevState) => !prevState)
   }
 
   const items = useMemo(
@@ -77,60 +83,65 @@ const SideMenu: FC<SideMenuProps> = ({
   )
 
   return (
-    <MotiView
-      animate={{ opacity: 1 }}
-      from={{ opacity: 0 }}
-      style={styles.container}
-      transition={{ type: 'timing', duration: 120 }}
-    >
-      <IconButton
-        icon={
-          <MotiView
-            animate={{ scaleX: isMenuExpanded ? 1 : -1 }}
-            from={{ scaleX: -1 }}
-            transition={{ type: 'timing', duration: 180 }}
-          >
-            <MenuIcon height={ICON_MENU_SIZE} width={ICON_MENU_SIZE} />
-          </MotiView>
-        }
-        onPress={toggleMenu}
-        withNotify={isMenuIconWithNotify}
-      />
+    <>
+      {isMenuExpanded && (
+        <Pressable onPress={closeMenu} style={styles.backdrop} />
+      )}
+      <MotiView
+        animate={{ opacity: 1 }}
+        from={{ opacity: 0 }}
+        style={styles.container}
+        transition={{ type: 'timing', duration: 120 }}
+      >
+        <IconButton
+          icon={
+            <MotiView
+              animate={{ scaleX: isMenuExpanded ? 1 : -1 }}
+              from={{ scaleX: -1 }}
+              transition={{ type: 'timing', duration: 180 }}
+            >
+              <MenuIcon height={ICON_MENU_SIZE} width={ICON_MENU_SIZE} />
+            </MotiView>
+          }
+          onPress={toggleMenu}
+          withNotify={isMenuIconWithNotify}
+        />
 
-      <AnimatePresence>
-        {isMenuExpanded && (
-          <MotiView
-            animate={{ opacity: 1, translateX: 0, scaleX: 1 }}
-            exit={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
-            from={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
-            style={styles.menuListContainer}
-            transition={{ type: 'timing', duration: 180 }}
-          >
-            <View style={[styles.menuListContent]}>
-              {items.map(({ icon, callback, withNotify }, idx) => (
-                <MotiView
-                  animate={{ opacity: 1, translateX: 0 }}
-                  exit={{ opacity: 0, translateX: -10 }}
-                  from={{ opacity: 0, translateX: -10 }}
-                  key={idx}
-                  transition={{
-                    type: 'timing',
-                    duration: 100,
-                    delay: 50 * idx,
-                  }}
-                >
-                  <IconButton
-                    icon={icon}
-                    onPress={callback}
-                    withNotify={withNotify}
-                  />
-                </MotiView>
-              ))}
-            </View>
-          </MotiView>
-        )}
-      </AnimatePresence>
-    </MotiView>
+        <AnimatePresence>
+          {isMenuExpanded && (
+            <MotiView
+              animate={{ opacity: 1, translateX: 0, scaleX: 1 }}
+              exit={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
+              from={{ opacity: 0, translateX: -16, scaleX: 0.95 }}
+              style={styles.menuListContainer}
+              transition={{ type: 'timing', duration: 180 }}
+            >
+              <View style={[styles.menuListContent]}>
+                {items.map(({ icon, callback, withNotify }, idx) => (
+                  <MotiView
+                    animate={{ opacity: 1, translateX: 0 }}
+                    exit={{ opacity: 0, translateX: -10 }}
+                    from={{ opacity: 0, translateX: -10 }}
+                    key={idx}
+                    transition={{
+                      type: 'timing',
+                      duration: 100,
+                      delay: 50 * idx,
+                    }}
+                  >
+                    <IconButton
+                      icon={icon}
+                      onPress={callback}
+                      withNotify={withNotify}
+                    />
+                  </MotiView>
+                ))}
+              </View>
+            </MotiView>
+          )}
+        </AnimatePresence>
+      </MotiView>
+    </>
   )
 }
 

@@ -81,6 +81,7 @@ import {
 } from '@types'
 import {
   calculateConsolationPrize,
+  formatTabletElementsSize,
   generateRandomNumber,
   getLevelBackground,
   getMarketProductByPowerUp,
@@ -848,31 +849,31 @@ const GameScreen: FC = () => {
   // CONFIGS
   const monkeyAnimationConfig = {
     [MONKEY_ANIMATION_TYPE.RunAndJump]: {
-      size: 400,
+      size: formatTabletElementsSize(400, 1.8),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationRunAndJumpFinished,
       speed: 3,
     },
     [MONKEY_ANIMATION_TYPE.Landing]: {
-      size: 100,
+      size: formatTabletElementsSize(100, 1.8),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationLandingFinished,
       speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.Idle]: {
-      size: 100,
+      size: formatTabletElementsSize(100, 1.8),
       loop: true,
       onFinishCalBack: EMPTY_FUNCTION,
       speed: 3,
     },
     [MONKEY_ANIMATION_TYPE.JumpToTop]: {
-      size: 140,
+      size: formatTabletElementsSize(140, 1.8),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationJumpToTopFinished,
       speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.Celebration]: {
-      size: 100,
+      size: formatTabletElementsSize(100, 1.8),
       loop: false,
       onFinishCalBack: EMPTY_FUNCTION,
       speed: 1.5,
@@ -1255,7 +1256,7 @@ const GameScreen: FC = () => {
                       style={[
                         styles.starsGifBackdrop,
                         {
-                          width: step * 50,
+                          width: step * formatTabletElementsSize(50),
                         },
                       ]}
                     />
@@ -1283,7 +1284,7 @@ const GameScreen: FC = () => {
             ref={scrollViewRef}
           >
             <View style={styles.towersContainer}>
-              {!!initialBlockValue && (
+              {Boolean(initialBlockValue) && (
                 <View style={styles.initialBlockTowerContainer}>
                   <PrizeSection
                     animationKey={animationRestartKey}
@@ -1295,7 +1296,11 @@ const GameScreen: FC = () => {
                       <View
                         style={[
                           styles.monkeyStageInitTowerContainer,
-                          { bottom: initialBlockValue * BLOCK_DIMENSION - 12 },
+                          {
+                            bottom:
+                              initialBlockValue * BLOCK_DIMENSION -
+                              formatTabletElementsSize(12, 1.8),
+                          },
                         ]}
                       >
                         <MotiView
@@ -1329,12 +1334,16 @@ const GameScreen: FC = () => {
                   />
                 </View>
               )}
-              {!!userBlockValue && (
+              {Boolean(userBlockValue) && (
                 <View style={styles.userBlockTowerContainer}>
                   <View
                     style={[
                       styles.monkeyStageUserTowerContainer,
-                      { bottom: userBlockValue * BLOCK_DIMENSION - 12 },
+                      {
+                        bottom:
+                          userBlockValue * BLOCK_DIMENSION -
+                          formatTabletElementsSize(12, 1.8),
+                      },
                     ]}
                   >
                     {[

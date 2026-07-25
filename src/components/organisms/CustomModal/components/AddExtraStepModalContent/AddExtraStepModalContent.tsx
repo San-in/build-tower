@@ -1,5 +1,6 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -11,7 +12,7 @@ const AddExtraStepModalContent: FC<AddExtraStepModalContentProps> = ({
   onCancel,
 }) => (
   <View style={styles.container}>
-    <OutlinedText fontSize={15}>
+    <OutlinedText fontSize={formatTabletElementsSize(15)}>
       Rewind time and try again from one step earlier!
     </OutlinedText>
     <View style={styles.buttonContainer}>
@@ -20,7 +21,7 @@ const AddExtraStepModalContent: FC<AddExtraStepModalContentProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title="CANCEL"
           type={BUTTON_TYPE.Error}
         />
@@ -29,7 +30,7 @@ const AddExtraStepModalContent: FC<AddExtraStepModalContentProps> = ({
         buttonContainerStyle={styles.buttonContent}
         onPress={onConfirm}
         style={[styles.button, !onCancel && styles.buttonRestricted]}
-        textSize={12}
+        textSize={formatTabletElementsSize(12)}
         title="OK"
         type={BUTTON_TYPE.Info}
       />

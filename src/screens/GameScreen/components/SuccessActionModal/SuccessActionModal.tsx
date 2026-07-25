@@ -1,6 +1,7 @@
 import { OutlinedText } from '@components/atoms'
 import { SuccessActionInfoModal } from '@components/organisms'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { FC, memo } from 'react'
 
@@ -14,7 +15,7 @@ const SuccessActionModal: FC<SuccessActionModalProps> = ({
   image,
   imageStyle,
   children,
-  titleSize = 32,
+  titleSize = formatTabletElementsSize(32, 1.8),
 }) => (
   <SuccessActionInfoModal isVisible={isVisible} onPress={onPress}>
     <OutlinedText color={COLORS.gradientGold_1} fontSize={titleSize}>

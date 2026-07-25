@@ -4,6 +4,7 @@ import PowerUpButton from '@components/atoms/PowerUpButton/PowerUpButton'
 import { EMPTY_FUNCTION } from '@constants'
 import { COLORS } from '@theme'
 import { POWER_UP_GRADE, POWER_UP_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -25,15 +26,23 @@ const WelcomeBonusContent: FC = () => (
           isDisabled={true}
           key={type}
           onPress={EMPTY_FUNCTION}
-          size={60}
+          size={formatTabletElementsSize(60)}
           type={type}
         />
       ))}
     </View>
-    <OutlinedText fontSize={18}>Enjoy it — and get more on the</OutlinedText>
+    <OutlinedText fontSize={formatTabletElementsSize(18)}>
+      Enjoy it — and get more on the
+    </OutlinedText>
     <View style={styles.highLighterTextContainer}>
-      <MarketIcon height={30} width={30} />
-      <OutlinedText color={COLORS.gradientGold_1} fontSize={22}>
+      <MarketIcon
+        height={formatTabletElementsSize(30)}
+        width={formatTabletElementsSize(30)}
+      />
+      <OutlinedText
+        color={COLORS.gradientGold_1}
+        fontSize={formatTabletElementsSize(22)}
+      >
         Market
       </OutlinedText>
     </View>

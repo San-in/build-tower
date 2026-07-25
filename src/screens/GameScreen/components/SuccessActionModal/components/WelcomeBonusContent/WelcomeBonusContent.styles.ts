@@ -1,11 +1,20 @@
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   highLighterTextContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 5,
+    gap: formatTabletElementsSize(5),
   },
-  iconsContainer: { flexDirection: 'row', gap: 20, marginVertical: 30 },
-  textContainer: { alignItems: 'center', flexDirection: 'column', gap: 5 },
+  iconsContainer: {
+    flexDirection: 'row',
+    gap: formatTabletElementsSize(20),
+    marginVertical: formatTabletElementsSize(30),
+  },
+  textContainer: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: formatTabletElementsSize(5),
+  },
 })

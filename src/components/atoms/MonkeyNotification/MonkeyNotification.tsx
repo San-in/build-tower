@@ -8,6 +8,7 @@ import {
 } from '@components/atoms/MonkeyNotification/utils'
 import { COLORS } from '@theme'
 import { MONKEY_NOTIFICATION_STATUS } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
@@ -80,7 +81,7 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
             opacity: visible && isImageReady ? 1 : 0,
             translateX: visible && isImageReady ? 0 : 100,
           }}
-          from={{ translateX: 100 }}
+          from={{ translateX: formatTabletElementsSize(100) }}
           onStartShouldSetResponder={() => true}
           style={styles.card}
           transition={{ type: 'timing', duration: 200 }}
@@ -96,7 +97,7 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
           <View style={styles.phraseContainer}>
             <OutlinedText
               color={COLORS.yellow}
-              fontSize={10}
+              fontSize={formatTabletElementsSize(12)}
               strokeColor={COLORS.brown}
             >
               {phrase}

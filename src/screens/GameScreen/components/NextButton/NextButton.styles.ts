@@ -1,13 +1,15 @@
+import { IS_TABLET } from '@constants'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  buttonContainer: { paddingHorizontal: 14 },
+  buttonContainer: { paddingHorizontal: formatTabletElementsSize(14) },
   buttonWrapper: { marginTop: 'auto' },
   container: {
-    bottom: 30,
+    bottom: formatTabletElementsSize(30),
     justifyContent: 'space-between',
     position: 'absolute',
-    right: 30,
-    top: '25%',
+    right: formatTabletElementsSize(30),
+    top: IS_TABLET ? '50%' : '25%',
   },
 })

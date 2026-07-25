@@ -11,4 +11,5 @@ export type CustomModalProps = {
   containerStyles?: StyleProp<ViewStyle>
   withCrossIcon?: boolean
   isMonkeyVisible?: boolean
+  closeOnBackdropPress?: boolean
 }

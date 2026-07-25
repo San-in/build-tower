@@ -4,7 +4,9 @@ import {
   WheelOfFortuneProps,
   WheelOfFortuneRef,
 } from '@components/organisms/WheelOfFortune/WheelOfFortune.types'
+import { IS_TABLET } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import * as d3Shape from 'd3-shape'
 import * as Haptics from 'expo-haptics'
 import { MotiView } from 'moti'
@@ -55,15 +57,15 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       onFinish,
       colors = INITIAL_COLORS,
       borderColor = COLORS.white,
-      borderWidth = 4,
+      borderWidth = formatTabletElementsSize(4),
       textStyle = {},
-      innerRadius = 60,
+      innerRadius = formatTabletElementsSize(60),
       result = false,
     },
     ref
   ) => {
     const { width } = useWindowDimensions()
-    const size = width * 0.8
+    const size = width * (IS_TABLET ? 0.6 : 0.8)
     const outerRadius = size / 2
     const angle = useRef(new Animated.Value(0)).current
     const oneTurn = 360
@@ -170,7 +172,10 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             >
               <SvgText
                 fill={(textStyle as TextStyle).color || COLORS.white}
-                fontSize={(textStyle as TextStyle).fontSize || 24}
+                fontSize={
+                  (textStyle as TextStyle).fontSize ||
+                  formatTabletElementsSize(24)
+                }
                 fontWeight={(textStyle as TextStyle).fontWeight || '900'}
                 textAnchor="middle"
                 x={x}
@@ -203,7 +208,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               <>
                 <OutlinedText
                   adjustsFontSizeToFit={true}
-                  fontSize={16}
+                  fontSize={formatTabletElementsSize(16)}
                   numberOfLines={1}
                   offset={1}
                 >
@@ -211,7 +216,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
                 </OutlinedText>
                 <OutlinedText
                   color={COLORS.gradientGold_1}
-                  fontSize={40}
+                  fontSize={formatTabletElementsSize(40)}
                   offset={1}
                   strokeColor={COLORS.gradientBronze_1}
                 >
@@ -259,7 +264,10 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             },
           ]}
         >
-          <KnobIcon height={70} width={70} />
+          <KnobIcon
+            height={formatTabletElementsSize(70)}
+            width={formatTabletElementsSize(70)}
+          />
         </Animated.View>
         <Animated.View
           style={[

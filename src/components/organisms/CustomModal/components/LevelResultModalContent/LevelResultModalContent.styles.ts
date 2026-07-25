@@ -1,44 +1,45 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   block: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 5,
-    marginHorizontal: 5,
+    gap: formatTabletElementsSize(5),
+    marginHorizontal: formatTabletElementsSize(5),
   },
   blockCounter: {
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 5,
-    marginHorizontal: 5,
+    gap: formatTabletElementsSize(5),
+    marginHorizontal: formatTabletElementsSize(5),
   },
-  buttonLabel: { flexWrap: 'wrap', maxWidth: 75 },
+  buttonLabel: { flexWrap: 'wrap', maxWidth: formatTabletElementsSize(75) },
 
   buttonsContainer: {
     alignItems: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: formatTabletElementsSize(10),
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: formatTabletElementsSize(20),
     minWidth: '90%',
   },
   consolationPrizeContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 2,
+    gap: formatTabletElementsSize(2),
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: formatTabletElementsSize(10),
   },
   container: { alignItems: 'center', justifyContent: 'center' },
   iconContainer: {
     backgroundColor: COLORS.roseWhite20,
     borderColor: COLORS.roseWhite20,
-    borderWidth: 1,
-    padding: 10,
+    borderWidth: formatTabletElementsSize(1),
+    padding: formatTabletElementsSize(10),
   },
   mainContent: {
     alignItems: 'center',
@@ -50,27 +51,30 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.gradientGold_1,
   },
   prizeBlock: {
-    flex: 1,
-    marginLeft: -2,
+    flexShrink: 1,
+    marginLeft: formatTabletElementsSize(-2),
   },
   prizeContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 5,
+    marginTop: formatTabletElementsSize(5),
   },
-  prizeLabel: { marginLeft: 10, marginRight: -5 },
+  prizeLabel: {
+    marginLeft: formatTabletElementsSize(10),
+    marginRight: formatTabletElementsSize(-5),
+  },
   secondaryContent: {
-    marginTop: 20,
+    marginTop: formatTabletElementsSize(20),
   },
   subTitle: {
-    marginBottom: 10,
+    marginBottom: formatTabletElementsSize(10),
   },
-  textIcon: { fontSize: 40 },
+  textIcon: { fontSize: formatTabletElementsSize(40) },
   titleContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 5,
+    gap: formatTabletElementsSize(5),
     justifyContent: 'center',
   },
 })

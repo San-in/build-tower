@@ -3,6 +3,7 @@ import { OptionCard } from '@components/molecules'
 import { OptionModalProps } from '@components/organisms/OptionModal/OptionModal.types'
 import { COLORS, GlobalStyles } from '@theme'
 import { SELECTED_OPTION } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { FC, useCallback } from 'react'
 import { Modal, Text, View } from 'react-native'
 
@@ -38,14 +39,14 @@ const OptionModal: FC<OptionModalProps> = ({
           <View style={styles.titleContainer}>
             <OutlinedText
               color={COLORS.brown}
-              fontSize={25}
+              fontSize={formatTabletElementsSize(25)}
               strokeColor={COLORS.yellow}
             >
               Step
             </OutlinedText>
             <OutlinedText
               color={COLORS.brown}
-              fontSize={28}
+              fontSize={formatTabletElementsSize(28)}
               strokeColor={COLORS.yellow}
             >
               {`${step}`}
@@ -53,7 +54,7 @@ const OptionModal: FC<OptionModalProps> = ({
           </View>
 
           <OutlinedText
-            fontSize={30}
+            fontSize={formatTabletElementsSize(30)}
             strokeColor={COLORS.brown}
             style={styles.subTitle}
           >
@@ -79,7 +80,7 @@ const OptionModal: FC<OptionModalProps> = ({
             <OutlinedText
               adjustsFontSizeToFit={true}
               color={COLORS.brown}
-              fontSize={15}
+              fontSize={formatTabletElementsSize(15)}
               numberOfLines={1}
               strokeColor={COLORS.yellow}
             >

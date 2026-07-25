@@ -1,13 +1,14 @@
 import { ExclamationRoundIcon } from '@assets/icons'
 import { IconButtonProps } from '@components/atoms/IconButton/IconButton.types'
 import { OutlinedText } from '@components/atoms/OutlinedText'
+import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import React, { memo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 
 import { styles } from './IconButton.styles'
 
-const NOTIFY_ICON_SIZE = 20
+const NOTIFY_ICON_SIZE = formatTabletElementsSize(20, 1.5)
 
 const IconButton = ({
   onPress,
@@ -16,7 +17,7 @@ const IconButton = ({
   pressedStyles,
   labelStyles = {},
   label = '',
-  labelSize = 10,
+  labelSize = formatTabletElementsSize(10),
   isDisabled = false,
   withNotify = false,
   numberOfLines,

@@ -1,5 +1,6 @@
 import { Button } from '@components/atoms'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import { FC, memo, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
@@ -56,7 +57,7 @@ const NextButton: FC<NextButtonProps> = ({
           buttonContainerStyle={styles.buttonContainer}
           isDisabled={isDisabled}
           onPress={onPress}
-          textSize={16}
+          textSize={formatTabletElementsSize(16)}
           title={isLoading ? 'BUILDING...' : 'NEXT STEP  →'}
           type={BUTTON_TYPE.Success}
         />

@@ -10,7 +10,7 @@ import {
 const STORAGE_KEY = 'awards_state'
 
 const isValidAwardsState = (value: unknown): value is AwardsState =>
-  !!value && typeof value === 'object'
+  Boolean(value) && typeof value === 'object'
 
 const loadPersistedAwards = async (): Promise<AwardsState> => {
   const raw = await AsyncStorage.getItem(STORAGE_KEY)

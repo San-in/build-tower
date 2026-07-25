@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.backgroundBlue,
   },
   sideMenuContainer: { alignItems: 'center', height: '100%', width: '100%' },
-  startButton: { marginTop: 100 },
+  startButton: { marginTop: 100, zIndex: Z_INDEX_TYPE.high },
   titleWrapper: {
     marginTop: IS_TABLET ? 750 : 450,
     transform: [{ rotate: '7deg' }],

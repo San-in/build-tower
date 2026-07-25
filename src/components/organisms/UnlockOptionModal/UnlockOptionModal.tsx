@@ -1,4 +1,4 @@
-import { INITIAL_SPIN_QUANTITY } from '@constants'
+import { INITIAL_SPIN_QUANTITY, IS_TABLET } from '@constants'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import {
   BONUS_OPTION_TYPE,
@@ -16,6 +16,7 @@ import { Button, OutlinedText } from '@components/atoms'
 import { ModalCard } from '@components/molecules'
 import { CustomModal } from '@components/organisms/CustomModal'
 import { removeBananas, selectBananas } from '@store/slices/bananasSlice'
+import { formatTabletElementsSize } from '@utils'
 
 import { UnlockOptionModalProps } from './UnlockOptionModal.types'
 
@@ -75,33 +76,43 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
   const infoMessage: Element = {
     [INFO_UNLOCK_OPTION_MODAL_KEY.Empty]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={12}>Choose at least one option</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(12)}>
+          Choose at least one option
+        </OutlinedText>
         <Text style={styles.emoji}>😉</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledAd]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={12}>Ads are resting right now...</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(12)}>
+          Ads are resting right now...
+        </OutlinedText>
         <Text style={styles.emoji}>🛌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledBananas]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={12}>You need more bananas</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(12)}>
+          You need more bananas
+        </OutlinedText>
         <Text style={styles.emoji}>🙈🍌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledAd]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={12}>Watch a short ad & go!</OutlinedText>
+        <OutlinedText fontSize={formatTabletElementsSize(12)}>
+          Watch a short ad & go!
+        </OutlinedText>
         <Text style={styles.emoji}>🎬</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledBananas]: (
       <View style={styles.infoMessage}>
-        <OutlinedText fontSize={12}>{`${price}`}</OutlinedText>
+        <OutlinedText
+          fontSize={formatTabletElementsSize(12)}
+        >{`${price}`}</OutlinedText>
         <Text style={styles.emoji}>🍌</Text>
-        <OutlinedText fontSize={12}>
+        <OutlinedText fontSize={formatTabletElementsSize(12)}>
           {enabledBananasText || '- a good price'}
         </OutlinedText>
       </View>
@@ -128,6 +139,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   return (
     <CustomModal
+      containerStyles={styles.container}
       handleClose={handleClose}
       modalVisible={visible}
       type={MODAL_TYPE.Green}
@@ -163,16 +175,16 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
           buttonContainerStyle={styles.buttonContent}
           onPress={handleClose}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={'CANCEL'}
           type={BUTTON_TYPE.Error}
         />
         <Button
           buttonContainerStyle={styles.buttonContent}
-          isDisabled={!!isConfirmDisabled}
+          isDisabled={Boolean(isConfirmDisabled)}
           onPress={handleConfirmPress}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={'OK'}
           type={BUTTON_TYPE.Info}
         />

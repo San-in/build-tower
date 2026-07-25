@@ -1,19 +1,26 @@
+import { IS_TABLET } from '@constants'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   button: { flex: 1 },
-  buttonContent: { paddingHorizontal: 5 },
+  buttonContent: { paddingHorizontal: formatTabletElementsSize(5) },
   buttonsContainer: {
     flexDirection: 'row',
-    gap: 20,
+    gap: formatTabletElementsSize(20),
     justifyContent: 'space-between',
     width: '100%',
   },
-  emoji: { fontSize: 14 },
-  infoMessage: { flexDirection: 'row', gap: 5 },
+  container: { maxWidth: IS_TABLET ? '80%' : '95%' },
+  emoji: { fontSize: formatTabletElementsSize(14) },
+  infoMessage: { flexDirection: 'row', gap: formatTabletElementsSize(5) },
   infoMessageContainer: {
     alignSelf: 'flex-start',
-    minHeight: 18,
+    minHeight: formatTabletElementsSize(18),
   },
-  optionsContainer: { flexDirection: 'row', gap: 30, padding: 5 },
+  optionsContainer: {
+    flexDirection: 'row',
+    gap: formatTabletElementsSize(30),
+    padding: formatTabletElementsSize(5),
+  },
 })

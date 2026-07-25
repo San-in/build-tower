@@ -97,7 +97,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      {!!icon && <View style={styles.iconContainer}>{icon}</View>}
+      {Boolean(icon) && <View style={styles.iconContainer}>{icon}</View>}
       <View
         style={[styles.inputContainer, !isFocused && styles.transparentBorder]}
       >
@@ -130,7 +130,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
               <ArrowDropUpIcon />
             </Animated.View>
           </TouchableOpacity>
-          {!!supportingText && !isOpen && (
+          {Boolean(supportingText) && !isOpen && (
             <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
               {supportingText}
             </Text>

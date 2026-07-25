@@ -1,5 +1,6 @@
 import { LEVEL_CARD_WIDTH } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -34,7 +35,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     height: '100%',
     overflow: 'hidden',
-    paddingHorizontal: 15,
+    paddingHorizontal: formatTabletElementsSize(15),
     width: '100%',
   },
   greyShadow: { shadowColor: COLORS.swirl },
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     height: '65%',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: formatTabletElementsSize(10),
     overflow: 'hidden',
     position: 'relative',
   },
@@ -55,9 +56,9 @@ export const styles = StyleSheet.create({
   labelContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 5,
+    marginTop: formatTabletElementsSize(5),
   },
 
-  levelLabel: { marginBottom: 5 },
-  ratingContainer: { flexDirection: 'row', gap: 10 },
+  levelLabel: { marginBottom: formatTabletElementsSize(5) },
+  ratingContainer: { flexDirection: 'row', gap: formatTabletElementsSize(10) },
 })

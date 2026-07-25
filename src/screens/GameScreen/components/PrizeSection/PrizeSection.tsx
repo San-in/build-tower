@@ -1,4 +1,5 @@
 import { BananasIcon } from '@assets/icons'
+import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import { FC, memo } from 'react'
 import { Easing } from 'react-native-reanimated'
@@ -25,7 +26,10 @@ const PrizeSection: FC<PrizeSectionProps> = ({ isVisible, animationKey }) => (
         delay: 2000,
       }}
     >
-      <BananasIcon height={50} width={50} />
+      <BananasIcon
+        height={formatTabletElementsSize(50)}
+        width={formatTabletElementsSize(50)}
+      />
     </MotiView>
   </MotiView>
 )

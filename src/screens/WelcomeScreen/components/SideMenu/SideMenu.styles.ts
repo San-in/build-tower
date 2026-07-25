@@ -2,6 +2,10 @@ import { Z_INDEX_TYPE } from '@constants'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: Z_INDEX_TYPE.medium,
+  },
   container: {
     alignItems: 'center',
     flexDirection: 'row-reverse',

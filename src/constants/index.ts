@@ -10,6 +10,7 @@ import {
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import * as Device from 'expo-device'
 import { Platform } from 'react-native'
 
@@ -19,10 +20,10 @@ export const IS_TABLET =
 
 export const HOURS_IN_DAY = 24
 export const TOTAL_LEVELS = 30
-export const LEVEL_CARD_WIDTH = 200
-export const LEVEL_CARD_GAP = 20
+export const LEVEL_CARD_WIDTH = formatTabletElementsSize(200)
+export const LEVEL_CARD_GAP = formatTabletElementsSize(20)
 export const INITIAL_SPIN_QUANTITY = 4
-export const BLOCK_DIMENSION = 70
+export const BLOCK_DIMENSION = formatTabletElementsSize(70, 1.8)
 export const Z_INDEX_TYPE: Record<Z_INDEX_PRIORITY, number> = {
   [Z_INDEX_PRIORITY.Hidden]: -1,
   [Z_INDEX_PRIORITY.Minimal]: 1,

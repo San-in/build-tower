@@ -1,13 +1,17 @@
 import { OutlinedText } from '@components/atoms'
 import { COLORS } from '@theme'
-import { calculateExpectedLevelConditions } from '@utils'
+import {
+  calculateExpectedLevelConditions,
+  formatTabletElementsSize,
+} from '@utils'
 import { MotiView } from 'moti'
 import { FC, useMemo } from 'react'
+import { View } from 'react-native'
 
 import { useStyles } from './ProgressBadge.styles'
 import { ProgressBadgeProps } from './ProgressBadge.types'
 
-const CIRCLE_SIZE = 130
+const CIRCLE_SIZE = formatTabletElementsSize(150, 1.8)
 
 const ProgressBadge: FC<ProgressBadgeProps> = ({
   animationKey,
@@ -38,7 +42,7 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
 
   const fontSize = useMemo(() => {
     const maxNumber = Math.max(userValue, initialValue)
-    return (
+    return formatTabletElementsSize(
       [maxNumber > 999 && 12, maxNumber > 99 && 14].filter(Boolean)[0] || 18
     )
   }, [initialValue, userValue])
@@ -71,10 +75,12 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
         style={styles.innerCircle}
         transition={{ loop: true, type: 'timing', duration: 2000 }}
       >
-        <OutlinedText fontSize={12}>Progress</OutlinedText>
-        <OutlinedText fontSize={fontSize}>
-          {`${initialValue} / ${userValue}`}
+        <OutlinedText fontSize={formatTabletElementsSize(12, 2.5)}>
+          Progress
         </OutlinedText>
+        <OutlinedText fontSize={fontSize}>{`${userValue}`}</OutlinedText>
+        <View style={styles.valuesSeparator} />
+        <OutlinedText fontSize={fontSize}>{`${initialValue}`}</OutlinedText>
       </MotiView>
     </MotiView>
   )

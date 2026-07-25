@@ -10,7 +10,7 @@ import {
 const STORAGE_KEY = 'market_purchases'
 
 const isValidMarketState = (value: unknown): value is MarketState =>
-  !!value && typeof value === 'object'
+  Boolean(value) && typeof value === 'object'
 
 const loadPersistedMarket = async (): Promise<MarketState> => {
   const raw = await AsyncStorage.getItem(STORAGE_KEY)

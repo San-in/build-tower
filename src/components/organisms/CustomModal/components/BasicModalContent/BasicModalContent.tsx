@@ -1,5 +1,6 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { BUTTON_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -14,14 +15,14 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
   cancelButtonText = 'NO',
 }) => (
   <View style={styles.container}>
-    <OutlinedText fontSize={15}>{text}</OutlinedText>
+    <OutlinedText fontSize={formatTabletElementsSize(15)}>{text}</OutlinedText>
     <View style={styles.buttonContainer}>
       {onCancel && (
         <Button
           buttonContainerStyle={styles.buttonContent}
           onPress={onCancel}
           style={styles.button}
-          textSize={12}
+          textSize={formatTabletElementsSize(12)}
           title={cancelButtonText}
           type={BUTTON_TYPE.Error}
         />
@@ -30,7 +31,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
         buttonContainerStyle={styles.buttonContent}
         onPress={onConfirm}
         style={[styles.button, !onCancel && styles.buttonRestricted]}
-        textSize={12}
+        textSize={formatTabletElementsSize(12)}
         title={confirmButtonText}
       />
     </View>

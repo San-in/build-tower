@@ -16,6 +16,6 @@ export const getDropdownLabelStyles = ({
     isDisabled && styles.textDisabled,
     !isDisabled && !value && isValid && styles.textPlaceholder,
     !isDisabled && !value && !isValid && styles.textEnabled,
-    !isDisabled && !!value && isValid && styles.textEnabled,
-    !isDisabled && !!value && !isValid && styles.textError,
+    !isDisabled && Boolean(value) && isValid && styles.textEnabled,
+    !isDisabled && Boolean(value) && !isValid && styles.textError,
   ].filter(Boolean)

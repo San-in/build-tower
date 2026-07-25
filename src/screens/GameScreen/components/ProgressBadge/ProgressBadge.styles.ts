@@ -1,4 +1,5 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const useStyles = (circleSize: number) =>
@@ -13,12 +14,12 @@ export const useStyles = (circleSize: number) =>
       alignItems: 'center',
       backgroundColor: COLORS.white20,
       borderColor: COLORS.white50,
-      borderRadius: (circleSize * 0.9) / 2,
-      borderWidth: 3,
-      gap: 5,
+      borderRadius: (circleSize * 0.4) / 2,
+      borderWidth: formatTabletElementsSize(3),
+      gap: formatTabletElementsSize(5),
       height: circleSize * 0.9,
       justifyContent: 'center',
-      padding: 10,
+      padding: formatTabletElementsSize(10),
       shadowColor: '#FFD700',
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: 0.5,
@@ -27,10 +28,16 @@ export const useStyles = (circleSize: number) =>
     },
     pulse: {
       borderColor: COLORS.white10,
-      borderRadius: circleSize / 2,
-      borderWidth: 3,
+      borderRadius: (circleSize * 0.5) / 2,
+      borderWidth: formatTabletElementsSize(3),
       height: circleSize,
       position: 'absolute',
       width: circleSize,
+    },
+    valuesSeparator: {
+      backgroundColor: COLORS.white,
+      borderWidth: 1,
+      height: formatTabletElementsSize(4),
+      width: '50%',
     },
   })

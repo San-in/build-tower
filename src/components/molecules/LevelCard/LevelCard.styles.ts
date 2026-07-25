@@ -1,4 +1,5 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -6,8 +7,8 @@ export const styles = StyleSheet.create({
   greenShadow: { shadowColor: COLORS.gradientGreen_5 },
   infoMessageContainer: {
     alignItems: 'center',
-    marginTop: 10,
-    maxWidth: 200,
+    marginTop: formatTabletElementsSize(10),
+    maxWidth: formatTabletElementsSize(200),
   },
   orangeBorder: { borderColor: COLORS.gradientTerracotta_1 },
   orangeShadow: { shadowColor: COLORS.gradientTerracotta_5 },

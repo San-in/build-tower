@@ -88,7 +88,7 @@ const PhoneInput: FC<PhoneInputProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      {!!icon && <View style={styles.phoneIconContainer}>{icon}</View>}
+      {Boolean(icon) && <View style={styles.phoneIconContainer}>{icon}</View>}
       <View style={styles.inputContainer}>
         <View style={!isFocused && styles.transparentBorder}>
           <View
@@ -177,7 +177,7 @@ const PhoneInput: FC<PhoneInputProps> = ({
             )}
           </View>
         </View>
-        {!!supportingText && !isOpen && (
+        {Boolean(supportingText) && !isOpen && (
           <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
             {supportingText}
           </Text>

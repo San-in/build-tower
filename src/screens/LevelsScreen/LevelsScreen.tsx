@@ -12,7 +12,7 @@ import { selectBananas } from '@store/slices/bananasSlice'
 import { selectAvailableLevels } from '@store/slices/levelsSlice'
 import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
-import { getLevelIcon } from '@utils'
+import { formatTabletElementsSize, getLevelIcon } from '@utils'
 import { Image } from 'expo-image'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -192,14 +192,24 @@ const LevelsScreen = () => {
       >
         <View style={styles.modalContainer}>
           <IconButton
-            icon={<BackColorIcon height={36} width={36} />}
+            icon={
+              <BackColorIcon
+                height={formatTabletElementsSize(36)}
+                width={formatTabletElementsSize(36)}
+              />
+            }
             onPress={handleGoBackPressed}
             pressedStyles={styles.backIconPressed}
             style={GlobalStyles.transparent}
           />
           <View style={styles.bananasCounter}>
-            <OutlinedText fontSize={35}>{`${bananas}`}</OutlinedText>
-            <BananasIcon height={55} width={55} />
+            <OutlinedText
+              fontSize={formatTabletElementsSize(35)}
+            >{`${bananas}`}</OutlinedText>
+            <BananasIcon
+              height={formatTabletElementsSize(55, 1.5)}
+              width={formatTabletElementsSize(55, 1.5)}
+            />
           </View>
         </View>
 
@@ -207,6 +217,7 @@ const LevelsScreen = () => {
           <OutlinedText
             adjustsFontSizeToFit
             containerStyle={styles.titleContainer}
+            fontSize={formatTabletElementsSize(32)}
             numberOfLines={1}
             style={styles.title}
           >
@@ -243,7 +254,7 @@ const LevelsScreen = () => {
           style={[
             styles.buttonContainer,
             {
-              bottom: insets.bottom + 24,
+              bottom: insets.bottom + formatTabletElementsSize(24),
             },
           ]}
         >
@@ -251,7 +262,7 @@ const LevelsScreen = () => {
             isDisabled={isLetsGoButtonDisabled}
             onPress={handleLetsGoButtonPress}
             style={styles.letsGoButton}
-            textSize={22}
+            textSize={formatTabletElementsSize(22)}
             title="LET'S GO"
             type={BUTTON_TYPE.Warning}
           />

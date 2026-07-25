@@ -1,9 +1,14 @@
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  actionTextContainer: { alignItems: 'center', flexDirection: 'row', gap: 5 },
-  actionTextIcon: { fontSize: 30 },
+  actionTextContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: formatTabletElementsSize(5),
+  },
+  actionTextIcon: { fontSize: formatTabletElementsSize(30) },
   background: {
     backgroundColor: COLORS.codeGrey70,
   },
@@ -13,12 +18,16 @@ export const styles = StyleSheet.create({
   contentContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 40,
+    gap: formatTabletElementsSize(40),
     justifyContent: 'space-between',
-    maxWidth: 520,
-    padding: 24,
+    maxWidth: formatTabletElementsSize(520),
+    padding: formatTabletElementsSize(24),
     position: 'relative',
   },
-  subTitle: { marginBottom: 30 },
-  titleContainer: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+  subTitle: { marginBottom: formatTabletElementsSize(30) },
+  titleContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: formatTabletElementsSize(10),
+  },
 })

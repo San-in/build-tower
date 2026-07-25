@@ -1,13 +1,14 @@
 import { BlockImg } from '@assets/images'
 import { BlockIconProps } from '@components/atoms/BlockIcon/BlockIcon.types'
 import { BLOCK_TYPE } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { FC, memo } from 'react'
 
 import { styles } from './BlockIcon.styles'
 
 const BlockIcon: FC<BlockIconProps> = ({
-  size = 40,
+  size = formatTabletElementsSize(40),
   styleContainer,
   type = BLOCK_TYPE.Basic,
 }) => (

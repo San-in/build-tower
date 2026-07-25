@@ -85,6 +85,7 @@ const CustomModal: FC<CustomModalProps> = ({
   containerStyles = {},
   withCrossIcon = true,
   isMonkeyVisible = true,
+  closeOnBackdropPress = false,
 }) => {
   const [shake, setShake] = useState(false)
 
@@ -132,6 +133,9 @@ const CustomModal: FC<CustomModalProps> = ({
       visible={modalVisible}
     >
       <View style={[GlobalStyles.centeredContainer, styles.background]}>
+        {closeOnBackdropPress && (
+          <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} />
+        )}
         <MotiView
           animate={{
             opacity: modalVisible && allReady ? 1 : 0,
@@ -191,7 +195,7 @@ const CustomModal: FC<CustomModalProps> = ({
               style={styles.gradientContainer}
             >
               <View style={styles.contentContainer}>
-                {!!title && (
+                {Boolean(title) && (
                   <OutlinedText
                     fontSize={formatTabletElementsSize(20)}
                     offset={2}

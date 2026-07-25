@@ -90,6 +90,7 @@ const ActivityModal: FC<ActivityModalProps> = ({
   return (
     <>
       <CustomModal
+        closeOnBackdropPress
         containerStyles={styles.mainModalContainer}
         handleClose={onClose}
         isMonkeyVisible={false}

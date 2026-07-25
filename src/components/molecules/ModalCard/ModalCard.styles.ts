@@ -1,14 +1,15 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   cardContainer: {
     borderColor: COLORS.white,
-    borderRadius: 10,
-    borderWidth: 2,
+    borderRadius: formatTabletElementsSize(10),
+    borderWidth: formatTabletElementsSize(2),
     elevation: 4,
-    padding: 3,
+    padding: formatTabletElementsSize(3),
     shadowColor: COLORS.codeGrey,
     shadowOffset: { width: 2, height: 5 },
     shadowOpacity: 0.5,
@@ -16,15 +17,15 @@ export const styles = StyleSheet.create({
   },
   cardContent: {
     alignItems: 'center',
-    borderRadius: 8,
-    gap: 3,
-    height: 100,
-    padding: 10,
+    borderRadius: formatTabletElementsSize(8),
+    gap: formatTabletElementsSize(3),
+    height: formatTabletElementsSize(100),
+    padding: formatTabletElementsSize(10),
   },
   container: { position: 'relative', width: '35%' },
   overlay: {
     backgroundColor: COLORS.codeGrey70,
-    borderRadius: 10,
+    borderRadius: formatTabletElementsSize(10),
     bottom: 0,
     left: 0,
     position: 'absolute',

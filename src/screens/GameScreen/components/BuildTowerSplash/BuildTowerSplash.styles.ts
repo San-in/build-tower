@@ -1,7 +1,11 @@
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  button: { maxWidth: 220 },
+  button: { maxWidth: formatTabletElementsSize(220) },
   contentContainer: { alignItems: 'center' },
-  image: { height: 300, width: 300 },
+  image: {
+    height: formatTabletElementsSize(300),
+    width: formatTabletElementsSize(300),
+  },
 })

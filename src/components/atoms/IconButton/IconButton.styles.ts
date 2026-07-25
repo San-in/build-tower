@@ -1,5 +1,6 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -43,5 +44,5 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 2,
   },
-  lock: { fontSize: 14 },
+  lock: { fontSize: formatTabletElementsSize(14) },
 })
