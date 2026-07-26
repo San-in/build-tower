@@ -42,6 +42,7 @@ export const COLORS = {
   white30: 'rgba(255,255,255,0.3)',
   white20: 'rgba(255,255,255,0.2)',
   white10: 'rgba(255,255,255,0.1)',
+  white00: 'rgba(255,255,255,0)',
 
   thatch: 'rgb(180,163,154)',
   thatch90: 'rgba(180,163,154,0.9)',

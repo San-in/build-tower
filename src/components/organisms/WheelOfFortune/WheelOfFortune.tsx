@@ -207,8 +207,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             {Boolean(result) && (
               <>
                 <OutlinedText
-                  adjustsFontSizeToFit={true}
-                  fontSize={formatTabletElementsSize(16)}
+                  fontSize={formatTabletElementsSize(12)}
                   numberOfLines={1}
                   offset={1}
                 >
@@ -216,7 +215,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
                 </OutlinedText>
                 <OutlinedText
                   color={COLORS.gradientGold_1}
-                  fontSize={formatTabletElementsSize(40)}
+                  fontSize={formatTabletElementsSize(25)}
                   offset={1}
                   strokeColor={COLORS.gradientBronze_1}
                 >

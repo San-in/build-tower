@@ -57,7 +57,7 @@ const NextButton: FC<NextButtonProps> = ({
           buttonContainerStyle={styles.buttonContainer}
           isDisabled={isDisabled}
           onPress={onPress}
-          textSize={formatTabletElementsSize(16)}
+          textSize={formatTabletElementsSize(14)}
           title={isLoading ? 'BUILDING...' : 'NEXT STEP  →'}
           type={BUTTON_TYPE.Success}
         />

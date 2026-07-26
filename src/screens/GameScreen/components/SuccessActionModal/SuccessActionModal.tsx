@@ -15,7 +15,7 @@ const SuccessActionModal: FC<SuccessActionModalProps> = ({
   image,
   imageStyle,
   children,
-  titleSize = formatTabletElementsSize(32, 1.8),
+  titleSize = formatTabletElementsSize(25, 1.8),
 }) => (
   <SuccessActionInfoModal isVisible={isVisible} onPress={onPress}>
     <OutlinedText color={COLORS.gradientGold_1} fontSize={titleSize}>

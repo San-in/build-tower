@@ -39,12 +39,12 @@ const Header: FC<HeaderProps> = ({
   const levelTitle = `Level ${String(level)}`
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top']}>
       <View style={styles.container}>
         <View style={styles.bananasExternalContainer}>
           <View style={styles.bananasContainer}>
             <OutlinedText
-              fontSize={formatTabletElementsSize(22)}
+              fontSize={formatTabletElementsSize(18)}
             >{`${bananas}`}</OutlinedText>
             <BananasIcon
               height={ICON_SIZE}
@@ -55,7 +55,7 @@ const Header: FC<HeaderProps> = ({
         </View>
         <View style={styles.contentContainer}>
           {level && (
-            <OutlinedText fontSize={formatTabletElementsSize(25)}>
+            <OutlinedText fontSize={formatTabletElementsSize(20)}>
               {levelTitle}
             </OutlinedText>
           )}

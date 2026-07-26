@@ -10,13 +10,10 @@ import {
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
-import { formatTabletElementsSize } from '@utils'
-import * as Device from 'expo-device'
-import { Platform } from 'react-native'
 
-export const IS_TABLET =
-  Device.deviceType === Device.DeviceType.TABLET ||
-  (Platform.OS === 'ios' && Platform.isPad)
+import { formatTabletElementsSize } from '../utils/formatTabletElementsSize'
+
+export { IS_TABLET } from './device'
 
 export const HOURS_IN_DAY = 24
 export const TOTAL_LEVELS = 30
@@ -952,7 +949,7 @@ export const LEVEL_NAMES: Record<LevelId, string> = {
   24: 'Seoul',
   25: 'Bangkok',
   26: 'Osaka',
-  27: 'Ho Chi Minh City',
+  27: 'Ho Chi Minh',
   28: 'Taipei',
   29: 'Kuala Lumpur',
   30: 'Yangon',

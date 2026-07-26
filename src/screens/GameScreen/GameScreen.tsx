@@ -42,6 +42,7 @@ import {
 } from '@constants'
 import { useAssetPreload, useAssetsReady } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
+import MaskedView from '@react-native-masked-view/masked-view'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
@@ -60,6 +61,7 @@ import {
   selectWelcomeBonusClaimed,
   setWelcomeBonusClaimed,
 } from '@store/slices/userActivitySlice'
+import { COLORS } from '@theme'
 import {
   FortuneWheelModalState,
   GAME_MODAL_TYPE,
@@ -91,6 +93,7 @@ import {
   showIsUserNeedHelp,
 } from '@utils'
 import { Image } from 'expo-image'
+import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
 import React, {
   FC,
@@ -1070,7 +1073,6 @@ const GameScreen: FC = () => {
           actionModalColor: MODAL_TYPE.Purple,
           withCrossIcon: false,
           onCrossIconPress: handleCloseActionModal,
-          actionModalStyles: styles.levelConditionModalContainer,
         },
         [GAME_MODAL_TYPE.LevelResult]: {
           actionModalContent: (
@@ -1116,7 +1118,6 @@ const GameScreen: FC = () => {
     actionModalHeader,
     actionModalContent,
     actionModalColor,
-    actionModalStyles = {},
     withCrossIcon,
     onCrossIconPress,
   } = actionModalConfig
@@ -1277,120 +1278,137 @@ const GameScreen: FC = () => {
               />
             </View>
           )}
-          <ScrollView
-            alwaysBounceVertical={false}
-            bounces={false}
-            contentContainerStyle={styles.towersScrollWrapperContainer}
-            ref={scrollViewRef}
-          >
-            <View style={styles.towersContainer}>
-              {Boolean(initialBlockValue) && (
-                <View style={styles.initialBlockTowerContainer}>
-                  <PrizeSection
-                    animationKey={animationRestartKey}
-                    isVisible={isPrizeVisible}
-                  />
-                  {isLevelFinished &&
-                    MONKEY_ANIMATION_TYPE.Celebration ===
-                      monkeyAnimationData.type && (
-                      <View
-                        style={[
-                          styles.monkeyStageInitTowerContainer,
-                          {
-                            bottom:
-                              initialBlockValue * BLOCK_DIMENSION -
-                              formatTabletElementsSize(12, 1.8),
-                          },
-                        ]}
-                      >
-                        <MotiView
-                          animate={{
-                            opacity: !isPrizeVisible && isLevelFinished ? 1 : 0,
-                          }}
-                          from={{ opacity: 0 }}
-                          style={styles.monkeyStageInitTower}
-                          transition={{
-                            type: 'timing',
-                            duration: 200,
-                            delay: 300,
-                          }}
-                        >
-                          <MonkeyAnimation
-                            isVisible={monkeyAnimationData.isVisible}
-                            loop={monkeyAnimationLoop}
-                            onFinish={monkeyAnimationCallback}
-                            size={monkeyAnimationSize}
-                            speed={monkeyAnimationSpeed}
-                            type={monkeyAnimationData.type}
-                          />
-                        </MotiView>
-                      </View>
-                    )}
-
-                  <BlockTowerCreator
-                    isScaled={isScaledTower}
-                    quantity={initialBlockValue}
-                    type={TOWER.FirstTower}
-                  />
-                </View>
-              )}
-              {Boolean(userBlockValue) && (
-                <View style={styles.userBlockTowerContainer}>
-                  <View
-                    style={[
-                      styles.monkeyStageUserTowerContainer,
-                      {
-                        bottom:
-                          userBlockValue * BLOCK_DIMENSION -
-                          formatTabletElementsSize(12, 1.8),
-                      },
-                    ]}
-                  >
-                    {[
-                      MONKEY_ANIMATION_TYPE.Idle,
-                      MONKEY_ANIMATION_TYPE.Landing,
-                      MONKEY_ANIMATION_TYPE.JumpToTop,
-                    ].includes(monkeyAnimationData.type) && (
-                      <MonkeyAnimation
-                        isVisible={monkeyAnimationData.isVisible}
-                        loop={monkeyAnimationLoop}
-                        onFinish={monkeyAnimationCallback}
-                        size={monkeyAnimationSize}
-                        speed={monkeyAnimationSpeed}
-                        type={monkeyAnimationData.type}
-                      />
-                    )}
-                  </View>
-                  <BlockTowerCreator
-                    onAnimatedEnd={handleBlockTowerCreatingEnd}
-                    quantity={userBlockValue}
-                    type={TOWER.SecondTower}
-                  />
-                </View>
-              )}
-            </View>
-
-            <View style={styles.monkeyStageGroundContainer}>
-              {monkeyAnimationData.type ===
-                MONKEY_ANIMATION_TYPE.RunAndJump && (
-                <MonkeyAnimation
-                  isVisible={monkeyAnimationData.isVisible}
-                  loop={monkeyAnimationLoop}
-                  onFinish={monkeyAnimationCallback}
-                  size={monkeyAnimationSize}
-                  speed={monkeyAnimationSpeed}
-                  type={monkeyAnimationData.type}
+          <MaskedView
+            maskElement={
+              <View style={styles.towersMask}>
+                <LinearGradient
+                  colors={['transparent', COLORS.codeGrey]}
+                  end={{ x: 0, y: 1 }}
+                  start={{ x: 0, y: 0 }}
+                  style={styles.towersMaskGradient}
                 />
-              )}
-            </View>
+                <View style={styles.towersMaskSolid} />
+              </View>
+            }
+            style={styles.towersMask}
+          >
+            <ScrollView
+              alwaysBounceVertical={false}
+              bounces={false}
+              contentContainerStyle={styles.towersScrollWrapperContainer}
+              ref={scrollViewRef}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.towersContainer}>
+                {Boolean(initialBlockValue) && (
+                  <View style={styles.initialBlockTowerContainer}>
+                    <PrizeSection
+                      animationKey={animationRestartKey}
+                      isVisible={isPrizeVisible}
+                    />
+                    {isLevelFinished &&
+                      MONKEY_ANIMATION_TYPE.Celebration ===
+                        monkeyAnimationData.type && (
+                        <View
+                          style={[
+                            styles.monkeyStageInitTowerContainer,
+                            {
+                              bottom:
+                                initialBlockValue * BLOCK_DIMENSION -
+                                formatTabletElementsSize(12, 1.8),
+                            },
+                          ]}
+                        >
+                          <MotiView
+                            animate={{
+                              opacity:
+                                !isPrizeVisible && isLevelFinished ? 1 : 0,
+                            }}
+                            from={{ opacity: 0 }}
+                            style={styles.monkeyStageInitTower}
+                            transition={{
+                              type: 'timing',
+                              duration: 200,
+                              delay: 300,
+                            }}
+                          >
+                            <MonkeyAnimation
+                              isVisible={monkeyAnimationData.isVisible}
+                              loop={monkeyAnimationLoop}
+                              onFinish={monkeyAnimationCallback}
+                              size={monkeyAnimationSize}
+                              speed={monkeyAnimationSpeed}
+                              type={monkeyAnimationData.type}
+                            />
+                          </MotiView>
+                        </View>
+                      )}
 
-            <Image
-              onError={() => assetLoaded(ASSET_KEYS.GROUND)}
-              onLoadEnd={() => assetLoaded(ASSET_KEYS.GROUND)}
-              source={GroundImg}
-              style={styles.bottomGround}
-            />
-          </ScrollView>
+                    <BlockTowerCreator
+                      isScaled={isScaledTower}
+                      quantity={initialBlockValue}
+                      type={TOWER.FirstTower}
+                    />
+                  </View>
+                )}
+                {Boolean(userBlockValue) && (
+                  <View style={styles.userBlockTowerContainer}>
+                    <View
+                      style={[
+                        styles.monkeyStageUserTowerContainer,
+                        {
+                          bottom:
+                            userBlockValue * BLOCK_DIMENSION -
+                            formatTabletElementsSize(12, 1.8),
+                        },
+                      ]}
+                    >
+                      {[
+                        MONKEY_ANIMATION_TYPE.Idle,
+                        MONKEY_ANIMATION_TYPE.Landing,
+                        MONKEY_ANIMATION_TYPE.JumpToTop,
+                      ].includes(monkeyAnimationData.type) && (
+                        <MonkeyAnimation
+                          isVisible={monkeyAnimationData.isVisible}
+                          loop={monkeyAnimationLoop}
+                          onFinish={monkeyAnimationCallback}
+                          size={monkeyAnimationSize}
+                          speed={monkeyAnimationSpeed}
+                          type={monkeyAnimationData.type}
+                        />
+                      )}
+                    </View>
+                    <BlockTowerCreator
+                      onAnimatedEnd={handleBlockTowerCreatingEnd}
+                      quantity={userBlockValue}
+                      type={TOWER.SecondTower}
+                    />
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.monkeyStageGroundContainer}>
+                {monkeyAnimationData.type ===
+                  MONKEY_ANIMATION_TYPE.RunAndJump && (
+                  <MonkeyAnimation
+                    isVisible={monkeyAnimationData.isVisible}
+                    loop={monkeyAnimationLoop}
+                    onFinish={monkeyAnimationCallback}
+                    size={monkeyAnimationSize}
+                    speed={monkeyAnimationSpeed}
+                    type={monkeyAnimationData.type}
+                  />
+                )}
+              </View>
+
+              <Image
+                onError={() => assetLoaded(ASSET_KEYS.GROUND)}
+                onLoadEnd={() => assetLoaded(ASSET_KEYS.GROUND)}
+                source={GroundImg}
+                style={styles.bottomGround}
+              />
+            </ScrollView>
+          </MaskedView>
         </View>
       </View>
 
@@ -1424,7 +1442,6 @@ const GameScreen: FC = () => {
         step={step}
       />
       <CustomModal
-        containerStyles={actionModalStyles}
         handleClose={onCrossIconPress}
         modalVisible={actionModalData.isVisible}
         title={actionModalHeader}

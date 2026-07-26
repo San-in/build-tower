@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
 
   labelAutoFit: {
     alignItems: 'center',
-    width: '100%',
+    justifyContent: 'center',
   },
   labelContainer: {
     alignItems: 'center',

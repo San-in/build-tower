@@ -136,35 +136,33 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
         <>
           <View style={styles.headerContent}>
             <View style={styles.initialResultContainer}>
-              <OutlinedText fontSize={formatTabletElementsSize(22)}>
+              <OutlinedText fontSize={formatTabletElementsSize(20)}>
                 You start from
               </OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={formatTabletElementsSize(40)}
+                fontSize={formatTabletElementsSize(30)}
                 strokeColor={COLORS.gradientBronze_1}
               >{`${initialResult}`}</OutlinedText>
             </View>
             <BlockIcon />
           </View>
-          <OutlinedText fontSize={formatTabletElementsSize(22)}>
+          <OutlinedText fontSize={formatTabletElementsSize(20)}>
             Spin for building tower
           </OutlinedText>
         </>
       ) : (
         <>
           <View style={styles.headerContent}>
-            <OutlinedText fontSize={formatTabletElementsSize(25, 1.8)}>
-              Spin the wheel
+            <OutlinedText fontSize={formatTabletElementsSize(20, 1.8)}>
+              Spin the wheel to find how many blocks to
             </OutlinedText>
           </View>
-          <OutlinedText fontSize={formatTabletElementsSize(25, 1.8)}>
-            to find how many blocks to
-          </OutlinedText>
+
           <View style={styles.headerPowerUpContainer}>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={formatTabletElementsSize(45, 1.5)}
+              fontSize={formatTabletElementsSize(30, 2)}
               strokeColor={COLORS.gradientBronze_1}
             >{`${type === POWER_UP_TYPE.RemoveRandomBlocks ? 'REMOVE' : 'ADD'}`}</OutlinedText>
             <BlockIcon />
@@ -237,10 +235,10 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
           <View style={styles.wheelResultText}>
             <OutlinedText
               color={COLORS.gradientGold_1}
-              fontSize={formatTabletElementsSize(70)}
+              fontSize={formatTabletElementsSize(60)}
               strokeColor={COLORS.brown}
             >{`${wheelResult}`}</OutlinedText>
-            <BlockIcon size={formatTabletElementsSize(60)} />
+            <BlockIcon size={formatTabletElementsSize(50)} />
           </View>
         </SuccessActionInfoModal>
         <MotiView

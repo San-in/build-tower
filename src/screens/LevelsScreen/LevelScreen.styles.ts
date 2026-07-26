@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
   title: { marginBottom: 12 },
   titleContainer: {
     alignItems: 'center',
-    alignSelf: 'stretch',
+    alignSelf: 'center',
     marginHorizontal: 16,
   },
 })

@@ -5,6 +5,7 @@ import {
 import { Button } from '@components/atoms'
 import { ShadowWrapper } from '@components/wrappers'
 import { BUTTON_TYPE, TOWER } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import { MotiView } from 'moti'
 import { FC, memo, useMemo, useState } from 'react'
@@ -57,7 +58,13 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
           style={[
             styles.image,
             {
-              transform: [{ translateY: tower === TOWER.FirstTower ? 65 : 75 }],
+              transform: [
+                {
+                  translateY: formatTabletElementsSize(
+                    tower === TOWER.FirstTower ? 65 : 75
+                  ),
+                },
+              ],
             },
           ]}
           transition={400}

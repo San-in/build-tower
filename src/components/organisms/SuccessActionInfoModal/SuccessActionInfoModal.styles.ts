@@ -1,5 +1,6 @@
 import { Z_INDEX_TYPE } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -19,12 +20,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.white40,
     borderColor: COLORS.white,
-    borderRadius: 50,
-    borderWidth: 5,
+    borderRadius: formatTabletElementsSize(50),
+    borderWidth: formatTabletElementsSize(5),
     justifyContent: 'center',
-    marginBottom: 50,
+    marginBottom: formatTabletElementsSize(50),
     maxWidth: '90%',
-    padding: 40,
+    paddingHorizontal: formatTabletElementsSize(20),
+    paddingVertical: formatTabletElementsSize(40),
     zIndex: Z_INDEX_TYPE.high,
   },
   gifAnimation: {

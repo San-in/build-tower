@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.yellow10,
     borderColor: COLORS.white,
     borderRadius: formatTabletElementsSize(10, 1.4),
-    borderWidth: 1,
+    borderWidth: formatTabletElementsSize(1),
     elevation: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.55,
     shadowRadius: 3.84,
-    top: 25,
+    top: 20,
   },
   contentContainer: {
     width: '100%',

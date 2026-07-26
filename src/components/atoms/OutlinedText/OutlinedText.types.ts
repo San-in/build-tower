@@ -9,5 +9,4 @@ export type OutlinedTextProps = {
   style?: StyleProp<TextStyle>
   containerStyle?: StyleProp<ViewStyle>
   numberOfLines?: number
-  adjustsFontSizeToFit?: boolean
 }

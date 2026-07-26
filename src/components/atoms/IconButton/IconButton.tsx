@@ -57,7 +57,6 @@ const IconButton = ({
           <Text style={styles.lock}>🔒</Text>
         ) : (
           <OutlinedText
-            adjustsFontSizeToFit={true}
             fontSize={labelSize}
             numberOfLines={numberOfLines}
             style={labelStyles}

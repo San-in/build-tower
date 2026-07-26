@@ -210,7 +210,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
         isVisible={isVisible}
         onPress={handleSuccessModalPress}
         title={'Congratulations!'}
-        titleSize={formatTabletElementsSize(30)}
+        titleSize={formatTabletElementsSize(25)}
       >
         <View style={styles.successModalContentContainer}>
           <OutlinedText fontSize={formatTabletElementsSize(20)}>

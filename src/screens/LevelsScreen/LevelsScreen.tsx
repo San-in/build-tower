@@ -204,7 +204,7 @@ const LevelsScreen = () => {
           />
           <View style={styles.bananasCounter}>
             <OutlinedText
-              fontSize={formatTabletElementsSize(35)}
+              fontSize={formatTabletElementsSize(25)}
             >{`${bananas}`}</OutlinedText>
             <BananasIcon
               height={formatTabletElementsSize(55, 1.5)}
@@ -215,7 +215,6 @@ const LevelsScreen = () => {
 
         <View style={styles.modalContentContainer}>
           <OutlinedText
-            adjustsFontSizeToFit
             containerStyle={styles.titleContainer}
             fontSize={formatTabletElementsSize(32)}
             numberOfLines={1}
@@ -262,7 +261,7 @@ const LevelsScreen = () => {
             isDisabled={isLetsGoButtonDisabled}
             onPress={handleLetsGoButtonPress}
             style={styles.letsGoButton}
-            textSize={formatTabletElementsSize(22)}
+            textSize={formatTabletElementsSize(20)}
             title="LET'S GO"
             type={BUTTON_TYPE.Warning}
           />

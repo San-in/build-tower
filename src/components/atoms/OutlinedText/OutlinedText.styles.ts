@@ -12,15 +12,5 @@ export const styles = StyleSheet.create({
     ...plainText,
     position: 'absolute',
   },
-  measure: {
-    ...plainText,
-    opacity: 0,
-    position: 'absolute',
-  },
-  strokeStretch: {
-    left: 0,
-    right: 0,
-    top: 0,
-  },
   text: plainText,
 })

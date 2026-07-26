@@ -207,7 +207,7 @@ const WelcomeScreen = () => {
             <View style={styles.titleWrapper}>
               <OutlinedText
                 color={COLORS.yellow}
-                fontSize={formatTabletElementsSize(50)}
+                fontSize={formatTabletElementsSize(45)}
                 offset={5}
                 strokeColor={COLORS.brown}
               >
@@ -224,7 +224,7 @@ const WelcomeScreen = () => {
             >
               <Button
                 onPress={handleStartButtonPress}
-                textSize={formatTabletElementsSize(27)}
+                textSize={formatTabletElementsSize(25)}
                 title="START"
               />
             </MotiView>

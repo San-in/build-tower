@@ -78,7 +78,6 @@ const OptionModal: FC<OptionModalProps> = ({
           </View>
           <View style={styles.actionTextContainer}>
             <OutlinedText
-              adjustsFontSizeToFit={true}
               color={COLORS.brown}
               fontSize={formatTabletElementsSize(15)}
               numberOfLines={1}

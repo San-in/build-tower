@@ -87,7 +87,6 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
       >
         <View style={styles.labelContainer}>
           <OutlinedText
-            adjustsFontSizeToFit
             containerStyle={styles.labelAutoFit}
             fontSize={formatTabletElementsSize(14, 2.2)}
             numberOfLines={1}
@@ -121,7 +120,6 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
 
         <View style={[GlobalStyles.centeredContainer, styles.bottomCard]}>
           <OutlinedText
-            adjustsFontSizeToFit
             containerStyle={styles.labelAutoFit}
             fontSize={
               stars

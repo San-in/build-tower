@@ -21,13 +21,6 @@ export const styles = StyleSheet.create({
     marginBottom: -2,
     position: 'relative',
   },
-  levelConditionModalContainer: {
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    maxWidth: '76%',
-    minWidth: formatTabletElementsSize(275),
-    transform: [{ translateY: '15%' }],
-  },
   monkeyStageGroundContainer: {
     bottom: formatTabletElementsSize(-30),
     position: 'absolute',
@@ -53,7 +46,7 @@ export const styles = StyleSheet.create({
     gap: formatTabletElementsSize(80, 1.5),
     position: 'absolute',
     right: formatTabletElementsSize(25),
-    top: formatTabletElementsSize(120, 1.5),
+    top: formatTabletElementsSize(140, 1.5),
   },
   starsGif: {
     height: formatTabletElementsSize(100),
@@ -84,6 +77,15 @@ export const styles = StyleSheet.create({
     paddingTop: formatTabletElementsSize(150),
     position: 'relative',
     width: '100%',
+  },
+  towersMask: { flex: 1 },
+  towersMaskGradient: {
+    height: formatTabletElementsSize(30),
+    width: '100%',
+  },
+  towersMaskSolid: {
+    backgroundColor: COLORS.codeGrey,
+    flex: 1,
   },
   towersScrollWrapperContainer: {
     alignItems: 'flex-end',

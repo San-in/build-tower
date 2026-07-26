@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     bottom: formatTabletElementsSize(30),
     justifyContent: 'space-between',
     position: 'absolute',
-    right: formatTabletElementsSize(30),
+    right: formatTabletElementsSize(20),
     top: IS_TABLET ? '50%' : '25%',
   },
 })
