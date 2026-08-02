@@ -10,7 +10,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAssetsReady } from '@hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize , Haptics } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -116,6 +116,9 @@ const CustomModal: FC<CustomModalProps> = ({
   useEffect(() => {
     const opened = !prev.current.visible && modalVisible
     const typeChangedWhileOpen = modalVisible && prev.current.type !== type
+    if (opened) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    }
     if (opened || typeChangedWhileOpen) {
       reset()
     }

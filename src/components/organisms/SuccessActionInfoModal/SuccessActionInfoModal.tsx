@@ -1,6 +1,7 @@
 import confettiAnimation from '@assets/icons/animations/confetti.json'
 import winAnimation from '@assets/icons/animations/win.json'
 import { BackgroundImg } from '@assets/images'
+import { Haptics } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { MotiView } from 'moti'
@@ -49,6 +50,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
   }, [isVisible])
 
   const handleOnPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     onPress?.()
   }
   if (isVisible) {

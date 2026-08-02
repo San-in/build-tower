@@ -13,7 +13,14 @@ import { SettingsContentProps } from './SettingsContent.types'
 const SettingsContent: FC<SettingsContentProps> = ({
   onPressResetProgress,
 }) => {
-  const { soundEnabled, toggleSound, setLanguage, language } = useSettings()
+  const {
+    soundEnabled,
+    toggleSound,
+    hapticsEnabled,
+    toggleHaptics,
+    setLanguage,
+    language,
+  } = useSettings()
 
   return (
     <View style={styles.container}>
@@ -33,6 +40,24 @@ const SettingsContent: FC<SettingsContentProps> = ({
             false: COLORS.white,
           }}
           value={soundEnabled}
+        />
+      </View>
+      <View style={styles.soundContainer}>
+        <OutlinedText fontSize={formatTabletElementsSize(20)}>
+          Vibration:
+        </OutlinedText>
+        <Switch
+          ios_backgroundColor={COLORS.white}
+          onValueChange={toggleHaptics}
+          style={{
+            transform: [{ scale: formatTabletElementsSize(1, 1.5) }],
+          }}
+          thumbColor={hapticsEnabled ? COLORS.white : COLORS.gradientOrange_1}
+          trackColor={{
+            true: COLORS.gradientOrange_1,
+            false: COLORS.white,
+          }}
+          value={hapticsEnabled}
         />
       </View>
       <LanguageSelector

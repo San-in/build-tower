@@ -6,6 +6,7 @@ import {
   INFO_UNLOCK_OPTION_MODAL_KEY,
   MODAL_TYPE,
 } from '@types'
+import { formatTabletElementsSize,Haptics  } from '@utils'
 import { MotiView } from 'moti'
 import React, { FC, useMemo, useState } from 'react'
 import { Text, View } from 'react-native'
@@ -16,7 +17,6 @@ import { Button, OutlinedText } from '@components/atoms'
 import { ModalCard } from '@components/molecules'
 import { CustomModal } from '@components/organisms/CustomModal'
 import { removeBananas, selectBananas } from '@store/slices/bananasSlice'
-import { formatTabletElementsSize } from '@utils'
 
 import { UnlockOptionModalProps } from './UnlockOptionModal.types'
 
@@ -121,8 +121,10 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const isConfirmDisabled = !selectedOption || isSelectedOptionDisabled
 
-  const handleCardPress = (option: BONUS_OPTION_TYPE) =>
+  const handleCardPress = (option: BONUS_OPTION_TYPE) => {
+    Haptics.selectionAsync()
     setSelectedOption((prev) => (prev === option ? null : option))
+  }
 
   const handleClose = () => {
     setSelectedOption(null)
@@ -131,6 +133,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
       dispatch(removeBananas(price))
       setSelectedOption(null)
       onConfirm()

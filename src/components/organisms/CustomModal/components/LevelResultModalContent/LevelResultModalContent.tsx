@@ -23,8 +23,8 @@ import {
   calculateExpectedLevelConditions,
   formatTabletElementsSize,
   getLevelResult,
-} from '@utils'
-import { FC, memo, useCallback, useMemo } from 'react'
+ Haptics } from '@utils'
+import { FC, memo, useCallback, useEffect, useMemo } from 'react'
 import { Text, View } from 'react-native'
 
 import { styles } from './LevelResultModalContent.styles'
@@ -72,6 +72,15 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
   )
   const isTooHigh = levelResult === LEVEL_RESULT.TooHigh
   const isGoldResult = levelResult === LEVEL_RESULT.GoldResult
+
+  useEffect(() => {
+    Haptics.notificationAsync(
+      isLevelPassed
+        ? Haptics.NotificationFeedbackType.Success
+        : Haptics.NotificationFeedbackType.Warning
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const prizeRules: Record<
     number,
@@ -146,25 +155,33 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
     [onGetDoublePrize, displayedPrize, displayedStars]
   )
 
-  const handleRestartLevel = useCallback(
-    () =>
-      onRestartLevel({
-        prize: displayedPrize,
-        stars: displayedStars,
-        consolationPrize,
-      }),
-    [onRestartLevel, displayedPrize, displayedStars, consolationPrize]
-  )
+  const handleRestartLevel = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    onRestartLevel({
+      prize: displayedPrize,
+      stars: displayedStars,
+      consolationPrize,
+    })
+  }, [onRestartLevel, displayedPrize, displayedStars, consolationPrize])
 
-  const handleGetPrize = useCallback(
-    () =>
-      onGetPrize({
-        prize: displayedPrize,
-        stars: displayedStars,
-        consolationPrize,
-      }),
-    [onGetPrize, displayedPrize, displayedStars, consolationPrize]
-  )
+  const handleGetPrize = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    onGetPrize({
+      prize: displayedPrize,
+      stars: displayedStars,
+      consolationPrize,
+    })
+  }, [onGetPrize, displayedPrize, displayedStars, consolationPrize])
+
+  const handleGoHome = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    onGoHome()
+  }, [onGoHome])
+
+  const handleResetSteps = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    onResetSteps()
+  }, [onResetSteps])
 
   const buttonsSet = [
     isLevelPassed && displayedPrize && (
@@ -193,7 +210,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Home'}
         labelStyles={styles.buttonLabel}
         numberOfLines={1}
-        onPress={onGoHome}
+        onPress={handleGoHome}
         style={styles.iconContainer}
       />
     ),
@@ -210,7 +227,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         label={'Reset Steps'}
         labelStyles={styles.buttonLabel}
         numberOfLines={2}
-        onPress={onResetSteps}
+        onPress={handleResetSteps}
         style={[
           styles.iconContainer,
           isShouldShowConsolationPrize ? {} : styles.priorityIcon,

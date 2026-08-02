@@ -18,7 +18,7 @@ const CalendarPrizeIcon: FC<CalendarPrizeIconProps> = ({
     return (
       <View>
         <OutlinedText
-          fontSize={Math.round((15 * size) / 40)}
+          fontSize={Math.round((17 * size) / 40)}
         >{`${count} x `}</OutlinedText>
         <BananasIcon height={size} transform="scale(-1,1)" width={size} />
       </View>

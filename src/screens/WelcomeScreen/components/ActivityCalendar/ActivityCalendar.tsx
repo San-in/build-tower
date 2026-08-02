@@ -15,7 +15,7 @@ import {
 } from '@store/slices/userActivitySlice'
 import { COLORS, GlobalStyles } from '@theme'
 import { MARKET_PRODUCT, MARKET_SPECIAL_PRIZE, MarketPrize } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize , Haptics } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, {
@@ -98,6 +98,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
       quantity: number
     }) => {
       if (isAchieved && !isRewardClaimed) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         dispatch(markRewardClaimedForDay(day))
 
         if (Object.values(MARKET_PRODUCT).includes(prize as MARKET_PRODUCT)) {

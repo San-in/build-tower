@@ -1,6 +1,6 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { BUTTON_TYPE } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize , Haptics } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -13,29 +13,38 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
   text,
   confirmButtonText = 'YES',
   cancelButtonText = 'NO',
-}) => (
-  <View style={styles.container}>
-    <OutlinedText fontSize={formatTabletElementsSize(15)}>{text}</OutlinedText>
-    <View style={styles.buttonContainer}>
-      {onCancel && (
+}) => {
+  const handleConfirm = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    onConfirm()
+  }
+
+  return (
+    <View style={styles.container}>
+      <OutlinedText fontSize={formatTabletElementsSize(15)}>
+        {text}
+      </OutlinedText>
+      <View style={styles.buttonContainer}>
+        {onCancel && (
+          <Button
+            buttonContainerStyle={styles.buttonContent}
+            onPress={onCancel}
+            style={styles.button}
+            textSize={formatTabletElementsSize(12)}
+            title={cancelButtonText}
+            type={BUTTON_TYPE.Error}
+          />
+        )}
         <Button
           buttonContainerStyle={styles.buttonContent}
-          onPress={onCancel}
-          style={styles.button}
+          onPress={handleConfirm}
+          style={[styles.button, !onCancel && styles.buttonRestricted]}
           textSize={formatTabletElementsSize(12)}
-          title={cancelButtonText}
-          type={BUTTON_TYPE.Error}
+          title={confirmButtonText}
         />
-      )}
-      <Button
-        buttonContainerStyle={styles.buttonContent}
-        onPress={onConfirm}
-        style={[styles.button, !onCancel && styles.buttonRestricted]}
-        textSize={formatTabletElementsSize(12)}
-        title={confirmButtonText}
-      />
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 export default memo(BasicModalContent)

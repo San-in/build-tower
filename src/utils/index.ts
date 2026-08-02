@@ -13,6 +13,7 @@ export { getLevelIcon } from './getLevelIcon'
 export { getLevelResult } from './getLevelResult'
 export { getMarketProductByPowerUp } from './getMarketProductByPowerUp'
 export { getPowerUpInfoByMarketProduct } from './getPowerUpInfoByMarketProduct'
+export { Haptics, setHapticsEnabled } from './haptics'
 export {
   getOptionNumberByOperator,
   getOptionOperators,

@@ -37,7 +37,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { ActivityCalendar, ActivityModal, SideMenu } from './components'
 import { ACTIVITY_MODAL_TYPES } from './components/ActivityModal/ActivityModal.types'
-import AwardsDevPanel from './components/AwardsDevPanel/AwardsDevPanel' // TEMP: awards test panel
 import { styles } from './WelcomeScreen.styles'
 
 const ASSET_KEYS = { BG: 'background', ASSETS: 'assets' } as const
@@ -201,7 +200,6 @@ const WelcomeScreen = () => {
         type={activityModalConfig.type}
       />
       <ActivityCalendar isOpen={isCalendarOpen} onClose={handleCloseCalendar} />
-      <AwardsDevPanel />
     </View>
   )
 }

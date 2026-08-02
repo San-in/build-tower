@@ -15,6 +15,7 @@ import {
   resetStreakToFirstDay,
 } from '@store/slices/userActivitySlice'
 import { MODAL_TYPE } from '@types'
+import { Haptics } from '@utils'
 import React, { FC, memo, useCallback, useMemo, useState } from 'react'
 
 import SuccessAwardClaimedModal from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
@@ -45,12 +46,14 @@ const ActivityModal: FC<ActivityModalProps> = ({
       // Flush immediately so a reload before the debounced writers fire
       // cannot re-hydrate the pre-reset values.
       await clearAllPersistence()
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       Toast({
         type: 'info',
         text1: 'Everything reset — good luck!',
       })
     } catch (error) {
       console.warn(error)
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       Toast({
         type: 'error',
         text1: 'Something went wrong...',

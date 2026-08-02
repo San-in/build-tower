@@ -3,7 +3,7 @@ import { OptionCard } from '@components/molecules'
 import { OptionModalProps } from '@components/organisms/OptionModal/OptionModal.types'
 import { COLORS, GlobalStyles } from '@theme'
 import { SELECTED_OPTION } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize , Haptics } from '@utils'
 import { FC, useCallback } from 'react'
 import { Modal, Text, View } from 'react-native'
 
@@ -18,11 +18,13 @@ const OptionModal: FC<OptionModalProps> = ({
   step,
 }) => {
   const handleFirstOptionPressed = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     handleClose()
     changeOption(SELECTED_OPTION.First)
   }, [changeOption, handleClose])
 
   const handleSecondOptionPressed = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     handleClose()
     changeOption(SELECTED_OPTION.Second)
   }, [changeOption, handleClose])

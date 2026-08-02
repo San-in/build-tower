@@ -6,9 +6,8 @@ import {
 } from '@components/organisms/WheelOfFortune/WheelOfFortune.types'
 import { IS_TABLET } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize , Haptics } from '@utils'
 import * as d3Shape from 'd3-shape'
-import * as Haptics from 'expo-haptics'
 import { MotiView } from 'moti'
 import {
   forwardRef,

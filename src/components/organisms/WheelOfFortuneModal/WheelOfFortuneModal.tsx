@@ -9,7 +9,7 @@ import {
   calculateWheelResult,
   formatTabletElementsSize,
   generateRandomNumber,
-} from '@utils'
+ Haptics } from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, View } from 'react-native'
@@ -111,11 +111,13 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setTryAgainModalVisible(true)
   }
   const handleSpinPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     setIsModalShacked(true)
     setIsSpinButtonDisabled(true)
     setShouldSpinWheel(true)
   }
   const handleConfirmPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     handleClose()
     onFinish(wheelResult)
   }

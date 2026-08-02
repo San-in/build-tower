@@ -91,8 +91,7 @@ import {
   getOptionNumberByOperator,
   getOptionOperators,
   getValidOptionNumber,
-  showIsUserNeedHelp,
-} from '@utils'
+ Haptics,  showIsUserNeedHelp } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -489,6 +488,7 @@ const GameScreen: FC = () => {
       return
     }
     if (!totalAddBlocksPowerUps) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
@@ -499,6 +499,7 @@ const GameScreen: FC = () => {
   const handleRandomRemoveBlockPress = () => {
     if (!userBlockValue || userBlockValue <= 1) {
       if (userBlockValue <= 1) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
         Toast({
           type: 'info',
           text1: "Just 1 block left — can't remove more!",
@@ -508,6 +509,7 @@ const GameScreen: FC = () => {
       return
     }
     if (!totalRemoveBlocksPowerUps) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
@@ -534,10 +536,12 @@ const GameScreen: FC = () => {
       return
     }
     if (!addExtraStepPowerUps) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
     if (step === 1) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       Toast({
         type: 'info',
         text1: "You're already at the first step!",

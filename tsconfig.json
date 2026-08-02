@@ -67,7 +67,8 @@
     "resolveJsonModule": true,
     "types": [
       "expo",
-      "react-native"
+      "react-native",
+      "jest"
     ]
   },
   "include": [

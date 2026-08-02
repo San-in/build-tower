@@ -8,7 +8,7 @@ import { addBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, MarketPrize } from '@types'
-import { formatLevelToRomanNum, formatTabletElementsSize } from '@utils'
+import { formatLevelToRomanNum, formatTabletElementsSize , Haptics } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { memo, useCallback, useMemo } from 'react'
 import {
@@ -89,6 +89,7 @@ const AwardBottomSheet = ({
         return
       }
       if (conditions?.prizeType && conditions?.prizeCount && type) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
         dispatch(
           showAwardSuccess({
             typePrize: conditions.prizeType,
