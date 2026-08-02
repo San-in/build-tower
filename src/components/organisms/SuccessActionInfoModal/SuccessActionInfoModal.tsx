@@ -40,16 +40,16 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
     return () => clearTimeout(timeoutId)
   }, [isBackgroundReady, isVisible])
 
-  const handleOnPress = () => {
-    if (onPress) {
-      onPress()
-      setTimeout(() => {
-        confettiRef.current?.reset()
-        isAnimationPlaying.current = false
-        setIsBackGroundReady(false)
-        setIsConfettiVisible(false)
-      }, 500)
+  useEffect(() => {
+    if (!isVisible) {
+      isAnimationPlaying.current = false
+      setIsBackGroundReady(false)
+      setIsConfettiVisible(false)
     }
+  }, [isVisible])
+
+  const handleOnPress = () => {
+    onPress?.()
   }
   if (isVisible) {
     return (

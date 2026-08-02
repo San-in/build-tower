@@ -1,4 +1,4 @@
-import { INITIAL_SPIN_QUANTITY, IS_TABLET } from '@constants'
+import { INITIAL_SPIN_QUANTITY } from '@constants'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import {
   BONUS_OPTION_TYPE,

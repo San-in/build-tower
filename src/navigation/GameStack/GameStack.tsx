@@ -7,21 +7,23 @@ import React from 'react'
 const Stack = createNativeStackNavigator<GameStackParamList>()
 
 const GameStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={{ headerShown: false, gestureEnabled: false }}
+  >
     <Stack.Screen
       component={WelcomeScreen}
       name={SCREENS.WelcomeScreen}
-      options={{ headerShown: false, animation: 'fade' }}
+      options={{ animation: 'fade' }}
     />
     <Stack.Screen
       component={GameScreen}
       name={SCREENS.GameScreen}
-      options={{ headerShown: false, animation: 'fade' }}
+      options={{ animation: 'fade' }}
     />
     <Stack.Screen
       component={LevelsScreen}
       name={SCREENS.LevelsScreen}
-      options={{ headerShown: false, animation: 'fade' }}
+      options={{ animation: 'fade', gestureEnabled: true }}
     />
   </Stack.Navigator>
 )

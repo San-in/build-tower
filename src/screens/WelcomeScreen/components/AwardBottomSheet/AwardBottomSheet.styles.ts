@@ -92,10 +92,6 @@ export const styles = StyleSheet.create({
     paddingVertical: formatTabletElementsSize(20),
     width: '100%',
   },
-  singleIconWrapper: {
-    aspectRatio: 1,
-    height: formatTabletElementsSize(70),
-  },
   singleGiftPressable: {
     alignItems: 'center',
     backgroundColor: COLORS.yellow10,
@@ -104,5 +100,9 @@ export const styles = StyleSheet.create({
     borderWidth: formatTabletElementsSize(1),
     justifyContent: 'center',
     padding: formatTabletElementsSize(12),
+  },
+  singleIconWrapper: {
+    aspectRatio: 1,
+    height: formatTabletElementsSize(70),
   },
 })

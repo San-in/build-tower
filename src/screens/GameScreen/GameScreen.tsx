@@ -146,7 +146,6 @@ const GameScreen: FC = () => {
     params: { level },
   } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
   const scrollViewRef = useRef<ScrollView>(null)
-  const lastMonkeyAnimationRef = useRef<MONKEY_ANIMATION_TYPE | null>(null)
   const powerUpUsedRef = useRef(false)
   const resetStepUsedRef = useRef(false)
   const hasFinishedRef = useRef(false)
@@ -289,7 +288,6 @@ const GameScreen: FC = () => {
     setResetStepsModalData(INITIAL_RESET_STEPS_MODAL_STATE)
     setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
     setBuildModalData(INITIAL_BUILD_MODAL_STATE)
-    lastMonkeyAnimationRef.current = null
     powerUpUsedRef.current = false
     resetStepUsedRef.current = false
     hasFinishedRef.current = false
@@ -300,13 +298,7 @@ const GameScreen: FC = () => {
   }
 
   const handleOpenMonkeyAnimation = (type: MONKEY_ANIMATION_TYPE) => {
-    if (lastMonkeyAnimationRef.current !== type) {
-      setMonkeyAnimationData({
-        isVisible: true,
-        type,
-      })
-      lastMonkeyAnimationRef.current = type
-    }
+    setMonkeyAnimationData({ isVisible: true, type })
   }
 
   const handleCloseActionModal = useCallback(() => {
@@ -424,7 +416,6 @@ const GameScreen: FC = () => {
 
   const handleGoHome = useCallback(async () => {
     navigation.navigate(SCREENS.WelcomeScreen)
-    lastMonkeyAnimationRef.current = null
     handleCloseActionModal()
   }, [handleCloseActionModal, navigation])
 
@@ -679,9 +670,7 @@ const GameScreen: FC = () => {
   }, [handleCloseActionModal])
 
   const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
-    if (lastMonkeyAnimationRef.current === MONKEY_ANIMATION_TYPE.RunAndJump) {
-      handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
-    }
+    handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
   }, [])
 
   const handleMonkeyAnimationLandingFinished = useCallback(() => {
@@ -689,14 +678,18 @@ const GameScreen: FC = () => {
       setTimeout(() => handleOpenActionModal(GAME_MODAL_TYPE.LevelResult), 800)
       return
     }
+    if (isLevelPrematurelyFinished || isLevelFinished) {
+      return
+    }
 
-    if (monkeyNotificationShowedSteps === step && !isLevelPrematurelyFinished) {
+    if (monkeyNotificationShowedSteps === step) {
       setIsMonkeyNotificationVisible(true)
     }
     handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Idle)
     setIsInterfacesVisible(true)
   }, [
     isOutOfAttempts,
+    isLevelFinished,
     monkeyNotificationShowedSteps,
     step,
     isLevelPrematurelyFinished,
@@ -1377,6 +1370,7 @@ const GameScreen: FC = () => {
                           >
                             <MonkeyAnimation
                               isVisible={monkeyAnimationData.isVisible}
+                              key={monkeyAnimationData.type}
                               loop={monkeyAnimationLoop}
                               onFinish={monkeyAnimationCallback}
                               size={monkeyAnimationSize}
@@ -1413,6 +1407,7 @@ const GameScreen: FC = () => {
                       ].includes(monkeyAnimationData.type) && (
                         <MonkeyAnimation
                           isVisible={monkeyAnimationData.isVisible}
+                          key={monkeyAnimationData.type}
                           loop={monkeyAnimationLoop}
                           onFinish={monkeyAnimationCallback}
                           size={monkeyAnimationSize}
@@ -1435,6 +1430,7 @@ const GameScreen: FC = () => {
                   MONKEY_ANIMATION_TYPE.RunAndJump && (
                   <MonkeyAnimation
                     isVisible={monkeyAnimationData.isVisible}
+                    key={monkeyAnimationData.type}
                     loop={monkeyAnimationLoop}
                     onFinish={monkeyAnimationCallback}
                     size={monkeyAnimationSize}
