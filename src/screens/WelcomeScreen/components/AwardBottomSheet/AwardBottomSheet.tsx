@@ -276,7 +276,7 @@ const AwardBottomSheet = ({
               </>
             )}
 
-            <OutlinedText fontSize={formatTabletElementsSize(12, 2.5)}>
+            <OutlinedText fontSize={formatTabletElementsSize(14, 2.5)}>
               {description || ''}
             </OutlinedText>
             <View
@@ -285,12 +285,12 @@ const AwardBottomSheet = ({
                 { opacity: Number(!isLevelReachedMax) },
               ]}
             >
-              <OutlinedText fontSize={formatTabletElementsSize(10, 2.5)}>
+              <OutlinedText fontSize={formatTabletElementsSize(12, 2.5)}>
                 To next level:
               </OutlinedText>
               <OutlinedText
                 color={COLORS.gradientGold_1}
-                fontSize={formatTabletElementsSize(12, 2.5)}
+                fontSize={formatTabletElementsSize(14, 2.5)}
                 strokeColor={COLORS.brown}
               >
                 {String(currentLevelTarget - currentRepeats)}

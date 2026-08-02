@@ -43,7 +43,7 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
   const fontSize = useMemo(() => {
     const maxNumber = Math.max(userValue, initialValue)
     return formatTabletElementsSize(
-      [maxNumber > 999 && 12, maxNumber > 99 && 14].filter(Boolean)[0] || 18
+      [maxNumber > 999 && 12, maxNumber > 99 && 14].filter(Boolean)[0] || 20
     )
   }, [initialValue, userValue])
 
@@ -75,7 +75,7 @@ const ProgressBadge: FC<ProgressBadgeProps> = ({
         style={styles.innerCircle}
         transition={{ loop: true, type: 'timing', duration: 2000 }}
       >
-        <OutlinedText fontSize={formatTabletElementsSize(12, 2.5)}>
+        <OutlinedText fontSize={formatTabletElementsSize(14, 2.5)}>
           Progress
         </OutlinedText>
         <OutlinedText fontSize={fontSize}>{`${userValue}`}</OutlinedText>

@@ -46,6 +46,7 @@ import MaskedView from '@react-native-masked-view/masked-view'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { increaseRepeatsForAward } from '@store/slices/awardsSlice'
 import { addBananas } from '@store/slices/bananasSlice'
 import {
   selectLevelById,
@@ -105,6 +106,7 @@ import React, {
 } from 'react'
 import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
 
+import { AWARD_TYPE } from '../WelcomeScreen/components/ActivityModal/components/AwardsContent/config'
 import {
   BlockTowerCreator,
   BuildTowerSplash,
@@ -145,6 +147,9 @@ const GameScreen: FC = () => {
   } = useRoute<RouteProp<GameStackParamList, SCREENS.GameScreen>>()
   const scrollViewRef = useRef<ScrollView>(null)
   const lastMonkeyAnimationRef = useRef<MONKEY_ANIMATION_TYPE | null>(null)
+  const powerUpUsedRef = useRef(false)
+  const resetStepUsedRef = useRef(false)
+  const hasFinishedRef = useRef(false)
 
   const stars = useAppSelector(selectLevelById(level))?.stars ?? 0
   const isWelcomeBonusClaimed = useAppSelector(selectWelcomeBonusClaimed)
@@ -285,6 +290,9 @@ const GameScreen: FC = () => {
     setSuccessActionInfoModalData(INITIAL_SUCCESS_ACTION_MODAL_STATE)
     setBuildModalData(INITIAL_BUILD_MODAL_STATE)
     lastMonkeyAnimationRef.current = null
+    powerUpUsedRef.current = false
+    resetStepUsedRef.current = false
+    hasFinishedRef.current = false
   }, [])
 
   const handleCloseMonkeyAnimation = () => {
@@ -384,10 +392,6 @@ const GameScreen: FC = () => {
     [dispatch]
   )
 
-  // const handleAddBananas = async (quantity: number) => {
-  //   dispatch(addBananas(quantity))
-  // }
-
   const handleRemoveUserBlocks = (number: number) => {
     setUserBlockValue((prevState) =>
       prevState - number > 1 ? prevState - number : 1
@@ -441,6 +445,8 @@ const GameScreen: FC = () => {
     handleCloseActionModal()
 
     handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
+    powerUpUsedRef.current = true
+    dispatch(increaseRepeatsForAward(AWARD_TYPE.ADD_EXTRA_STEP_MASTER))
     setImmediate(() => {
       setStep((prevState) => Math.max(prevState - 1, 1))
       Toast({
@@ -449,7 +455,7 @@ const GameScreen: FC = () => {
         onHide: () => setIsStarsGifVisible(true),
       })
     })
-  }, [handleCloseActionModal, handleRemovePowerUp])
+  }, [dispatch, handleCloseActionModal, handleRemovePowerUp])
 
   const userBlockManipulation = useCallback(() => {
     const selectedCard =
@@ -565,11 +571,18 @@ const GameScreen: FC = () => {
       prize,
       stars: earnedStars,
       consolationPrize,
+      isEarlyClear = false,
     }: {
       prize: number
       stars: Star
       consolationPrize?: number
+      isEarlyClear?: boolean
     }) => {
+      if (hasFinishedRef.current) {
+        return
+      }
+      hasFinishedRef.current = true
+
       handleScrollToTop()
       await handleGetPrizeAndUnlockLevel({
         prize,
@@ -577,13 +590,29 @@ const GameScreen: FC = () => {
         level,
         consolationPrize,
       })
+      if (earnedStars > 0) {
+        const accrueAward = (type: AWARD_TYPE) => {
+          dispatch(increaseRepeatsForAward(type))
+        }
+        accrueAward(AWARD_TYPE.LEVEL_COMPLETED)
+        if (isEarlyClear) {
+          accrueAward(AWARD_TYPE.EARLY_CLEAR)
+        }
+        if (!powerUpUsedRef.current) {
+          accrueAward(AWARD_TYPE.NO_POWER_UPS)
+        }
+        if (!resetStepUsedRef.current) {
+          accrueAward(AWARD_TYPE.NO_RESET_STEPS)
+        }
+      }
+
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setIsLevelFinished(true)
       setIsPrizeVisible(false)
       setIsInterfacesVisible(false)
       handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
     },
-    [handleGetPrizeAndUnlockLevel, level]
+    [dispatch, handleGetPrizeAndUnlockLevel, level]
   )
 
   const handleLevelResultGetPrizePressed = useCallback(
@@ -767,6 +796,7 @@ const GameScreen: FC = () => {
 
   const handleConfirmResetStepsModal = useCallback(() => {
     handleCloseActionModal()
+    resetStepUsedRef.current = true
     setStep(1)
     setResetStepsModalData((prevState) => ({
       ...prevState,
@@ -840,13 +870,19 @@ const GameScreen: FC = () => {
         const marketProduct = getMarketProductByPowerUp(type, grade)
         handleCloseActionModal()
         if (marketProduct) {
+          const masterAward =
+            type === POWER_UP_TYPE.AddRandomBlocks
+              ? AWARD_TYPE.ADD_BLOCKS_MASTER
+              : AWARD_TYPE.REMOVE_BLOCKS_MASTER
+          powerUpUsedRef.current = true
+          dispatch(increaseRepeatsForAward(masterAward))
           setTimeout(async () => {
             handleRemovePowerUp(marketProduct)
           }, 1000)
         }
       }
     },
-    [handleCloseActionModal, handleRemovePowerUp]
+    [dispatch, handleCloseActionModal, handleRemovePowerUp]
   )
 
   // CONFIGS
@@ -1131,17 +1167,24 @@ const GameScreen: FC = () => {
   }, [assetsReady, assetLoaded])
 
   useEffect(() => {
-    if (!isOutOfAttempts && isLevelPrematurelyFinished) {
-      setTimeout(async () => {
+    if (
+      !isOutOfAttempts &&
+      isLevelPrematurelyFinished &&
+      !hasFinishedRef.current
+    ) {
+      const timerId = setTimeout(async () => {
         setIsInterfacesVisible(false)
         await handleLevelFinished({
           prize,
           stars: 3,
+          isEarlyClear: true,
           consolationPrize:
             stars === 3 ? calculateConsolationPrize(prize) : undefined,
         })
       }, 500)
+      return () => clearTimeout(timerId)
     }
+    return undefined
   }, [
     handleLevelFinished,
     stars,

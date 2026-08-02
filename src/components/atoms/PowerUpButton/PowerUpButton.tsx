@@ -21,7 +21,7 @@ const PowerUpButton = memo(
     const k = size / formatTabletElementsSize(30)
     const textSize =
       type === POWER_UP_TYPE.AddExtraStep
-        ? formatTabletElementsSize(size, 1.5) / 3.5
+        ? formatTabletElementsSize(size, 1.5) / 2.5
         : formatTabletElementsSize(size, 1.2) / 2
 
     return (
@@ -38,7 +38,7 @@ const PowerUpButton = memo(
         />
         {Boolean(count) && (
           <View style={styles.powerUpCounter}>
-            <OutlinedText fontSize={formatTabletElementsSize(8) * k}>
+            <OutlinedText fontSize={formatTabletElementsSize(11) * k}>
               {String(count)}
             </OutlinedText>
           </View>

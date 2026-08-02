@@ -81,7 +81,7 @@ const MarketItem: FC<MarketItemProps> = ({
 
       <View style={styles.descriptionContainer}>
         <OutlinedText
-          fontSize={formatTabletElementsSize(8, 3)}
+          fontSize={formatTabletElementsSize(10, 2.5)}
           style={styles.description}
         >
           {description}
