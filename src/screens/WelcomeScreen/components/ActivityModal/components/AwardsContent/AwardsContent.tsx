@@ -1,33 +1,39 @@
 import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
-import {
-  selectAwardsDetails,
-  SingleAwardState,
-} from '@store/slices/awardsSlice'
+import { selectAwardsDetails } from '@store/slices/awardsSlice'
 import { COLORS } from '@theme'
-import { formatLevelToRomanNum } from '@utils'
+import { formatLevelToRomanNum, formatTabletElementsSize } from '@utils'
 import React, { FC, memo, useState } from 'react'
 import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native'
 
 import { AwardBottomSheet } from '../../../AwardBottomSheet'
-import { SuccessAwardClaimedModalProps } from '../../../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
 import { styles } from './AwardsContent.styles'
+import { AWARD_TYPE } from './config'
 
-const AwardsContent: FC<{
-  onAwardClaimModalShow: (
-    data: Omit<SuccessAwardClaimedModalProps, 'onPress'>
-  ) => void
-}> = ({ onAwardClaimModalShow }) => {
+const AwardsContent: FC = () => {
   const { height } = useWindowDimensions()
-  const [selectedAward, setSelectedAward] = useState<{
+  const [selected, setSelected] = useState<{
     isVisible: boolean
-    progress: SingleAwardState | null
+    type: AWARD_TYPE | null
   }>({
     isVisible: false,
-    progress: null,
+    type: null,
   })
 
   const awardsDetails = useAppSelector(selectAwardsDetails)
+
+  // Live progress for the open sheet, so claiming updates it (gift → check)
+  // without reopening.
+  const selectedProgress = selected.type
+    ? (awardsDetails.find(({ progress }) => progress.type === selected.type)
+        ?.progress ?? null)
+    : null
+
+  const handleOpenAward = (type: AWARD_TYPE) =>
+    setSelected({ isVisible: true, type })
+
+  const handleCloseSheet = () =>
+    setSelected((prevState) => ({ ...prevState, isVisible: false }))
 
   return (
     <>
@@ -41,24 +47,27 @@ const AwardsContent: FC<{
         ]}
       >
         <View style={styles.grid}>
-          {awardsDetails.map(({ config: { icon }, progress }) => {
+          {awardsDetails.map(({ config, progress, hasUnclaimedPrize }) => {
+            const { icon, maxLevel } = config
             const { currentLevel, type } = progress
             const isUnblocked = Boolean(currentLevel)
             const iconOpacity = isUnblocked ? 1 : 0.7
+            const isMaxLevelReached = currentLevel === maxLevel
 
             return (
               <Pressable
                 key={type}
-                onPress={() => setSelectedAward({ isVisible: true, progress })}
+                onPress={() => handleOpenAward(type)}
                 style={({ pressed }) => [
                   styles.card,
+                  hasUnclaimedPrize
+                    ? styles.unclaimedBorder
+                    : isMaxLevelReached && styles.maxedBorder,
                   {
                     backgroundColor: pressed
                       ? COLORS.codeGrey40
                       : COLORS.codeGrey20,
-                    shadowColor: isUnblocked
-                      ? COLORS.yellow40
-                      : COLORS.codeGrey,
+                    shadowColor: isUnblocked ? COLORS.yellow : COLORS.codeGrey,
                   },
                 ]}
               >
@@ -68,7 +77,7 @@ const AwardsContent: FC<{
                 <View
                   style={[styles.romanBadge, { opacity: Number(isUnblocked) }]}
                 >
-                  <OutlinedText fontSize={15}>
+                  <OutlinedText fontSize={formatTabletElementsSize(15, 2.5)}>
                     {formatLevelToRomanNum(currentLevel)}
                   </OutlinedText>
                 </View>
@@ -78,12 +87,9 @@ const AwardsContent: FC<{
         </View>
       </ScrollView>
       <AwardBottomSheet
-        isVisible={selectedAward.isVisible}
-        onAwardClaimModalShow={onAwardClaimModalShow}
-        onClose={() =>
-          setSelectedAward((prevState) => ({ ...prevState, isVisible: false }))
-        }
-        progress={selectedAward.progress}
+        isVisible={selected.isVisible}
+        onClose={handleCloseSheet}
+        progress={selectedProgress}
       />
     </>
   )

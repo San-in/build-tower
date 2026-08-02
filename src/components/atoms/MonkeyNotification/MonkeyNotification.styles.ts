@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     left: formatTabletElementsSize(35),
     position: 'absolute',
-    top: formatTabletElementsSize(25),
+    top: formatTabletElementsSize(20),
     width: formatTabletElementsSize(100),
   },
 })

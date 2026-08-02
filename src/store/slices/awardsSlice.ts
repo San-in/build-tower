@@ -24,6 +24,56 @@ export type AwardsState = Record<AWARD_TYPE, SingleAwardState>
 const getAwardConfigByType = (type: AWARD_TYPE): AwardConfig | undefined =>
   reachAwardsConditions.find((config) => config.type === type)
 
+// Awards whose max level unlocks POWER_UP_MASTER.
+const POWER_UP_MASTER_SOURCES: Array<AWARD_TYPE> = [
+  AWARD_TYPE.ADD_BLOCKS_MASTER,
+  AWARD_TYPE.REMOVE_BLOCKS_MASTER,
+  AWARD_TYPE.ADD_EXTRA_STEP_MASTER,
+]
+
+const isAwardMaxed = (state: AwardsState, type: AWARD_TYPE): boolean => {
+  const award = state[type]
+  const config = getAwardConfigByType(type)
+  return Boolean(award && config && award.currentLevel >= config.maxLevel)
+}
+
+// Unlocks a single-level derived award (maxLevel === 1) once, when qualified.
+const unlockDerivedAward = (
+  state: AwardsState,
+  type: AWARD_TYPE,
+  isQualified: boolean
+) => {
+  const award = state[type]
+  if (!award || award.currentLevel >= 1 || !isQualified) {
+    return
+  }
+  award.currentRepeats = 1
+  award.currentLevel = 1
+  const levelInfo = award.levelsInfo[1]
+  if (levelInfo) {
+    levelInfo.isAvailable = true
+  }
+}
+
+// Derived awards are not counted manually — they unlock when other awards are
+// maxed. Must run POWER_UP_MASTER first so it counts toward AWARDS_COLLECTIONER.
+const syncDerivedAwards = (state: AwardsState) => {
+  unlockDerivedAward(
+    state,
+    AWARD_TYPE.POWER_UP_MASTER,
+    POWER_UP_MASTER_SOURCES.every((type) => isAwardMaxed(state, type))
+  )
+
+  const allOtherAwardsMaxed = reachAwardsConditions
+    .filter((config) => config.type !== AWARD_TYPE.AWARDS_COLLECTIONER)
+    .every((config) => isAwardMaxed(state, config.type))
+  unlockDerivedAward(
+    state,
+    AWARD_TYPE.AWARDS_COLLECTIONER,
+    allOtherAwardsMaxed
+  )
+}
+
 const makeDefaultLevelsInfo = (
   config: AwardConfig
 ): Record<number, AwardLevelState> =>
@@ -62,28 +112,23 @@ const awardsSlice = createSlice({
       const awardState = state[type]
       const config = getAwardConfigByType(type)
 
-      if (!awardState || !config) {
-        return
-      }
-      if (awardState.currentLevel >= config.maxLevel) {
-        return
-      }
+      if (awardState && config && awardState.currentLevel < config.maxLevel) {
+        awardState.currentRepeats += 1
 
-      awardState.currentRepeats += 1
+        const nextLevel = awardState.currentLevel + 1
+        const condition = config.levelConditions[nextLevel]
 
-      const nextLevel = awardState.currentLevel + 1
-      const condition = config.levelConditions[nextLevel]
-      if (!condition) {
-        return
-      }
-
-      if (awardState.currentRepeats >= condition.targetRepeats) {
-        const levelInfo = awardState.levelsInfo[nextLevel]
-        if (levelInfo) {
-          levelInfo.isAvailable = true
+        if (condition && awardState.currentRepeats >= condition.targetRepeats) {
+          const levelInfo = awardState.levelsInfo[nextLevel]
+          if (levelInfo) {
+            levelInfo.isAvailable = true
+          }
+          awardState.currentLevel = nextLevel
         }
-        awardState.currentLevel = nextLevel
       }
+
+      // Maxing a source award may unlock a derived one in the same dispatch.
+      syncDerivedAwards(state)
     },
     setPrizeClaimed: (
       state,
@@ -123,29 +168,27 @@ export const selectAwardCurrentRepeats = (
   type: AWARD_TYPE
 ): number => state.awards[type].currentRepeats
 
+const awardHasUnclaimedPrize = (award: SingleAwardState): boolean =>
+  Object.values(award.levelsInfo).some(
+    (info) => info.isAvailable && !info.isPrizeClaimed
+  )
+
 export const selectAwardsDetails = createSelector(
   [selectAwardsState],
   (awards) =>
     reachAwardsConditions.map((config) => ({
       config,
       progress: awards[config.type],
+      hasUnclaimedPrize: awardHasUnclaimedPrize(awards[config.type]),
     }))
 )
 
 export const selectAwardsWithUnclaimedPrizes = createSelector(
   [selectAwardsState],
-  (awards): Array<AWARD_TYPE> => {
-    const res: Array<AWARD_TYPE> = []
-    for (const award of Object.values(awards)) {
-      for (const info of Object.values(award.levelsInfo)) {
-        if (info.isAvailable && !info.isPrizeClaimed) {
-          res.push(award.type)
-          break
-        }
-      }
-    }
-    return res
-  }
+  (awards): Array<AWARD_TYPE> =>
+    Object.values(awards)
+      .filter(awardHasUnclaimedPrize)
+      .map((award) => award.type)
 )
 
 export const selectIsHasUnclaimedAwards = createSelector(

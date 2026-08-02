@@ -4,7 +4,8 @@ import type { AppDispatch, RootState } from '@store/index'
 import { Level, setAllLevels } from '@store/slices/levelsSlice'
 import { generateInitialLevels } from '@utils'
 
-const STORAGE_KEY = 'levels_progress'
+export const LEVELS_STORAGE_KEY = 'levels_progress'
+const STORAGE_KEY = LEVELS_STORAGE_KEY
 
 const loadPersistedLevels = async (): Promise<Array<Level>> => {
   const raw = await AsyncStorage.getItem(STORAGE_KEY)

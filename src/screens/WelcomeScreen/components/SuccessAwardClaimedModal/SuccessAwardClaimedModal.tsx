@@ -1,5 +1,6 @@
 import { OutlinedText } from '@components/atoms'
 import { MarketPrize } from '@types'
+import { formatTabletElementsSize } from '@utils'
 import React, { FC } from 'react'
 import { View } from 'react-native'
 
@@ -24,12 +25,18 @@ const SuccessAwardClaimedModal: FC<SuccessAwardClaimedModalProps> = ({
     isVisible={isVisible}
     onPress={onPress}
     title={title}
-    titleSize={35}
+    titleSize={formatTabletElementsSize(20)}
   >
-    <View>
-      <CalendarPrizeIcon count={countPrize} size={100} type={typePrize} />
+    <View style={{ marginVertical: formatTabletElementsSize(20) }}>
+      <CalendarPrizeIcon
+        count={countPrize}
+        size={formatTabletElementsSize(70)}
+        type={typePrize}
+      />
     </View>
-    <OutlinedText fontSize={25}>TAP TO CLAIM REWARD</OutlinedText>
+    <OutlinedText fontSize={formatTabletElementsSize(20)}>
+      TAP TO CLAIM REWARD
+    </OutlinedText>
   </SuccessActionModal>
 )
 

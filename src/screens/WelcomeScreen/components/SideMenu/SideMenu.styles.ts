@@ -1,4 +1,5 @@
 import { Z_INDEX_TYPE } from '@constants'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -9,16 +10,20 @@ export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'row-reverse',
-    gap: 5,
+    gap: formatTabletElementsSize(5),
     position: 'absolute',
-    right: 20,
+    right: formatTabletElementsSize(20),
     top: 0,
     zIndex: Z_INDEX_TYPE.high,
   },
-  menuListContainer: { borderRadius: 12, marginLeft: 8, overflow: 'visible' },
+  menuListContainer: {
+    borderRadius: formatTabletElementsSize(12),
+    marginLeft: 8,
+    overflow: 'visible',
+  },
   menuListContent: {
     alignItems: 'center',
     flexDirection: 'row-reverse',
-    gap: 6,
+    gap: formatTabletElementsSize(6),
   },
 })

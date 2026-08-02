@@ -1,5 +1,3 @@
-import { SuccessAwardClaimedModalProps } from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
-
 export enum ACTIVITY_MODAL_TYPES {
   SETTINGS = 'settings',
   MARKET = 'market',
@@ -11,7 +9,4 @@ export type ActivityModalProps = {
   type: ACTIVITY_MODAL_TYPES
   onClose: () => void
   onReopen: () => void
-  onAwardClaimModalShow: (
-    data: Omit<SuccessAwardClaimedModalProps, 'onPress'>
-  ) => void
 }

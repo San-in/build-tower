@@ -26,7 +26,7 @@ import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { COLORS, GlobalStyles } from '@theme'
-import { MARKET_SPECIAL_PRIZE, SCREENS } from '@types'
+import { SCREENS } from '@types'
 import { formatTabletElementsSize } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
@@ -35,14 +35,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import {
-  ActivityCalendar,
-  ActivityModal,
-  SideMenu,
-  SuccessAwardClaimedModal,
-} from './components'
+import { ActivityCalendar, ActivityModal, SideMenu } from './components'
 import { ACTIVITY_MODAL_TYPES } from './components/ActivityModal/ActivityModal.types'
-import { SuccessAwardClaimedModalProps } from './components/SuccessAwardClaimedModal/SuccessAwardClaimedModal'
+import AwardsDevPanel from './components/AwardsDevPanel/AwardsDevPanel' // TEMP: awards test panel
 import { styles } from './WelcomeScreen.styles'
 
 const ASSET_KEYS = { BG: 'background', ASSETS: 'assets' } as const
@@ -53,15 +48,6 @@ type ActivityModal = {
 }
 const INITIAL_ACTIVITY_MODAL_STATE: ActivityModal = {
   type: ACTIVITY_MODAL_TYPES.MARKET,
-  isVisible: false,
-}
-const INITIAL_AWARD_CLAIMED_MODAL_STATE: Omit<
-  SuccessAwardClaimedModalProps,
-  'onPress'
-> = {
-  title: 'Congratulations!',
-  typePrize: MARKET_SPECIAL_PRIZE.Bananas,
-  countPrize: 0,
   isVisible: false,
 }
 
@@ -101,16 +87,7 @@ const WelcomeScreen = () => {
     INITIAL_ACTIVITY_MODAL_STATE
   )
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
-  const [successAwardClaimedModal, setSuccessAwardClaimedModal] = useState<
-    Omit<SuccessAwardClaimedModalProps, 'onPress'>
-  >(INITIAL_AWARD_CLAIMED_MODAL_STATE)
 
-  const {
-    isVisible: isAwardsModalVisible,
-    typePrize,
-    countPrize,
-    title: awardModalTitle,
-  } = successAwardClaimedModal
   const handleStartButtonPress = () => {
     setIsCalendarOpen(false)
     navigation.navigate(SCREENS.LevelsScreen)
@@ -140,20 +117,6 @@ const WelcomeScreen = () => {
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
   const handleOpenSettings = () =>
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
-
-  const handleAwardClaimModalShow = (
-    data: Omit<SuccessAwardClaimedModalProps, 'onPress'>
-  ) => {
-    setSuccessAwardClaimedModal(data)
-    handleCloseActivityModal()
-  }
-  const handleAwardClaimModalPress = () => {
-    setSuccessAwardClaimedModal((prevState) => ({
-      ...prevState,
-      isVisible: false,
-    }))
-    handleReopenActivityModal()
-  }
 
   useEffect(() => {
     if (preloaded) {
@@ -233,19 +196,12 @@ const WelcomeScreen = () => {
       </SafeAreaView>
       <ActivityModal
         isVisible={activityModalConfig.isVisible}
-        onAwardClaimModalShow={handleAwardClaimModalShow}
         onClose={handleCloseActivityModal}
         onReopen={handleReopenActivityModal}
         type={activityModalConfig.type}
       />
       <ActivityCalendar isOpen={isCalendarOpen} onClose={handleCloseCalendar} />
-      <SuccessAwardClaimedModal
-        countPrize={countPrize}
-        isVisible={isAwardsModalVisible}
-        onPress={handleAwardClaimModalPress}
-        title={awardModalTitle}
-        typePrize={typePrize}
-      />
+      <AwardsDevPanel />
     </View>
   )
 }

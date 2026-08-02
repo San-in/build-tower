@@ -34,7 +34,7 @@ import { ActivityCalendarProps, PrizeModalData } from './ActivityCalendar.types'
 import { CalendarItem } from './components'
 import { CalendarPrizeIcon } from './components/CalendarPrizeIcon'
 
-const ITEM_WIDTH = formatTabletElementsSize(100)
+const ITEM_WIDTH = formatTabletElementsSize(100, 1.7)
 const ITEM_GAP = formatTabletElementsSize(15)
 const DEFAULT_GET_PRIZE_MODAL_DATA: PrizeModalData = {
   isVisible: false,

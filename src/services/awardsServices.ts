@@ -7,7 +7,8 @@ import {
   setAllAwards,
 } from '@store/slices/awardsSlice'
 
-const STORAGE_KEY = 'awards_state'
+export const AWARDS_STORAGE_KEY = 'awards_state'
+const STORAGE_KEY = AWARDS_STORAGE_KEY
 
 const isValidAwardsState = (value: unknown): value is AwardsState =>
   Boolean(value) && typeof value === 'object'

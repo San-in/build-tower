@@ -70,7 +70,7 @@ const PowerUpModalContent: FC<PowerUpModalContentProps> = ({
 
     if (!isSelectedPowerUpAvailable) {
       return `You don't have any ${String(powerUp).toUpperCase()} cards. 
-Get some in the MonkeyMarket.`
+Get some in the Monkey Market`
     }
 
     return `${String(powerUp).toUpperCase()} card will ${type === POWER_UP_TYPE.AddRandomBlocks ? 'ADD' : 'REMOVE'}

@@ -30,6 +30,8 @@ import { Text, View } from 'react-native'
 import { styles } from './LevelResultModalContent.styles'
 import { LevelResultModalContentProps } from './LevelResultModalContent.types'
 
+const BUTTON_ICON_SIZE = 30
+
 const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
   onGetDoublePrize,
   onGetPrize,
@@ -169,8 +171,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <IconButton
         icon={
           <CardsIcon
-            height={formatTabletElementsSize(30)}
-            width={formatTabletElementsSize(30)}
+            height={formatTabletElementsSize(BUTTON_ICON_SIZE)}
+            width={formatTabletElementsSize(BUTTON_ICON_SIZE)}
           />
         }
         isDisabled={true}
@@ -184,8 +186,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <IconButton
         icon={
           <HomeIcon
-            height={formatTabletElementsSize(30)}
-            width={formatTabletElementsSize(30)}
+            height={formatTabletElementsSize(BUTTON_ICON_SIZE)}
+            width={formatTabletElementsSize(BUTTON_ICON_SIZE)}
           />
         }
         label={'Home'}
@@ -200,8 +202,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <IconButton
         icon={
           <BuyIcon
-            height={formatTabletElementsSize(30)}
-            width={formatTabletElementsSize(30)}
+            height={formatTabletElementsSize(BUTTON_ICON_SIZE)}
+            width={formatTabletElementsSize(BUTTON_ICON_SIZE)}
           />
         }
         isDisabled={isResetStepsDisabled}
@@ -219,8 +221,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <IconButton
         icon={
           <RestartIcon
-            height={formatTabletElementsSize(30)}
-            width={formatTabletElementsSize(30)}
+            height={formatTabletElementsSize(BUTTON_ICON_SIZE)}
+            width={formatTabletElementsSize(BUTTON_ICON_SIZE)}
           />
         }
         label={'Restart'}
@@ -235,8 +237,8 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
       <IconButton
         icon={
           <ReceiveIcon
-            height={formatTabletElementsSize(30)}
-            width={formatTabletElementsSize(30)}
+            height={formatTabletElementsSize(BUTTON_ICON_SIZE)}
+            width={formatTabletElementsSize(BUTTON_ICON_SIZE)}
           />
         }
         label={'Get Prize'}
@@ -274,13 +276,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         {isTooHigh ? (
           <>
             <OutlinedText fontSize={formatTabletElementsSize(20)}>
-              It must be no
-            </OutlinedText>
-            <OutlinedText fontSize={formatTabletElementsSize(20)}>
-              higher
-            </OutlinedText>
-            <OutlinedText fontSize={formatTabletElementsSize(20)}>
-              than
+              It must be no higher than
             </OutlinedText>
             <View style={styles.blockCounter}>
               <BlockWithValue
@@ -344,7 +340,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         <Text style={styles.textIcon}>{headerContent.icon}</Text>
         <OutlinedText
           color={COLORS.gradientGold_1}
-          fontSize={formatTabletElementsSize(35)}
+          fontSize={formatTabletElementsSize(25)}
           offset={formatTabletElementsSize(2)}
           strokeColor={COLORS.brown}
         >
@@ -352,7 +348,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
         </OutlinedText>
       </View>
       <View style={styles.subTitle}>
-        <OutlinedText fontSize={formatTabletElementsSize(20)}>
+        <OutlinedText fontSize={formatTabletElementsSize(15)}>
           {headerContent.subTitle}
         </OutlinedText>
       </View>
@@ -363,20 +359,20 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
             {prizeMessage}
           </OutlinedText>
           {isShouldShowConsolationPrize && (
-            <View style={{ flex: 1 }}>
+            <View style={styles.consolationPrizeHederContainer}>
               <OutlinedText fontSize={formatTabletElementsSize(20)}>
                 But here’s a little bonus for you:
               </OutlinedText>
               <View style={styles.consolationPrizeContainer}>
                 <OutlinedText
                   color={COLORS.gradientGold_1}
-                  fontSize={formatTabletElementsSize(35)}
+                  fontSize={formatTabletElementsSize(30)}
                   strokeColor={COLORS.brown}
                   style={styles.prizeLabel}
                 >{`${consolationPrize}`}</OutlinedText>
                 <BananasIcon
-                  height={formatTabletElementsSize(35)}
-                  width={formatTabletElementsSize(35)}
+                  height={formatTabletElementsSize(30)}
+                  width={formatTabletElementsSize(30)}
                 />
               </View>
             </View>

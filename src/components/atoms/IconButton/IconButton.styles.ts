@@ -7,15 +7,15 @@ export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'column',
-    gap: 4,
+    gap: formatTabletElementsSize(4),
   },
   containerWithNotify: {
     borderColor: COLORS.roofTerracotta,
-    borderWidth: 2,
+    borderWidth: formatTabletElementsSize(2),
   },
   disableShadow: {
     backgroundColor: COLORS.codeGrey70,
-    borderRadius: 16,
+    borderRadius: formatTabletElementsSize(16),
     bottom: 0,
     left: 0,
     position: 'absolute',
@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
   },
   iconContainer: {
     backgroundColor: COLORS.codeGrey30,
-    borderRadius: 16,
-    padding: 5,
+    borderRadius: formatTabletElementsSize(16),
+    padding: formatTabletElementsSize(5),
     position: 'relative',
   },
   iconContainerPressed: {
@@ -42,7 +42,8 @@ export const styles = StyleSheet.create({
   labelContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 2,
+    gap: formatTabletElementsSize(2),
+    maxWidth: formatTabletElementsSize(60),
   },
   lock: { fontSize: formatTabletElementsSize(14) },
 })

@@ -8,7 +8,8 @@ import {
   UserActivityState,
 } from '@store/slices/userActivitySlice'
 
-const STORAGE_KEY = 'user_activity'
+export const USER_ACTIVITY_STORAGE_KEY = 'user_activity'
+const STORAGE_KEY = USER_ACTIVITY_STORAGE_KEY
 
 const isValidUserActivity = (value: unknown): value is UserActivityState => {
   if (!value || typeof value !== 'object') {

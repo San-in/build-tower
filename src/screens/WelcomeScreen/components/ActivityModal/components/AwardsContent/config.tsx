@@ -181,7 +181,7 @@ export const reachAwardsConditions: Array<AwardConfig> = [
   },
   {
     type: AWARD_TYPE.ADD_BLOCKS_MASTER,
-    name: 'Add Blocks Master',
+    name: 'Add Master',
     description: 'Use any Add Random Blocks power-up.',
     icon: <AddBlocksMasterIcon height={'100%'} width={'100%'} />,
     maxLevel: 5,
@@ -215,7 +215,7 @@ export const reachAwardsConditions: Array<AwardConfig> = [
   },
   {
     type: AWARD_TYPE.REMOVE_BLOCKS_MASTER,
-    name: 'Remove Blocks Master',
+    name: 'Remove Master',
     description: 'Use any Remove Random Blocks power-up.',
     icon: <RemoveBlocksMasterIcon height={'100%'} width={'100%'} />,
     maxLevel: 5,

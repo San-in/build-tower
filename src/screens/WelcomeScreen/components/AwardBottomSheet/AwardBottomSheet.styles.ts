@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   background: {
     backgroundColor: COLORS.gradientPurple_2,
-    borderWidth: 1,
+    borderWidth: formatTabletElementsSize(1),
   },
   backgroundGradient: {
     zIndex: Z_INDEX_TYPE.hidden,
@@ -22,19 +22,20 @@ export const styles = StyleSheet.create({
   },
   content: {
     alignItems: 'center',
-    gap: 5,
+    gap: formatTabletElementsSize(5),
     height: '100%',
     justifyContent: 'space-between',
-    paddingBottom: formatTabletElementsSize(30, 2.5),
+    paddingBottom: formatTabletElementsSize(20, 2),
     paddingHorizontal: formatTabletElementsSize(10, 2.5),
     paddingTop: formatTabletElementsSize(10, 2.5),
   },
   descriptionRow: {
     alignItems: 'center',
     alignSelf: 'flex-end',
+
     flexDirection: 'row',
     gap: formatTabletElementsSize(3, 2.5),
-    marginTop: 20,
+    marginTop: formatTabletElementsSize(5),
   },
   emptyContainer: {
     alignItems: 'center',
@@ -44,12 +45,12 @@ export const styles = StyleSheet.create({
   giftPressable: {
     backgroundColor: COLORS.yellow10,
     borderColor: COLORS.white50,
-    borderRadius: 50,
-    borderWidth: 1,
+    borderRadius: formatTabletElementsSize(50),
+    borderWidth: formatTabletElementsSize(1),
     left: '50%',
-    padding: 2,
+    padding: formatTabletElementsSize(2),
     position: 'absolute',
-    top: -35,
+    top: formatTabletElementsSize(-35),
   },
   gradientBar: {
     height: '100%',
@@ -61,11 +62,11 @@ export const styles = StyleSheet.create({
   iconWrapper: {
     aspectRatio: 1,
     flex: 1,
-    marginTop: 30,
+    marginTop: formatTabletElementsSize(5),
   },
   levelBar: {
     backgroundColor: COLORS.codeGrey20,
-    borderRightWidth: 1,
+    borderRightWidth: formatTabletElementsSize(1),
     elevation: 4,
     height: formatTabletElementsSize(20),
     shadowOffset: { width: 2, height: 5 },
@@ -84,5 +85,24 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flexDirection: 'row',
+  },
+  singleGiftContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: formatTabletElementsSize(20),
+    width: '100%',
+  },
+  singleIconWrapper: {
+    aspectRatio: 1,
+    height: formatTabletElementsSize(70),
+  },
+  singleGiftPressable: {
+    alignItems: 'center',
+    backgroundColor: COLORS.yellow10,
+    borderColor: COLORS.white50,
+    borderRadius: formatTabletElementsSize(50),
+    borderWidth: formatTabletElementsSize(1),
+    justifyContent: 'center',
+    padding: formatTabletElementsSize(12),
   },
 })

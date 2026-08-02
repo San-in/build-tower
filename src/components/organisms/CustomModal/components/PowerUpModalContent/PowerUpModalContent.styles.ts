@@ -46,11 +46,14 @@ export const styles = StyleSheet.create({
     marginBottom: formatTabletElementsSize(25),
     width: '100%',
   },
-  container: { marginTop: formatTabletElementsSize(10), width: '100%' },
+  container: {
+    marginTop: formatTabletElementsSize(10),
+    width: '100%',
+  },
   infoMessageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: formatTabletElementsSize(30),
+    minHeight: formatTabletElementsSize(90),
   },
   powerUp: {
     alignItems: 'center',

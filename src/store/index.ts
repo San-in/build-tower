@@ -4,6 +4,7 @@ import { bananasService, levelService, marketService } from '@services'
 import { awardsService } from '../services/awardsServices'
 import { userActivityService } from '../services/userActivityService'
 import awardsReducer from './slices/awardsSlice'
+import awardsUiReducer from './slices/awardsUiSlice'
 import bananasReducer from './slices/bananasSlice'
 import levelsReducer from './slices/levelsSlice'
 import marketReducer from './slices/marketSlice'
@@ -16,6 +17,7 @@ export const store = configureStore({
     market: marketReducer,
     userActivity: userActivityReducer,
     awards: awardsReducer,
+    awardsUi: awardsUiReducer,
   },
 })
 awardsService.setupAwardsPersistence(store)

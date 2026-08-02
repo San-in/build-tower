@@ -1,7 +1,12 @@
 import { CustomModal } from '@components/organisms'
 import { Toast } from '@components/wrappers'
-import { useAppDispatch } from '@store/hooks'
+import { clearAllPersistence } from '@services'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { resetAwardsToDefault } from '@store/slices/awardsSlice'
+import {
+  hideAwardSuccess,
+  selectAwardSuccess,
+} from '@store/slices/awardsUiSlice'
 import { resetBananas } from '@store/slices/bananasSlice'
 import { resetLevels } from '@store/slices/levelsSlice'
 import { resetMarket } from '@store/slices/marketSlice'
@@ -12,6 +17,7 @@ import {
 import { MODAL_TYPE } from '@types'
 import React, { FC, memo, useCallback, useMemo, useState } from 'react'
 
+import SuccessAwardClaimedModal from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
 import { styles } from './ActivityModal.styles'
 import { ACTIVITY_MODAL_TYPES, ActivityModalProps } from './ActivityModal.types'
 import { MarketContent, SettingsContent, WarningModal } from './components'
@@ -22,11 +28,11 @@ const ActivityModal: FC<ActivityModalProps> = ({
   onClose,
   onReopen,
   type,
-  onAwardClaimModalShow,
 }) => {
   const [isResetProgressModalVisible, setIsResetProgressModalVisible] =
     useState<boolean>(false)
   const dispatch = useAppDispatch()
+  const awardSuccess = useAppSelector(selectAwardSuccess)
 
   const handleResetProgress = async () => {
     try {
@@ -36,6 +42,9 @@ const ActivityModal: FC<ActivityModalProps> = ({
       dispatch(resetActivityToDefault())
       dispatch(resetStreakToFirstDay())
       dispatch(resetAwardsToDefault())
+      // Flush immediately so a reload before the debounced writers fire
+      // cannot re-hydrate the pre-reset values.
+      await clearAllPersistence()
       Toast({
         type: 'info',
         text1: 'Everything reset — good luck!',
@@ -78,12 +87,10 @@ const ActivityModal: FC<ActivityModalProps> = ({
         [ACTIVITY_MODAL_TYPES.AWARDS]: {
           title: 'Awards',
           color: MODAL_TYPE.Purple,
-          content: (
-            <AwardsContent onAwardClaimModalShow={onAwardClaimModalShow} />
-          ),
+          content: <AwardsContent />,
         },
       })[type],
-    [onPressResetProgress, type, onAwardClaimModalShow]
+    [onPressResetProgress, type]
   )
 
   const { title, content, color } = modalConfig
@@ -95,6 +102,15 @@ const ActivityModal: FC<ActivityModalProps> = ({
         handleClose={onClose}
         isMonkeyVisible={false}
         modalVisible={isVisible}
+        renderOverlay={
+          <SuccessAwardClaimedModal
+            countPrize={awardSuccess.countPrize}
+            isVisible={awardSuccess.isVisible}
+            onPress={() => dispatch(hideAwardSuccess())}
+            title={awardSuccess.title}
+            typePrize={awardSuccess.typePrize}
+          />
+        }
         title={title}
         type={color}
       >

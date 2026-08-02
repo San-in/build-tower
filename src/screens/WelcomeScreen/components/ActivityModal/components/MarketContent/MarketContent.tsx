@@ -33,16 +33,6 @@ const MarketContent: FC = () => {
 
   return (
     <>
-      <View style={styles.container}>
-        <OutlinedText
-          fontSize={formatTabletElementsSize(15, 2.5)}
-        >{`${bananas}`}</OutlinedText>
-        <BananasIcon
-          height={formatTabletElementsSize(20)}
-          transform="scale(-1,1)"
-          width={formatTabletElementsSize(20)}
-        />
-      </View>
       <ScrollView
         style={[
           styles.contentContainer,
@@ -64,6 +54,16 @@ const MarketContent: FC = () => {
           ))}
         </View>
       </ScrollView>
+      <View style={styles.container}>
+        <OutlinedText
+          fontSize={formatTabletElementsSize(15, 2.5)}
+        >{`${bananas}`}</OutlinedText>
+        <BananasIcon
+          height={formatTabletElementsSize(20)}
+          transform="scale(-1,1)"
+          width={formatTabletElementsSize(20)}
+        />
+      </View>
     </>
   )
 }

@@ -86,6 +86,7 @@ const CustomModal: FC<CustomModalProps> = ({
   withCrossIcon = true,
   isMonkeyVisible = true,
   closeOnBackdropPress = false,
+  renderOverlay,
 }) => {
   const [shake, setShake] = useState(false)
 
@@ -209,6 +210,7 @@ const CustomModal: FC<CustomModalProps> = ({
           </View>
         </MotiView>
       </View>
+      {renderOverlay}
     </Modal>
   )
 }

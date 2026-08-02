@@ -7,7 +7,8 @@ import {
   setAllProducts,
 } from '@store/slices/marketSlice'
 
-const STORAGE_KEY = 'market_purchases'
+export const MARKET_STORAGE_KEY = 'market_purchases'
+const STORAGE_KEY = MARKET_STORAGE_KEY
 
 const isValidMarketState = (value: unknown): value is MarketState =>
   Boolean(value) && typeof value === 'object'

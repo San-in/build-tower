@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: formatTabletElementsSize(10),
+    gap: formatTabletElementsSize(5),
     justifyContent: 'center',
     marginTop: formatTabletElementsSize(20),
     minWidth: '90%',
@@ -33,6 +33,9 @@ export const styles = StyleSheet.create({
     gap: formatTabletElementsSize(2),
     justifyContent: 'center',
     marginTop: formatTabletElementsSize(10),
+  },
+  consolationPrizeHederContainer: {
+    flex: 1,
   },
   container: { alignItems: 'center', justifyContent: 'center' },
   iconContainer: {
@@ -58,6 +61,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center',
     marginTop: formatTabletElementsSize(5),
   },
   prizeLabel: {

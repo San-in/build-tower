@@ -3,7 +3,8 @@ import type { Store } from '@reduxjs/toolkit'
 import type { AppDispatch, RootState } from '@store/index'
 import { setAllBananas } from '@store/slices/bananasSlice'
 
-const STORAGE_KEY = 'bananas'
+export const BANANAS_STORAGE_KEY = 'bananas'
+const STORAGE_KEY = BANANAS_STORAGE_KEY
 
 const loadBananas = async (): Promise<number> => {
   const raw = await AsyncStorage.getItem(STORAGE_KEY)

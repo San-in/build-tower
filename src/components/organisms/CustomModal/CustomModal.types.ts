@@ -12,4 +12,7 @@ export type CustomModalProps = {
   withCrossIcon?: boolean
   isMonkeyVisible?: boolean
   closeOnBackdropPress?: boolean
+  // Fullscreen node rendered above the card, inside the native modal (e.g. a
+  // success overlay that must appear over the modal without closing it).
+  renderOverlay?: ReactNode
 }
