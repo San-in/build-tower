@@ -133,6 +133,11 @@ const CustomModal: FC<CustomModalProps> = ({
   const placeholder = PLACEHOLDER_BY_TYPE[type]
   const gradientColors = useMemo(() => GRADIENT_BY_TYPE[type], [type])
 
+  const handleCrossIconPress = () => {
+    playSfx('button')
+    handleClose()
+  }
+
   return (
     <Modal
       transparent
@@ -183,7 +188,7 @@ const CustomModal: FC<CustomModalProps> = ({
 
             {withCrossIcon && (
               <Pressable
-                onPress={handleClose}
+                onPress={handleCrossIconPress}
                 style={({ pressed }) => [
                   styles.closeIcon,
                   pressed && styles.closeIconPressed,

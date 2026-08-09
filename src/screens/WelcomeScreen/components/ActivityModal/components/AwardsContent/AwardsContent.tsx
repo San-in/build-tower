@@ -2,7 +2,11 @@ import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectAwardsDetails } from '@store/slices/awardsSlice'
 import { COLORS } from '@theme'
-import { formatLevelToRomanNum, formatTabletElementsSize } from '@utils'
+import {
+  formatLevelToRomanNum,
+  formatTabletElementsSize,
+  playSfx,
+} from '@utils'
 import React, { FC, memo, useState } from 'react'
 import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native'
 
@@ -29,11 +33,14 @@ const AwardsContent: FC = () => {
         ?.progress ?? null)
     : null
 
-  const handleOpenAward = (type: AWARD_TYPE) =>
+  const handleOpenAward = (type: AWARD_TYPE) => {
+    playSfx('power_up')
     setSelected({ isVisible: true, type })
+  }
 
-  const handleCloseSheet = () =>
+  const handleCloseSheet = () => {
     setSelected((prevState) => ({ ...prevState, isVisible: false }))
+  }
 
   return (
     <>

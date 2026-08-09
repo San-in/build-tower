@@ -9,7 +9,7 @@ import { IconButton } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectIsHasUnclaimedAwards } from '@store/slices/awardsSlice'
 import { selectIsHasUnclaimedRewards } from '@store/slices/userActivitySlice'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize, playSfx } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, useMemo, useState } from 'react'
 import { Pressable, View } from 'react-native'
@@ -42,6 +42,7 @@ const SideMenu: FC<SideMenuProps> = ({
   }
 
   const toggleMenu = () => {
+    playSfx('button')
     if (isMenuExpanded) {
       closeMenu()
     } else {

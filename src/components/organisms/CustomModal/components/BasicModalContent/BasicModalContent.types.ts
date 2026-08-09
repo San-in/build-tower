@@ -4,4 +4,5 @@ export type BasicModalContentProps = {
   onConfirm: () => void
   confirmButtonText?: string
   cancelButtonText?: string
+  confirmWithSound?: boolean
 }

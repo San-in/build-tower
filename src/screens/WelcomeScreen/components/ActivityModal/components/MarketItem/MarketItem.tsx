@@ -100,6 +100,7 @@ const MarketItem: FC<MarketItemProps> = ({
         textIconStyle={styles.buttonIcon}
         textSize={formatTabletElementsSize(12, 2.5)}
         title={isMaxed ? 'MAX' : `${currentPrice}`}
+        withSound={false}
       />
     </Pressable>
   )

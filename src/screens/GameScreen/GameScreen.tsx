@@ -1033,6 +1033,7 @@ const GameScreen: FC = () => {
           actionModalHeader: 'Wanna go home?',
           actionModalContent: (
             <BasicModalContent
+              confirmWithSound={false}
               onCancel={handleCloseActionModal}
               onConfirm={handleGoHomeAfterLoss}
               text={

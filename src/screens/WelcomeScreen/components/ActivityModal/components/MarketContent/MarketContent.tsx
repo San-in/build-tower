@@ -3,7 +3,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAppSelector } from '@store/hooks'
 import { selectBananas } from '@store/slices/bananasSlice'
 import { MARKET_PRODUCT } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize, playSfx } from '@utils'
 import React, { FC, memo, useCallback, useState } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
 
@@ -22,6 +22,7 @@ const MarketContent: FC = () => {
 
   const handleToggleSelect = useCallback(
     (product: MARKET_PRODUCT) => {
+      playSfx('button')
       if (selectedProduct === product) {
         setSelectedProduct(null)
         return

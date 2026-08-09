@@ -1,6 +1,6 @@
 import { Button, OutlinedText } from '@components/atoms'
 import { BUTTON_TYPE } from '@types'
-import { formatTabletElementsSize , Haptics } from '@utils'
+import { formatTabletElementsSize, Haptics } from '@utils'
 import { FC, memo } from 'react'
 import { View } from 'react-native'
 
@@ -13,9 +13,10 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
   text,
   confirmButtonText = 'YES',
   cancelButtonText = 'NO',
+  confirmWithSound = true,
 }) => {
   const handleConfirm = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     onConfirm()
   }
 
@@ -41,6 +42,7 @@ const BasicModalContent: FC<BasicModalContentProps> = ({
           style={[styles.button, !onCancel && styles.buttonRestricted]}
           textSize={formatTabletElementsSize(12)}
           title={confirmButtonText}
+          withSound={confirmWithSound}
         />
       </View>
     </View>

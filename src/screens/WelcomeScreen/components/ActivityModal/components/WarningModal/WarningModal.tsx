@@ -43,6 +43,7 @@ const WarningModal: FC<WarningModalProps> = ({
           textSize={formatTabletElementsSize(12)}
           title={'RESET'}
           type={BUTTON_TYPE.Error}
+          withSound={false}
         />
       </View>
     </CustomModal>

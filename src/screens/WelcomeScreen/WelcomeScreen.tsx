@@ -94,10 +94,12 @@ const WelcomeScreen = () => {
   }
 
   const handleAwardsIconPress = () => {
+    playSfx('modal_open')
     setIsCalendarOpen(false)
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.AWARDS)
   }
   const handleCalendarIconPress = () => {
+    playSfx('modal_open')
     handleCloseActivityModal()
     setIsCalendarOpen((prevState) => !prevState)
   }
@@ -112,9 +114,13 @@ const WelcomeScreen = () => {
     setActivityModalConfig((prevState) => ({ ...prevState, isVisible: false }))
   const handleReopenActivityModal = () =>
     setActivityModalConfig((prevState) => ({ ...prevState, isVisible: true }))
-  const handleCloseCalendar = () => setIsCalendarOpen(false)
-  const handleOpenMarket = () =>
+  const handleCloseCalendar = () => {
+    setIsCalendarOpen(false)
+  }
+  const handleOpenMarket = () => {
+    playSfx('modal_open')
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
+  }
   const handleOpenSettings = () => {
     playSfx('modal_open')
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
