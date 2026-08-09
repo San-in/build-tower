@@ -21,7 +21,7 @@ const PowerUpButton = memo(
     const k = size / formatTabletElementsSize(30)
     const textSize =
       type === POWER_UP_TYPE.AddExtraStep
-        ? formatTabletElementsSize(size, 1.5) / 2.5
+        ? formatTabletElementsSize(size, 1) / 2.5
         : formatTabletElementsSize(size, 1.2) / 2
 
     return (

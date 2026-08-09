@@ -12,7 +12,12 @@ import { selectBananas } from '@store/slices/bananasSlice'
 import { selectAvailableLevels } from '@store/slices/levelsSlice'
 import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
-import { formatTabletElementsSize, getLevelIcon, Haptics } from '@utils'
+import {
+  formatTabletElementsSize,
+  getLevelIcon,
+  Haptics,
+  playSfx,
+} from '@utils'
 import { Image } from 'expo-image'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -113,7 +118,8 @@ const LevelsScreen = () => {
 
   const handleSelectLevel = useCallback(
     (level: LevelId) => {
-      Haptics.selectionAsync()
+      void Haptics.selectionAsync()
+      playSfx('button')
       setSelectedLevel(level)
       const offset = getOffsetForIndex(level - 1)
       listRef.current?.scrollToOffset({ offset, animated: true })
