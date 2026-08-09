@@ -40,7 +40,7 @@ import {
   LEVEL_CONFIG,
   POWER_UP_BLOCK_MANIPULATION_LIMITS,
 } from '@constants'
-import { useAssetPreload, useAssetsReady } from '@hooks'
+import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
@@ -91,7 +91,12 @@ import {
   getOptionNumberByOperator,
   getOptionOperators,
   getValidOptionNumber,
- Haptics,  showIsUserNeedHelp } from '@utils'
+  Haptics,
+  playSfx,
+  showIsUserNeedHelp,
+  startLoopSfx,
+  stopLoopSfx,
+} from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -139,6 +144,20 @@ const ASSET_KEYS = {
   GROUND: 'ground',
 }
 
+const getModalOpenSound = (type: GAME_MODAL_TYPE) => {
+  if (type === GAME_MODAL_TYPE.LevelResult) {
+    return 'result_modal_open' as const
+  }
+  if (
+    type === GAME_MODAL_TYPE.LevelConditions ||
+    type === GAME_MODAL_TYPE.Home ||
+    type === GAME_MODAL_TYPE.Reset
+  ) {
+    return 'modal_open' as const
+  }
+  return null
+}
+
 const GameScreen: FC = () => {
   // HOOKS
   const {
@@ -148,6 +167,7 @@ const GameScreen: FC = () => {
   const powerUpUsedRef = useRef(false)
   const resetStepUsedRef = useRef(false)
   const hasFinishedRef = useRef(false)
+  const welcomeBonusShownRef = useRef(false)
 
   const stars = useAppSelector(selectLevelById(level))?.stars ?? 0
   const isWelcomeBonusClaimed = useAppSelector(selectWelcomeBonusClaimed)
@@ -191,6 +211,7 @@ const GameScreen: FC = () => {
 
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
   const dispatch = useAppDispatch()
+  useBackgroundMusic('level')
 
   // STATES
   const [step, setStep] = useState(0)
@@ -418,6 +439,11 @@ const GameScreen: FC = () => {
     handleCloseActionModal()
   }, [handleCloseActionModal, navigation])
 
+  const handleGoHomeAfterLoss = useCallback(() => {
+    playSfx('lose')
+    void handleGoHome()
+  }, [handleGoHome])
+
   const handleResetLevelPressed = useCallback(() => {
     setSuccessActionInfoModalData({
       isVisible: true,
@@ -437,6 +463,7 @@ const GameScreen: FC = () => {
     handleRemovePowerUp(MARKET_PRODUCT.AddExtraStep)
     powerUpUsedRef.current = true
     dispatch(increaseRepeatsForAward(AWARD_TYPE.ADD_EXTRA_STEP_MASTER))
+    playSfx('power_up')
     setImmediate(() => {
       setStep((prevState) => Math.max(prevState - 1, 1))
       Toast({
@@ -687,6 +714,7 @@ const GameScreen: FC = () => {
     }
 
     if (monkeyNotificationShowedSteps === step) {
+      playSfx('monkey_notification')
       setIsMonkeyNotificationVisible(true)
     }
     handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Idle)
@@ -702,6 +730,7 @@ const GameScreen: FC = () => {
   const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
     if (isLevelFinished) {
       setTimeout(() => {
+        playSfx('celebration')
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
       }, 400)
       return
@@ -833,6 +862,7 @@ const GameScreen: FC = () => {
       !monkeyAnimationData.isVisible &&
       monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.RunAndJump
     ) {
+      playSfx('monkey_noises')
       handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.RunAndJump)
       return
     }
@@ -873,6 +903,7 @@ const GameScreen: FC = () => {
               : AWARD_TYPE.REMOVE_BLOCKS_MASTER
           powerUpUsedRef.current = true
           dispatch(increaseRepeatsForAward(masterAward))
+          playSfx('power_up')
           setTimeout(async () => {
             handleRemovePowerUp(marketProduct)
           }, 1000)
@@ -1003,7 +1034,7 @@ const GameScreen: FC = () => {
           actionModalContent: (
             <BasicModalContent
               onCancel={handleCloseActionModal}
-              onConfirm={handleGoHome}
+              onConfirm={handleGoHomeAfterLoss}
               text={
                 'Hold on! If you leave now, your progress will poof — disappear!'
               }
@@ -1114,7 +1145,7 @@ const GameScreen: FC = () => {
               isResetStepsDisabled={!resetStepsModalData.attempt}
               onGetDoublePrize={handleLevelResultDoublePrizePressed}
               onGetPrize={handleLevelResultGetPrizePressed}
-              onGoHome={handleGoHome}
+              onGoHome={handleGoHomeAfterLoss}
               onResetSteps={handleResetSteps}
               onRestartLevel={handleLevelResultResetLevelPressed}
               prize={prize}
@@ -1124,12 +1155,12 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Blue,
           withCrossIcon: false,
-          onCrossIconPress: handleGoHome,
+          onCrossIconPress: handleGoHomeAfterLoss,
         },
       })[actionModalData.type],
     [
       handleCloseActionModal,
-      handleGoHome,
+      handleGoHomeAfterLoss,
       handleResetLevelPressed,
       step,
       handleUseAddExtraPowerUp,
@@ -1162,6 +1193,14 @@ const GameScreen: FC = () => {
       assetLoaded(ASSET_KEYS.ASSETS)
     }
   }, [assetsReady, assetLoaded])
+
+  useEffect(() => {
+    if (isTowerBuilding) {
+      startLoopSfx('building')
+    } else {
+      stopLoopSfx('building')
+    }
+  }, [isTowerBuilding])
 
   useEffect(() => {
     if (
@@ -1238,13 +1277,18 @@ const GameScreen: FC = () => {
   }, [isStarsGifVisible])
 
   useEffect(() => {
-    if (!isWelcomeBonusClaimed) {
+    if (
+      !isWelcomeBonusClaimed &&
+      isInterfacesVisible &&
+      !welcomeBonusShownRef.current
+    ) {
+      welcomeBonusShownRef.current = true
       setSuccessActionInfoModalData({
         isVisible: true,
         type: GAME_SCREEN_SUCCESS_ACTION.WelcomeBonus,
       })
     }
-  }, [isWelcomeBonusClaimed])
+  }, [isWelcomeBonusClaimed, isInterfacesVisible])
 
   return (
     <>
@@ -1487,6 +1531,7 @@ const GameScreen: FC = () => {
       <CustomModal
         handleClose={onCrossIconPress}
         modalVisible={actionModalData.isVisible}
+        openSound={getModalOpenSound(actionModalData.type)}
         title={actionModalHeader}
         type={actionModalColor}
         withCrossIcon={withCrossIcon}
@@ -1505,6 +1550,10 @@ const GameScreen: FC = () => {
         isVisible={successActionInfoModalData.isVisible}
         onPress={successActionModalCallback}
         title={successActionModalHeader}
+        withSound={
+          successActionInfoModalData.type !==
+          GAME_SCREEN_SUCCESS_ACTION.WelcomeBonus
+        }
       >
         {successActionModalContent}
       </SuccessActionModal>

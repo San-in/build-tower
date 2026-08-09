@@ -2,10 +2,17 @@ import { gradientsMap } from '@components/atoms/Button/gradinentsMap'
 import { OutlinedText } from '@components/atoms/OutlinedText'
 import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize, playSfx } from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  Animated,
+  GestureResponderEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { Easing } from 'react-native-reanimated'
 
 import { styles } from './Button.styles'
@@ -22,6 +29,7 @@ const Button: FC<ButtonProps> = ({
   textIcon,
   textIconStyle,
   numberOfLines,
+  withSound = true,
   ...props
 }) => {
   const [isPressed, setIsPressed] = useState(false)
@@ -40,6 +48,16 @@ const Button: FC<ButtonProps> = ({
       }, i * 50)
     }
   }, [gradients])
+
+  const handlePress = useCallback(
+    (event: GestureResponderEvent) => {
+      if (withSound) {
+        playSfx('button')
+      }
+      onPress?.(event)
+    },
+    [onPress, withSound]
+  )
 
   const animateBorder = borderAnim.interpolate({
     inputRange: [0, 1],
@@ -97,7 +115,7 @@ const Button: FC<ButtonProps> = ({
         {...props}
         disabled={isDisabled}
         onLongPress={runChangeGradient}
-        onPress={onPress}
+        onPress={handlePress}
         onPressIn={() => {
           setIsPressed(true)
           Animated.timing(borderAnim, {

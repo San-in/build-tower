@@ -21,13 +21,13 @@ import {
   WinBannerImg,
 } from '@assets/images'
 import { Button, OutlinedText } from '@components/atoms'
-import { useAssetPreload, useAssetsReady } from '@hooks'
+import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { COLORS, GlobalStyles } from '@theme'
 import { SCREENS } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
@@ -52,6 +52,7 @@ const INITIAL_ACTIVITY_MODAL_STATE: ActivityModal = {
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
+  useBackgroundMusic('welcome')
   const assetsToPreload = useMemo(
     () => [
       BackgroundImg,
@@ -114,8 +115,10 @@ const WelcomeScreen = () => {
   const handleCloseCalendar = () => setIsCalendarOpen(false)
   const handleOpenMarket = () =>
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.MARKET)
-  const handleOpenSettings = () =>
+  const handleOpenSettings = () => {
+    playSfx('modal_open')
     handleOpenActivityModal(ACTIVITY_MODAL_TYPES.SETTINGS)
+  }
 
   useEffect(() => {
     if (preloaded) {

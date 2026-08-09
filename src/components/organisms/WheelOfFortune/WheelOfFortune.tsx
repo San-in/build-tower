@@ -6,12 +6,18 @@ import {
 } from '@components/organisms/WheelOfFortune/WheelOfFortune.types'
 import { IS_TABLET } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
-import { formatTabletElementsSize , Haptics } from '@utils'
+import {
+  formatTabletElementsSize,
+  Haptics,
+  startLoopSfx,
+  stopLoopSfx,
+} from '@utils'
 import * as d3Shape from 'd3-shape'
 import { MotiView } from 'moti'
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -103,6 +109,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
     const wheelPaths = useMemo(() => makeWheel(), [makeWheel])
 
+    useEffect(() => () => stopLoopSfx('roulette'), [])
+
     const spin = () => {
       const sectorAngle = oneTurn / sectors.length
 
@@ -111,6 +119,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
         360 * numberOfTurns - (winnerIndex * sectorAngle + angleOffset)
       angle.setValue(0)
       setWinnerSector(null)
+      startLoopSfx('roulette')
 
       const hapticInterval = setInterval(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
@@ -123,6 +132,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
         useNativeDriver: true,
       }).start(() => {
         clearInterval(hapticInterval)
+        stopLoopSfx('roulette')
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         setWinnerSector(winnerIndex)
         onFinish(sectors[winnerIndex] ?? '', winnerIndex)

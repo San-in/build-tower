@@ -14,6 +14,7 @@ import React, {
 import { Dimensions, PixelRatio, Platform } from 'react-native'
 
 import { setHapticsEnabled } from '../utils/haptics'
+import { setSoundEnabled } from '../utils/sound'
 
 type SettingsState = {
   soundEnabled: boolean
@@ -62,7 +63,7 @@ export const SettingsContext = createContext<SettingsState & SettingsActions>({
 })
 
 export const SettingsProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [soundEnabled, setSoundEnabled] = useState(initial.soundEnabled)
+  const [soundEnabled, setSoundEnabledState] = useState(initial.soundEnabled)
   const [hapticsEnabled, setHapticsEnabledState] = useState(
     initial.hapticsEnabled
   )
@@ -78,7 +79,7 @@ export const SettingsProvider: FC<PropsWithChildren> = ({ children }) => {
           AsyncStorage.getItem(STORAGE_KEYS.language),
         ])
         if (sound !== null) {
-          setSoundEnabled(sound === 'true')
+          setSoundEnabledState(sound === 'true')
         }
         if (haptics !== null) {
           setHapticsEnabledState(haptics === 'true')
@@ -102,8 +103,12 @@ export const SettingsProvider: FC<PropsWithChildren> = ({ children }) => {
     setHapticsEnabled(hapticsEnabled)
   }, [hapticsEnabled])
 
+  useEffect(() => {
+    setSoundEnabled(soundEnabled)
+  }, [soundEnabled])
+
   const toggleSound = useCallback(() => {
-    setSoundEnabled((prev) => {
+    setSoundEnabledState((prev) => {
       const next = !prev
       AsyncStorage.setItem(
         STORAGE_KEYS.soundEnabled,

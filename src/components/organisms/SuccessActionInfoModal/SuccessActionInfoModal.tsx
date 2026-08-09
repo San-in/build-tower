@@ -1,7 +1,7 @@
 import confettiAnimation from '@assets/icons/animations/confetti.json'
 import winAnimation from '@assets/icons/animations/win.json'
 import { BackgroundImg } from '@assets/images'
-import { Haptics } from '@utils'
+import { Haptics, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { MotiView } from 'moti'
@@ -15,6 +15,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
   isVisible,
   onPress,
   children,
+  withSound = true,
 }) => {
   const [isBackgroundReady, setIsBackGroundReady] = useState(false)
   const confettiRef = useRef<LottieView>(null)
@@ -31,6 +32,9 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
     ) {
       confettiRef.current?.reset()
       isAnimationPlaying.current = true
+      if (withSound) {
+        playSfx('success_fanfare')
+      }
       timeoutId = setTimeout(() => {
         confettiRef.current?.play()
         setIsConfettiVisible(true)
@@ -39,7 +43,7 @@ const SuccessActionInfoModal: FC<SuccessActionInfoModalProps> = ({
       setIsConfettiVisible(false)
     }
     return () => clearTimeout(timeoutId)
-  }, [isBackgroundReady, isVisible])
+  }, [isBackgroundReady, isVisible, withSound])
 
   useEffect(() => {
     if (!isVisible) {

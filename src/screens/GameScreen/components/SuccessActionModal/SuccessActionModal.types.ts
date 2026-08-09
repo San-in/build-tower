@@ -19,4 +19,5 @@ export type SuccessActionModalProps = {
   imageStyle?: StyleProp<ImageStyle>
   children?: ReactNode
   titleSize?: number
+  withSound?: boolean
 }

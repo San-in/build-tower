@@ -11,7 +11,12 @@ import { removeBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, POWER_UP_GRADE } from '@types'
-import { formatTabletElementsSize, getPowerUpInfoByMarketProduct , Haptics } from '@utils'
+import {
+  formatTabletElementsSize,
+  getPowerUpInfoByMarketProduct,
+  Haptics,
+  playSfx,
+} from '@utils'
 import React, { FC, memo, useCallback, useMemo } from 'react'
 import { Pressable, View } from 'react-native'
 
@@ -30,8 +35,6 @@ const MarketItem: FC<MarketItemProps> = ({
   const { price, description, type, grade } =
     getPowerUpInfoByMarketProduct(product)
 
-  // First POWER_UP_PRICE_X2_THRESHOLD units are full price; the next ones cost
-  // x2; buying is blocked once the player owns POWER_UP_PURCHASE_LIMIT.
   const isMaxed = countPowerUps >= POWER_UP_PURCHASE_LIMIT
   const currentPrice =
     countPowerUps >= POWER_UP_PRICE_X2_THRESHOLD
@@ -56,6 +59,7 @@ const MarketItem: FC<MarketItemProps> = ({
         return
       }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      playSfx('monkey_notification')
       dispatch(incrementProduct({ product: type, count: 1 }))
       dispatch(removeBananas(currentPrice))
     },

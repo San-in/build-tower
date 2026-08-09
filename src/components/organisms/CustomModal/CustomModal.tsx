@@ -10,7 +10,7 @@ import { OutlinedText } from '@components/atoms'
 import { useAssetsReady } from '@hooks'
 import { COLORS, GlobalStyles } from '@theme'
 import { MODAL_TYPE } from '@types'
-import { formatTabletElementsSize , Haptics } from '@utils'
+import { formatTabletElementsSize, Haptics, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
@@ -87,6 +87,7 @@ const CustomModal: FC<CustomModalProps> = ({
   isMonkeyVisible = true,
   closeOnBackdropPress = false,
   renderOverlay,
+  openSound = null,
 }) => {
   const [shake, setShake] = useState(false)
 
@@ -118,12 +119,15 @@ const CustomModal: FC<CustomModalProps> = ({
     const typeChangedWhileOpen = modalVisible && prev.current.type !== type
     if (opened) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      if (openSound) {
+        playSfx(openSound)
+      }
     }
     if (opened || typeChangedWhileOpen) {
       reset()
     }
     prev.current = { visible: modalVisible, type }
-  }, [modalVisible, type, reset])
+  }, [modalVisible, type, reset, openSound])
 
   const bgSrc = BG_BY_TYPE[type]
   const placeholder = PLACEHOLDER_BY_TYPE[type]

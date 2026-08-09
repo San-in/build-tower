@@ -5,10 +5,10 @@ import {
 import { Button } from '@components/atoms'
 import { ShadowWrapper } from '@components/wrappers'
 import { BUTTON_TYPE, TOWER } from '@types'
-import { formatTabletElementsSize } from '@utils'
+import { formatTabletElementsSize, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import { MotiView } from 'moti'
-import { FC, memo, useMemo, useState } from 'react'
+import { FC, memo, useEffect, useMemo, useState } from 'react'
 import { LayoutAnimation } from 'react-native'
 
 import { styles } from './BuildTowerSplash.styles'
@@ -26,6 +26,7 @@ const IMAGE_SOURCES = {
 
 const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
   const [buildModalContentVisible, setBuildModalContentVisible] = useState(true)
+
   const handlePressButton = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     onPress()
@@ -36,6 +37,12 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
   const imageSource = useMemo(() => IMAGE_SOURCES[tower], [tower])
 
   const [isImageReady, setIsImageReady] = useState(false)
+
+  useEffect(() => {
+    if (isImageReady) {
+      playSfx('monkey_notification')
+    }
+  }, [isImageReady])
 
   return (
     <ShadowWrapper modalVisible={buildModalContentVisible && isImageReady}>

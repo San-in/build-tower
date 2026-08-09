@@ -3,7 +3,7 @@ import { BackgroundImg, LockImg } from '@assets/images'
 import { Button, IconButton, OutlinedText } from '@components/atoms'
 import { LevelCard } from '@components/molecules'
 import { LEVEL_CARD_GAP, LEVEL_CARD_WIDTH, TOTAL_LEVELS } from '@constants'
-import { useAssetPreload, useAssetsReady } from '@hooks'
+import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
@@ -12,7 +12,7 @@ import { selectBananas } from '@store/slices/bananasSlice'
 import { selectAvailableLevels } from '@store/slices/levelsSlice'
 import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
-import { formatTabletElementsSize, getLevelIcon , Haptics } from '@utils'
+import { formatTabletElementsSize, getLevelIcon, Haptics } from '@utils'
 import { Image } from 'expo-image'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -38,6 +38,7 @@ const separatorStyle = { width: ITEM_GAP }
 const ItemSeparator = () => <View style={separatorStyle} />
 
 const LevelsScreen = () => {
+  useBackgroundMusic('welcome')
   const availableLevels = useAppSelector(selectAvailableLevels)
   const bananas = useAppSelector(selectBananas)
 

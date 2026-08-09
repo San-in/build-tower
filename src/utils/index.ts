@@ -20,4 +20,15 @@ export {
   getValidOptionNumber,
   showIsUserNeedHelp,
 } from './nextStepOptionsUtils'
+export {
+  type LoopSfxName,
+  type MusicTrack,
+  playMusic,
+  playSfx,
+  setSoundEnabled,
+  type SfxName,
+  startLoopSfx,
+  stopLoopSfx,
+  stopMusic,
+} from './sound'
 export { splitArray } from './splitArray'
