@@ -34,6 +34,9 @@ export const styles = StyleSheet.create({
     padding: IS_TABLET ? 25 : 15,
     width: '100%',
   },
+  gestureHandlerRoot: {
+    flex: 1,
+  },
   gradientContainer: {
     borderColor: COLORS.white,
     borderRadius: formatTabletElementsSize(18),

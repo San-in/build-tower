@@ -13,6 +13,7 @@ import { Image } from 'expo-image'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import { OutlinedText } from '../OutlinedText'
 
@@ -70,41 +71,44 @@ const MonkeyNotification: FC<MonkeyNotificationProps> = ({
 
   return (
     <Modal
+      statusBarTranslucent
       transparent
       animationType="fade"
       onRequestClose={onRequestClose}
       visible={visible}
     >
-      <Pressable onPress={handleBackdropPress} style={styles.backdrop}>
-        <MotiView
-          animate={{
-            opacity: visible && isImageReady ? 1 : 0,
-            translateX: visible && isImageReady ? 0 : 100,
-          }}
-          from={{ translateX: formatTabletElementsSize(100) }}
-          onStartShouldSetResponder={() => true}
-          style={styles.card}
-          transition={{ type: 'timing', duration: 200 }}
-        >
-          <Image
-            onError={() => setIsImageReady(true)}
-            onLoadEnd={() => setIsImageReady(true)}
-            priority="high"
-            source={MonkeyNotificationImg}
-            style={StyleSheet.absoluteFill}
-            transition={200}
-          />
-          <View style={styles.phraseContainer}>
-            <OutlinedText
-              color={COLORS.yellow}
-              fontSize={formatTabletElementsSize(14, 2)}
-              strokeColor={COLORS.brown}
-            >
-              {phrase}
-            </OutlinedText>
-          </View>
-        </MotiView>
-      </Pressable>
+      <GestureHandlerRootView style={styles.gestureHandlerRoot}>
+        <Pressable onPress={handleBackdropPress} style={styles.backdrop}>
+          <MotiView
+            animate={{
+              opacity: visible && isImageReady ? 1 : 0,
+              translateX: visible && isImageReady ? 0 : 100,
+            }}
+            from={{ translateX: formatTabletElementsSize(100) }}
+            onStartShouldSetResponder={() => true}
+            style={styles.card}
+            transition={{ type: 'timing', duration: 200 }}
+          >
+            <Image
+              onError={() => setIsImageReady(true)}
+              onLoadEnd={() => setIsImageReady(true)}
+              priority="high"
+              source={MonkeyNotificationImg}
+              style={StyleSheet.absoluteFill}
+              transition={200}
+            />
+            <View style={styles.phraseContainer}>
+              <OutlinedText
+                color={COLORS.yellow}
+                fontSize={formatTabletElementsSize(14, 2)}
+                strokeColor={COLORS.brown}
+              >
+                {phrase}
+              </OutlinedText>
+            </View>
+          </MotiView>
+        </Pressable>
+      </GestureHandlerRootView>
     </Modal>
   )
 }

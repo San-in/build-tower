@@ -47,6 +47,7 @@ const NextButton: FC<NextButtonProps> = ({
           opacity: isVisible ? 1 : 0,
           scale: shouldShake ? [1, 1.1, 0.95, 1.1, 1] : 1,
         }}
+        pointerEvents={isVisible ? 'auto' : 'none'}
         style={styles.buttonWrapper}
         transition={{
           scale: { type: 'timing', duration: 200 },

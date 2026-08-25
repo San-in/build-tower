@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sanin.buildtower"
     },
     "web": {
       "bundler": "metro",
@@ -39,10 +40,22 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-audio"
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e431bab4-8581-4870-943d-1f242180760d"
+      }
+    },
+    "owner": "san-in"
   }
 }

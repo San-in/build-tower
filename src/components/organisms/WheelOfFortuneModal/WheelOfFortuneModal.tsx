@@ -9,10 +9,12 @@ import {
   calculateWheelResult,
   formatTabletElementsSize,
   generateRandomNumber,
- Haptics } from '@utils'
+  Haptics,
+} from '@utils'
 import { MotiView } from 'moti'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import { UnlockOptionModal } from '../UnlockOptionModal'
 import { styles } from './WheelOfFortuneModal.styles'
@@ -204,130 +206,133 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
 
   return (
     <Modal
+      statusBarTranslucent
       animationType="fade"
       onRequestClose={handleClose}
       transparent={true}
       visible={isVisible}
     >
-      <MotiView
-        animate={{
-          backgroundColor: [
-            COLORS.codeGrey80,
-            COLORS.codeGrey90,
-            COLORS.codeGrey90,
-            COLORS.codeGrey,
-            COLORS.codeGrey,
-          ],
-        }}
-        from={{ backgroundColor: COLORS.codeGrey }}
-        style={[GlobalStyles.centeredContainer, styles.backgroundContainer]}
-        transition={{
-          type: 'timing',
-          duration: 1500,
-          loop: true,
-        }}
-      >
-        <SuccessActionInfoModal
-          isVisible={isWheelModalResultVisible}
-          onPress={handleCloseWheelResult}
-        >
-          <OutlinedText fontSize={formatTabletElementsSize(32)}>
-            Your result:
-          </OutlinedText>
-          <View style={styles.wheelResultText}>
-            <OutlinedText
-              color={COLORS.gradientGold_1}
-              fontSize={formatTabletElementsSize(60)}
-              strokeColor={COLORS.brown}
-            >{`${wheelResult}`}</OutlinedText>
-            <BlockIcon size={formatTabletElementsSize(50)} />
-          </View>
-        </SuccessActionInfoModal>
+      <GestureHandlerRootView style={styles.gestureHandlerRoot}>
         <MotiView
-          animate={{ opacity: isWheelModalResultVisible ? 0 : 1 }}
-          from={{ opacity: 0 }}
-          style={styles.header}
-          transition={{ type: 'timing', duration: 500 }}
+          animate={{
+            backgroundColor: [
+              COLORS.codeGrey80,
+              COLORS.codeGrey90,
+              COLORS.codeGrey90,
+              COLORS.codeGrey,
+              COLORS.codeGrey,
+            ],
+          }}
+          from={{ backgroundColor: COLORS.codeGrey }}
+          style={[GlobalStyles.centeredContainer, styles.backgroundContainer]}
+          transition={{
+            type: 'timing',
+            duration: 1500,
+            loop: true,
+          }}
         >
-          <View style={styles.headerContentContainer}>{renderTitle()}</View>
-          <MotiView
-            animate={{
-              scale: !isModalShacked ? [1, 1.02, 0.98, 1.02, 1] : 1,
-            }}
-            from={{ scale: 1 }}
-            transition={{
-              scale: { type: 'timing', duration: 150 },
-            }}
+          <SuccessActionInfoModal
+            isVisible={isWheelModalResultVisible}
+            onPress={handleCloseWheelResult}
           >
-            {winnerIndex !== null && (
-              <WheelOfFortune
-                onFinish={handleWheelFortuneFinish}
-                ref={wheelRef}
-                result={wheelResult}
-                sectors={sectors}
-                {...(!isTowerManipulationType && {
-                  textStyle: styles.increasedSectorValues,
-                })}
-                winnerIndex={winnerIndex}
-              />
-            )}
-          </MotiView>
+            <OutlinedText fontSize={formatTabletElementsSize(32)}>
+              Your result:
+            </OutlinedText>
+            <View style={styles.wheelResultText}>
+              <OutlinedText
+                color={COLORS.gradientGold_1}
+                fontSize={formatTabletElementsSize(60)}
+                strokeColor={COLORS.brown}
+              >{`${wheelResult}`}</OutlinedText>
+              <BlockIcon size={formatTabletElementsSize(50)} />
+            </View>
+          </SuccessActionInfoModal>
           <MotiView
-            animate={{ opacity: isSpinCounterVisible ? 1 : 0 }}
+            animate={{ opacity: isWheelModalResultVisible ? 0 : 1 }}
             from={{ opacity: 0 }}
-            style={styles.spinCounterContainer}
+            style={styles.header}
             transition={{ type: 'timing', duration: 500 }}
           >
-            <OutlinedText fontSize={formatTabletElementsSize(18)}>
-              Remaining spins:
-            </OutlinedText>
-            <OutlinedText
-              color={COLORS.gradientGold_1}
-              fontSize={formatTabletElementsSize(20)}
-              strokeColor={COLORS.brown}
-            >{` ${spinCounter}`}</OutlinedText>
-          </MotiView>
+            <View style={styles.headerContentContainer}>{renderTitle()}</View>
+            <MotiView
+              animate={{
+                scale: !isModalShacked ? [1, 1.02, 0.98, 1.02, 1] : 1,
+              }}
+              from={{ scale: 1 }}
+              transition={{
+                scale: { type: 'timing', duration: 150 },
+              }}
+            >
+              {winnerIndex !== null && (
+                <WheelOfFortune
+                  onFinish={handleWheelFortuneFinish}
+                  ref={wheelRef}
+                  result={wheelResult}
+                  sectors={sectors}
+                  {...(!isTowerManipulationType && {
+                    textStyle: styles.increasedSectorValues,
+                  })}
+                  winnerIndex={winnerIndex}
+                />
+              )}
+            </MotiView>
+            <MotiView
+              animate={{ opacity: isSpinCounterVisible ? 1 : 0 }}
+              from={{ opacity: 0 }}
+              style={styles.spinCounterContainer}
+              transition={{ type: 'timing', duration: 500 }}
+            >
+              <OutlinedText fontSize={formatTabletElementsSize(18)}>
+                Remaining spins:
+              </OutlinedText>
+              <OutlinedText
+                color={COLORS.gradientGold_1}
+                fontSize={formatTabletElementsSize(20)}
+                strokeColor={COLORS.brown}
+              >{` ${spinCounter}`}</OutlinedText>
+            </MotiView>
 
-          <View style={styles.bottom}>
-            {spinCounter < INITIAL_SPIN_QUANTITY && isFirstSpinFinished && (
-              <View style={styles.buttonsContainer}>
+            <View style={styles.bottom}>
+              {spinCounter < INITIAL_SPIN_QUANTITY && isFirstSpinFinished && (
+                <View style={styles.buttonsContainer}>
+                  <Button
+                    buttonContainerStyle={styles.buttonContent}
+                    isDisabled={!spinCounter || !wheelWinnerSector}
+                    onPress={handleOpenTryAgainModal}
+                    style={styles.button}
+                    textSize={formatTabletElementsSize(12, 3)}
+                    title="TRY AGAIN"
+                    type={BUTTON_TYPE.Info}
+                  />
+                  <Button
+                    buttonContainerStyle={styles.buttonContent}
+                    isDisabled={!wheelWinnerSector}
+                    onPress={handleConfirmPress}
+                    style={styles.button}
+                    textSize={formatTabletElementsSize(12, 3)}
+                    title="CONFIRM"
+                  />
+                </View>
+              )}
+              {!isFirstSpinFinished && (
                 <Button
-                  buttonContainerStyle={styles.buttonContent}
-                  isDisabled={!spinCounter || !wheelWinnerSector}
-                  onPress={handleOpenTryAgainModal}
-                  style={styles.button}
-                  textSize={formatTabletElementsSize(12, 3)}
-                  title="TRY AGAIN"
-                  type={BUTTON_TYPE.Info}
+                  isDisabled={isSpinButtonDisabled}
+                  minWidth={'50%'}
+                  onPress={handleSpinPress}
+                  title="SPIN"
                 />
-                <Button
-                  buttonContainerStyle={styles.buttonContent}
-                  isDisabled={!wheelWinnerSector}
-                  onPress={handleConfirmPress}
-                  style={styles.button}
-                  textSize={formatTabletElementsSize(12, 3)}
-                  title="CONFIRM"
-                />
-              </View>
-            )}
-            {!isFirstSpinFinished && (
-              <Button
-                isDisabled={isSpinButtonDisabled}
-                minWidth={'50%'}
-                onPress={handleSpinPress}
-                title="SPIN"
-              />
-            )}
-          </View>
+              )}
+            </View>
+          </MotiView>
+          <UnlockOptionModal
+            attempt={spinCounter}
+            initialPrice={initialPrice}
+            onClose={handleCloseTryAgainModal}
+            onConfirm={handleTryAgain}
+            visible={tryAgainModalVisible}
+          />
         </MotiView>
-        <UnlockOptionModal
-          attempt={spinCounter}
-          initialPrice={initialPrice}
-          onClose={handleCloseTryAgainModal}
-          onConfirm={handleTryAgain}
-          visible={tryAgainModalVisible}
-        />
-      </MotiView>
+      </GestureHandlerRootView>
     </Modal>
   )
 }

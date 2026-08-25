@@ -16,6 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { MotiView } from 'moti'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import { styles } from './CustomModal.styles'
 import { CustomModalProps } from './CustomModal.types'
@@ -140,89 +141,92 @@ const CustomModal: FC<CustomModalProps> = ({
 
   return (
     <Modal
+      statusBarTranslucent
       transparent
       animationType="fade"
       onRequestClose={handleClose}
       visible={modalVisible}
     >
-      <View style={[GlobalStyles.centeredContainer, styles.background]}>
-        {closeOnBackdropPress && (
-          <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} />
-        )}
-        <MotiView
-          animate={{
-            opacity: modalVisible && allReady ? 1 : 0,
-            scale: shake ? [1, 1.02, 0.98, 1.02, 1] : 1,
-          }}
-          from={{ opacity: 0, scale: 1 }}
-          pointerEvents={allReady ? 'auto' : 'none'}
-          style={[styles.container, containerStyles]}
-          transition={{ type: 'timing', duration: 160 }}
-        >
-          <Image
-            cachePolicy="memory-disk"
-            contentFit="contain"
-            onError={() => assetLoaded(ASSET_KEYS.MONKEY)}
-            onLoadEnd={() => assetLoaded(ASSET_KEYS.MONKEY)}
-            priority="high"
-            source={MonkeyModalImg}
-            style={[styles.monkeyImage, { opacity: Number(isMonkeyVisible) }]}
-            transition={120}
-          />
-
-          <View style={styles.imageBackground}>
+      <GestureHandlerRootView style={styles.gestureHandlerRoot}>
+        <View style={[GlobalStyles.centeredContainer, styles.background]}>
+          {closeOnBackdropPress && (
+            <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} />
+          )}
+          <MotiView
+            animate={{
+              opacity: modalVisible && allReady ? 1 : 0,
+              scale: shake ? [1, 1.02, 0.98, 1.02, 1] : 1,
+            }}
+            from={{ opacity: 0, scale: 1 }}
+            pointerEvents={allReady ? 'auto' : 'none'}
+            style={[styles.container, containerStyles]}
+            transition={{ type: 'timing', duration: 160 }}
+          >
             <Image
               cachePolicy="memory-disk"
-              contentFit="cover"
-              onError={() => assetLoaded(ASSET_KEYS.BG)}
-              onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+              contentFit="contain"
+              onError={() => assetLoaded(ASSET_KEYS.MONKEY)}
+              onLoadEnd={() => assetLoaded(ASSET_KEYS.MONKEY)}
               priority="high"
-              recyclingKey={`modal-bg-${type}`}
-              source={bgSrc}
-              style={[
-                StyleSheet.absoluteFill,
-                { backgroundColor: placeholder },
-              ]}
-              transition={100}
+              source={MonkeyModalImg}
+              style={[styles.monkeyImage, { opacity: Number(isMonkeyVisible) }]}
+              transition={120}
             />
-
-            {withCrossIcon && (
-              <Pressable
-                onPress={handleCrossIconPress}
-                style={({ pressed }) => [
-                  styles.closeIcon,
-                  pressed && styles.closeIconPressed,
+  
+            <View style={styles.imageBackground}>
+              <Image
+                cachePolicy="memory-disk"
+                contentFit="cover"
+                onError={() => assetLoaded(ASSET_KEYS.BG)}
+                onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
+                priority="high"
+                recyclingKey={`modal-bg-${type}`}
+                source={bgSrc}
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: placeholder },
                 ]}
+                transition={100}
+              />
+  
+              {withCrossIcon && (
+                <Pressable
+                  onPress={handleCrossIconPress}
+                  style={({ pressed }) => [
+                    styles.closeIcon,
+                    pressed && styles.closeIconPressed,
+                  ]}
+                >
+                  <CloseCrossIcon
+                    height={formatTabletElementsSize(40, 1.5)}
+                    width={formatTabletElementsSize(40, 1.5)}
+                  />
+                </Pressable>
+              )}
+  
+              <LinearGradient
+                colors={gradientColors}
+                end={{ x: 1, y: 1 }}
+                start={{ x: 0, y: 0 }}
+                style={styles.gradientContainer}
               >
-                <CloseCrossIcon
-                  height={formatTabletElementsSize(40, 1.5)}
-                  width={formatTabletElementsSize(40, 1.5)}
-                />
-              </Pressable>
-            )}
-
-            <LinearGradient
-              colors={gradientColors}
-              end={{ x: 1, y: 1 }}
-              start={{ x: 0, y: 0 }}
-              style={styles.gradientContainer}
-            >
-              <View style={styles.contentContainer}>
-                {Boolean(title) && (
-                  <OutlinedText
-                    fontSize={formatTabletElementsSize(20)}
-                    offset={2}
-                  >
-                    {title}
-                  </OutlinedText>
-                )}
-                {children}
-              </View>
-            </LinearGradient>
-          </View>
-        </MotiView>
-      </View>
-      {renderOverlay}
+                <View style={styles.contentContainer}>
+                  {Boolean(title) && (
+                    <OutlinedText
+                      fontSize={formatTabletElementsSize(20)}
+                      offset={2}
+                    >
+                      {title}
+                    </OutlinedText>
+                  )}
+                  {children}
+                </View>
+              </LinearGradient>
+            </View>
+          </MotiView>
+        </View>
+        {renderOverlay}
+      </GestureHandlerRootView>
     </Modal>
   )
 }

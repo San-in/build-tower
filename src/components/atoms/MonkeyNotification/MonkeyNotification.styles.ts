@@ -17,6 +17,9 @@ export const styles = StyleSheet.create({
     width: formatTabletElementsSize(250),
     zIndex: Z_INDEX_TYPE.extra_high,
   },
+  gestureHandlerRoot: {
+    flex: 1,
+  },
   image: {
     height: IS_TABLET ? '240%' : '120%',
     width: IS_TABLET ? '240%' : '120%',

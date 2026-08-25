@@ -16,7 +16,12 @@ export const styles = StyleSheet.create({
   image: {
     backgroundColor: COLORS.backgroundBlue,
   },
-  sideMenuContainer: { alignItems: 'center', height: '100%', width: '100%' },
+  sideMenuContainer: {
+    alignItems: 'center',
+    height: '100%',
+    marginTop: 20,
+    width: '100%',
+  },
   startButton: { marginTop: 100, zIndex: Z_INDEX_TYPE.high },
   titleWrapper: {
     marginTop: IS_TABLET ? 750 : 450,

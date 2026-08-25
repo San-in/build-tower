@@ -24,15 +24,15 @@ import { Button, OutlinedText } from '@components/atoms'
 import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, useFocusEffect } from '@react-navigation/native'
 import { COLORS, GlobalStyles } from '@theme'
 import { SCREENS } from '@types'
 import { formatTabletElementsSize, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
-import React, { useEffect, useMemo, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { BackHandler, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { ActivityCalendar, ActivityModal, SideMenu } from './components'
@@ -87,6 +87,16 @@ const WelcomeScreen = () => {
     INITIAL_ACTIVITY_MODAL_STATE
   )
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => true
+      )
+      return () => subscription.remove()
+    }, [])
+  )
 
   const handleStartButtonPress = () => {
     setIsCalendarOpen(false)

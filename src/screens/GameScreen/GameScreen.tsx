@@ -44,7 +44,7 @@ import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, useFocusEffect } from '@react-navigation/native'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { increaseRepeatsForAward } from '@store/slices/awardsSlice'
 import { addBananas } from '@store/slices/bananasSlice'
@@ -108,7 +108,13 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native'
+import {
+  BackHandler,
+  LayoutAnimation,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
 
 import { AWARD_TYPE } from '../WelcomeScreen/components/ActivityModal/components/AwardsContent/config'
 import {
@@ -168,6 +174,16 @@ const GameScreen: FC = () => {
   const resetStepUsedRef = useRef(false)
   const hasFinishedRef = useRef(false)
   const welcomeBonusShownRef = useRef(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => true
+      )
+      return () => subscription.remove()
+    }, [])
+  )
 
   const stars = useAppSelector(selectLevelById(level))?.stars ?? 0
   const isWelcomeBonusClaimed = useAppSelector(selectWelcomeBonusClaimed)
@@ -515,7 +531,7 @@ const GameScreen: FC = () => {
       return
     }
     if (!totalAddBlocksPowerUps) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
@@ -526,7 +542,7 @@ const GameScreen: FC = () => {
   const handleRandomRemoveBlockPress = () => {
     if (!userBlockValue || userBlockValue <= 1) {
       if (userBlockValue <= 1) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
         Toast({
           type: 'info',
           text1: "Just 1 block left — can't remove more!",
@@ -536,7 +552,7 @@ const GameScreen: FC = () => {
       return
     }
     if (!totalRemoveBlocksPowerUps) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
@@ -563,12 +579,12 @@ const GameScreen: FC = () => {
       return
     }
     if (!addExtraStepPowerUps) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       handleOpenActionModal(GAME_MODAL_TYPE.PowerUpWarning)
       return
     }
     if (step === 1) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       Toast({
         type: 'info',
         text1: "You're already at the first step!",
@@ -732,7 +748,7 @@ const GameScreen: FC = () => {
       setTimeout(() => {
         playSfx('celebration')
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
-      }, 400)
+      }, 100)
       return
     }
     const { type, number } = powerUpActiveAction
@@ -753,7 +769,7 @@ const GameScreen: FC = () => {
   }, [isLevelFinished, powerUpActiveAction, userBlockManipulation])
 
   const handleNextStepPress = useCallback(() => {
-    if (isOutOfAttempts) {
+    if (isOutOfAttempts || !isInterfacesVisible || isTowerBuilding) {
       return
     }
 
@@ -813,7 +829,9 @@ const GameScreen: FC = () => {
   }, [
     firstOptionCard.number,
     initialBlockValue,
+    isInterfacesVisible,
     isOutOfAttempts,
+    isTowerBuilding,
     multiplicativeOperators,
     secondOptionCard.number,
     simpleOperators,
@@ -931,7 +949,7 @@ const GameScreen: FC = () => {
       size: formatTabletElementsSize(100, 1.8),
       loop: true,
       onFinishCalBack: EMPTY_FUNCTION,
-      speed: 3,
+      speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.JumpToTop]: {
       size: formatTabletElementsSize(140, 1.8),
@@ -943,7 +961,7 @@ const GameScreen: FC = () => {
       size: formatTabletElementsSize(100, 1.8),
       loop: false,
       onFinishCalBack: EMPTY_FUNCTION,
-      speed: 1.5,
+      speed: 2,
     },
   }[monkeyAnimationData.type]
 
@@ -1414,7 +1432,6 @@ const GameScreen: FC = () => {
                             transition={{
                               type: 'timing',
                               duration: 200,
-                              delay: 300,
                             }}
                           >
                             <MonkeyAnimation

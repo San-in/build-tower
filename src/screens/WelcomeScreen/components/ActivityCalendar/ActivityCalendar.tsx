@@ -4,6 +4,8 @@ import { CALENDAR_REWARDS } from '@constants'
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
   BottomSheetView,
 } from '@gorhom/bottom-sheet'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
@@ -14,7 +16,12 @@ import {
   selectLastAchievedDayFromState,
 } from '@store/slices/userActivitySlice'
 import { COLORS, GlobalStyles } from '@theme'
-import { MARKET_PRODUCT, MARKET_SPECIAL_PRIZE, MarketPrize } from '@types'
+import {
+  CalendarReward,
+  MARKET_PRODUCT,
+  MARKET_SPECIAL_PRIZE,
+  MarketPrize,
+} from '@types'
 import { formatTabletElementsSize, Haptics, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -26,7 +33,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { SuccessActionModal } from '../../../GameScreen/components'
 import { styles } from './ActivityCalendar.styles'
@@ -57,7 +64,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
     DEFAULT_GET_PRIZE_MODAL_DATA
   )
   const bottomSheetRef = useRef<BottomSheet>(null)
-  const listRef = useRef<FlatList>(null)
+  const listRef = useRef<BottomSheetFlatListMethods>(null)
 
   const handleBottomSheetChange = (index: number) => {
     if (index === -1) {
@@ -141,6 +148,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
         enablePanDownToClose
         backdropComponent={renderBackdrop}
         backgroundStyle={GlobalStyles.transparent}
+        enableContentPanningGesture={false}
         handleIndicatorStyle={GlobalStyles.transparent}
         index={-1}
         onChange={handleBottomSheetChange}
@@ -175,7 +183,7 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
             start={{ x: 0, y: 0 }}
             style={styles.calendarListContainer}
           >
-            <FlatList
+            <BottomSheetFlatList
               contentContainerStyle={[
                 styles.calendarListContentContainer,
                 {
@@ -183,16 +191,20 @@ const ActivityCalendar: FC<ActivityCalendarProps> = ({ onClose, isOpen }) => {
                 },
               ]}
               data={CALENDAR_REWARDS}
-              getItemLayout={(_, index) => ({
+              getItemLayout={(_: ArrayLike<CalendarReward> | null | undefined, index: number) => ({
                 length: ITEM_WIDTH + ITEM_GAP,
                 offset: (ITEM_WIDTH + ITEM_GAP) * index,
                 index,
               })}
               horizontal={true}
               initialScrollIndex={targetIndex}
-              keyExtractor={({ day }) => String(day)}
+              keyExtractor={({ day }: CalendarReward) => String(day)}
               ref={listRef}
-              renderItem={({ item: { day, prize, quantity } }) => (
+              renderItem={({
+                item: { day, prize, quantity },
+              }: {
+                item: CalendarReward
+              }) => (
                 <CalendarItem
                   day={day}
                   isSelected={selectedDay === day}

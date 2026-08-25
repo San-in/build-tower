@@ -11,16 +11,16 @@ import { View } from 'react-native'
 import { useStyles } from './ProgressBadge.styles'
 import { ProgressBadgeProps } from './ProgressBadge.types'
 
-const CIRCLE_SIZE = formatTabletElementsSize(150, 1.8)
+const SIZE = formatTabletElementsSize(125, 1.8)
 
 const ProgressBadge: FC<ProgressBadgeProps> = ({
   animationKey,
   initialValue = 0,
   userValue = 0,
   isTowerBuilding,
-  circleSize = CIRCLE_SIZE,
+  size = SIZE,
 }) => {
-  const styles = useStyles(circleSize)
+  const styles = useStyles(size)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [goldResult = 0, _, bronzeResult = 0] = useMemo(
     () => calculateExpectedLevelConditions(initialValue),

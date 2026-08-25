@@ -1,6 +1,10 @@
 import { CheckGreenIcon, GiftIcon } from '@assets/icons'
 import { OutlinedText } from '@components/atoms'
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet'
 import { useAppDispatch } from '@store/hooks'
 import { setPrizeClaimed, SingleAwardState } from '@store/slices/awardsSlice'
 import { showAwardSuccess } from '@store/slices/awardsUiSlice'
@@ -8,9 +12,13 @@ import { addBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
 import { MARKET_PRODUCT, MarketPrize } from '@types'
-import { formatLevelToRomanNum, formatTabletElementsSize , Haptics } from '@utils'
+import {
+  formatLevelToRomanNum,
+  formatTabletElementsSize,
+  Haptics,
+} from '@utils'
 import { LinearGradient } from 'expo-linear-gradient'
-import React, { memo, useCallback, useMemo } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   DimensionValue,
   Pressable,
@@ -39,6 +47,7 @@ const AwardBottomSheet = ({
   progress: SingleAwardState | null
 }) => {
   const dispatch = useAppDispatch()
+  const bottomSheetRef = useRef<BottomSheet>(null)
   const { currentLevel, currentRepeats = 0, type, levelsInfo } = progress || {}
   const { levelConditions, maxLevel, name, icon, description } =
     getAwardConfigByType(type || AWARD_TYPE.NO_POWER_UPS) || {}
@@ -75,9 +84,17 @@ const AwardBottomSheet = ({
     },
     [dispatch]
   )
-  const handleCloseSheet = useCallback(() => {
-    onClose()
-  }, [onClose])
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior={'close'}
+      />
+    ),
+    []
+  )
 
   const handleClaimAward = useCallback(
     async (
@@ -106,17 +123,29 @@ const AwardBottomSheet = ({
     },
     [type, name, handleGetAward, dispatch]
   )
+
+  useEffect(() => {
+    if (isVisible) {
+      bottomSheetRef.current?.expand()
+    } else {
+      bottomSheetRef.current?.close()
+    }
+  }, [isVisible])
+
   return (
     <BottomSheet
       enablePanDownToClose
+      backdropComponent={renderBackdrop}
       backgroundStyle={styles.background}
+      enableContentPanningGesture={false}
       handleIndicatorStyle={styles.handleIndicator}
-      index={isVisible ? 0 : -1}
+      index={-1}
       onChange={(index) => {
         if (index === -1) {
           onClose()
         }
       }}
+      ref={bottomSheetRef}
       snapPoints={['98%']}
     >
       <BottomSheetView style={styles.container}>
@@ -127,7 +156,7 @@ const AwardBottomSheet = ({
             </OutlinedText>
           </View>
         ) : (
-          <Pressable onPress={handleCloseSheet} style={styles.content}>
+          <View style={styles.content}>
             <OutlinedText fontSize={formatTabletElementsSize(20)}>
               {name || ''}
             </OutlinedText>
@@ -300,7 +329,7 @@ const AwardBottomSheet = ({
                 {`repeat${currentLevelTarget - currentRepeats > 1 ? 's' : ''}`}
               </OutlinedText>
             </View>
-          </Pressable>
+          </View>
         )}
 
         <LinearGradient

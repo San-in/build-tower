@@ -17,6 +17,9 @@ export const styles = StyleSheet.create({
     gap: formatTabletElementsSize(30),
     paddingHorizontal: formatTabletElementsSize(10),
   },
+  gestureHandlerRoot: {
+    flex: 1,
+  },
   header: {
     alignItems: 'center',
     height: '100%',

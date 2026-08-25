@@ -15,7 +15,8 @@ export const styles = StyleSheet.create({
   },
   bottomSheetImage: {
     backgroundColor: COLORS.backgroundBlue,
-    borderRadius: '10%',
+    borderRadius: formatTabletElementsSize(45, 2.5),
+    overflow: 'hidden',
   },
   calendarList: {
     flex: 1,

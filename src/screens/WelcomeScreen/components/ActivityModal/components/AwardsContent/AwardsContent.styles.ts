@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   grid: {
-    columnGap: formatTabletElementsSize(10),
+    columnGap: formatTabletElementsSize(7),
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',

@@ -20,16 +20,18 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from 'react'
-import {
-  Animated,
+import { Platform, TextStyle, useWindowDimensions, View } from 'react-native'
+import Reanimated, {
   Easing,
-  TextStyle,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+  Extrapolation,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated'
 import Svg, {
   Defs,
   G,
@@ -41,6 +43,12 @@ import Svg, {
 } from 'react-native-svg'
 
 import { styles } from './WheelOfFortune.styles'
+const SPIN_NUMBER_OF_TURNS = Platform.OS === 'android' ? 5 : 8
+const SPIN_DURATION = Platform.OS === 'android' ? 3500 : 3000
+// The knob wobble breakpoints below are tuned for an 8-turn spin; scale them
+// so the wobble still settles to 0deg at the end on platforms with fewer turns.
+const KNOB_WOBBLE_RATIO = SPIN_NUMBER_OF_TURNS / 8
+
 const INITIAL_COLORS = [
   COLORS.gradientPurple_2,
   COLORS.green,
@@ -72,7 +80,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     const { width } = useWindowDimensions()
     const size = width * (IS_TABLET ? 0.6 : 0.8)
     const outerRadius = size / 2
-    const angle = useRef(new Animated.Value(0)).current
+    const angle = useSharedValue(0)
     const oneTurn = 360
     const angleOffset = 360 / Math.max(sectors.length, 1) / 2
     const [winnerSector, setWinnerSector] = useState<number | null>(null)
@@ -114,10 +122,9 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     const spin = () => {
       const sectorAngle = oneTurn / sectors.length
 
-      const numberOfTurns = 8
       const finalRotation =
-        360 * numberOfTurns - (winnerIndex * sectorAngle + angleOffset)
-      angle.setValue(0)
+        360 * SPIN_NUMBER_OF_TURNS - (winnerIndex * sectorAngle + angleOffset)
+      angle.value = 0
       setWinnerSector(null)
       startLoopSfx('roulette')
 
@@ -125,22 +132,54 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
       }, 300)
 
-      Animated.timing(angle, {
-        toValue: finalRotation,
-        duration: 3000,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start(() => {
+      const handleSpinEnd = (finished?: boolean) => {
         clearInterval(hapticInterval)
         stopLoopSfx('roulette')
+        if (!finished) {
+          return
+        }
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         setWinnerSector(winnerIndex)
         onFinish(sectors[winnerIndex] ?? '', winnerIndex)
-      })
+      }
+
+      angle.value = withTiming(
+        finalRotation,
+        {
+          duration: SPIN_DURATION,
+          easing: Easing.out(Easing.cubic),
+        },
+        (finished) => {
+          runOnJS(handleSpinEnd)(finished)
+        }
+      )
     }
 
     useImperativeHandle(ref, () => ({
       spin,
+    }))
+
+    const knobAnimatedStyle = useAnimatedStyle(() => ({
+      transform: [
+        {
+          rotate: `${interpolate(
+            angle.value,
+            [
+              0, 180, 360, 540, 720, 900, 1080, 1260, 1440, 1620, 1800, 1980,
+              2100, 2280, 2360, 2540, 2720, 2900,
+            ].map((value) => value * KNOB_WOBBLE_RATIO),
+            [
+              0, -35, 35, -35, 35, -35, 35, -30, 30, -25, 25, -15, 15, -10,
+              10, -5, 5, 0,
+            ],
+            Extrapolation.CLAMP
+          )}deg`,
+        },
+      ],
+    }))
+
+    const wheelAnimatedStyle = useAnimatedStyle(() => ({
+      transform: [{ rotate: `${angle.value}deg` }],
     }))
 
     const renderSectors = () =>
@@ -234,64 +273,19 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             )}
           </MotiView>
         </View>
-        <Animated.View
-          style={[
-            styles.knobIconContainer,
-            {
-              transform: [
-                {
-                  rotate: angle.interpolate({
-                    inputRange: [
-                      0, 180, 360, 540, 720, 900, 1080, 1260, 1440, 1620, 1800,
-                      1980, 2100, 2280, 2360, 2540, 2720, 2900,
-                    ],
-                    outputRange: [
-                      '0deg',
-                      '-35deg',
-                      '35deg',
-                      '-35deg',
-                      '35deg',
-                      '-35deg',
-                      '35deg',
-                      '-30deg',
-                      '30deg',
-                      '-25deg',
-                      '25deg',
-                      '-15deg',
-                      '15deg',
-                      '-10deg',
-                      '10deg',
-                      '-5deg',
-                      '5deg',
-                      '0deg',
-                    ],
-                    extrapolate: 'clamp',
-                  }),
-                },
-              ],
-            },
-          ]}
+        <Reanimated.View
+          style={[styles.knobIconContainer, knobAnimatedStyle]}
         >
           <KnobIcon
             height={formatTabletElementsSize(70)}
             width={formatTabletElementsSize(70)}
           />
-        </Animated.View>
-        <Animated.View
+        </Reanimated.View>
+        <Reanimated.View
           style={[
             styles.container,
-            {
-              width: size,
-              height: size,
-              transform: [
-                {
-                  rotate: angle.interpolate({
-                    inputRange: [-360, 0, 360],
-                    outputRange: ['-360deg', '0deg', '360deg'],
-                  }),
-                },
-              ],
-            },
+            { width: size, height: size },
+            wheelAnimatedStyle,
           ]}
         >
           <Svg
@@ -308,7 +302,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               {renderSectors()}
             </G>
           </Svg>
-        </Animated.View>
+        </Reanimated.View>
       </View>
     )
   }

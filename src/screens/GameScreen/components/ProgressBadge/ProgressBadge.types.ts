@@ -3,5 +3,5 @@ export type ProgressBadgeProps = {
   initialValue?: number
   userValue?: number
   isTowerBuilding?: boolean
-  circleSize?: number
+  size?: number
 }

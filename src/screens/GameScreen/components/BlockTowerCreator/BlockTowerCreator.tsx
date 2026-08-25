@@ -4,7 +4,7 @@ import { BLOCK_CREATOR_OPERATION } from '@types'
 import { formatTabletElementsSize } from '@utils'
 import { AnimatePresence, MotiView } from 'moti'
 import { FC, memo, useEffect, useMemo, useState } from 'react'
-import { useWindowDimensions, View } from 'react-native'
+import { Platform, useWindowDimensions, View } from 'react-native'
 import { Easing } from 'react-native-reanimated'
 
 import { styles } from './BlockTowerCreator.styles'
@@ -23,7 +23,9 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
       if (!onAnimatedEnd) {
         return undefined
       }
-      const totalDuration = quantity * (ANIMATION_DELAY * 0.7) + 800
+      const platformBuffer = Platform.OS === 'android' ? 400 : 0
+      const totalDuration =
+        quantity * (ANIMATION_DELAY * 0.7) + 800 + platformBuffer
       const timeout = setTimeout(() => {
         onAnimatedEnd()
       }, totalDuration)

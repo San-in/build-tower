@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   buttonContainer: { paddingHorizontal: formatTabletElementsSize(14) },
   buttonWrapper: { marginTop: 'auto' },
   container: {
-    bottom: formatTabletElementsSize(30),
+    bottom: formatTabletElementsSize(50),
     justifyContent: 'space-between',
     position: 'absolute',
     right: formatTabletElementsSize(20),

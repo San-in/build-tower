@@ -24,6 +24,9 @@ export const styles = StyleSheet.create({
     padding: formatTabletElementsSize(24),
     position: 'relative',
   },
+  gestureHandlerRoot: {
+    flex: 1,
+  },
   subTitle: { marginBottom: formatTabletElementsSize(30) },
   titleContainer: {
     alignItems: 'center',
