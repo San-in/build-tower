@@ -354,7 +354,7 @@ const LevelResultModalContent: FC<LevelResultModalContentProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.textIcon}>{headerContent.icon}</Text>
+        <Text allowFontScaling={false} style={styles.textIcon}>{headerContent.icon}</Text>
         <OutlinedText
           color={COLORS.gradientGold_1}
           fontSize={formatTabletElementsSize(25)}

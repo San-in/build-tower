@@ -174,7 +174,7 @@ const Button: FC<ButtonProps> = ({
           <OutlinedText fontSize={textSize} numberOfLines={numberOfLines}>
             {title}
           </OutlinedText>
-          {textIcon && <Text style={textIconStyle}>{textIcon}</Text>}
+          {textIcon && <Text allowFontScaling={false} style={textIconStyle}>{textIcon}</Text>}
         </View>
       </Pressable>
     </Animated.View>

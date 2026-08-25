@@ -54,7 +54,7 @@ const IconButton = ({
     {label && (
       <View style={styles.labelContainer}>
         {isDisabled ? (
-          <Text style={styles.lock}>🔒</Text>
+          <Text allowFontScaling={false} style={styles.lock}>🔒</Text>
         ) : (
           <OutlinedText
             fontSize={labelSize}

@@ -80,6 +80,7 @@ const Input: FC<InputProps> = ({
         style={[styles.inputContainer, !isFocused && styles.transparentBorder]}
       >
         <Animated.Text
+          allowFontScaling={false}
           style={getLabelStyles({
             isDisabled,
             isFocused,
@@ -108,7 +109,7 @@ const Input: FC<InputProps> = ({
           {...props}
         />
         {Boolean(supportingText) && (
-          <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
+          <Text allowFontScaling={false} style={getSupportingTextStyles({ isDisabled, isValid })}>
             {supportingText}
           </Text>
         )}

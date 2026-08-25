@@ -79,7 +79,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Choose at least one option
         </OutlinedText>
-        <Text style={styles.emoji}>😉</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>😉</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledAd]: (
@@ -87,7 +87,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Ads are resting right now...
         </OutlinedText>
-        <Text style={styles.emoji}>🛌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>🛌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledBananas]: (
@@ -95,7 +95,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           You need more bananas
         </OutlinedText>
-        <Text style={styles.emoji}>🙈🍌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>🙈🍌</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledAd]: (
@@ -103,7 +103,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Watch a short ad & go!
         </OutlinedText>
-        <Text style={styles.emoji}>🎬</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>🎬</Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledBananas]: (
@@ -111,7 +111,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText
           fontSize={formatTabletElementsSize(12)}
         >{`${price}`}</OutlinedText>
-        <Text style={styles.emoji}>🍌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>🍌</Text>
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           {enabledBananasText || '- a good price'}
         </OutlinedText>

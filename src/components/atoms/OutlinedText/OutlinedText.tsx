@@ -29,6 +29,7 @@ const OutlinedText = ({
     <View style={[styles.container, containerStyle]}>
       {directions.map(({ x, y }, index) => (
         <Text
+          allowFontScaling={false}
           key={index}
           numberOfLines={numberOfLines}
           style={[
@@ -42,6 +43,7 @@ const OutlinedText = ({
         </Text>
       ))}
       <Text
+        allowFontScaling={false}
         numberOfLines={numberOfLines}
         onLayout={({ nativeEvent }) => {
           setTextDimensions({

@@ -102,6 +102,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
         style={[styles.inputContainer, !isFocused && styles.transparentBorder]}
       >
         <Animated.Text
+          allowFontScaling={false}
           style={getLabelStyles({
             isDisabled,
             isFocused,
@@ -119,6 +120,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
           >
             <View>
               <Text
+                allowFontScaling={false}
                 style={getDropdownLabelStyles({ value, isDisabled, isValid })}
               >
                 {isOpen ? displayedName || '' : displayedName || placeholder}
@@ -131,7 +133,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
             </Animated.View>
           </TouchableOpacity>
           {Boolean(supportingText) && !isOpen && (
-            <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
+            <Text allowFontScaling={false} style={getSupportingTextStyles({ isDisabled, isValid })}>
               {supportingText}
             </Text>
           )}
@@ -153,7 +155,7 @@ const DropdownInput: FC<DropdownInputProps> = ({
                     style={[styles.option, isSelected && styles.optionSelected]}
                   >
                     {isSelected && <CheckIcon />}
-                    <Text style={TextStyles.main_l}>{item.value}</Text>
+                    <Text allowFontScaling={false} style={TextStyles.main_l}>{item.value}</Text>
                   </TouchableOpacity>
                 )
               })}

@@ -61,7 +61,7 @@ const CheckBox: FC<CheckBoxProps> = ({
         </Animated.View>
       </Pressable>
 
-      <Text style={[TextStyles.main_m, styles.label]}>{label}</Text>
+      <Text allowFontScaling={false} style={[TextStyles.main_m, styles.label]}>{label}</Text>
     </View>
   )
 }

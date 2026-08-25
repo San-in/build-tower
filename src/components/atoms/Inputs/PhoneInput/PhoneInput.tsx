@@ -116,10 +116,11 @@ const PhoneInput: FC<PhoneInputProps> = ({
               <View style={styles.separateLine} />
             </TouchableOpacity>
             <View style={styles.countyCodeContainer}>
-              <Text style={[styles.textEnabled, TextStyles.main_l]}>
+              <Text allowFontScaling={false} style={[styles.textEnabled, TextStyles.main_l]}>
                 {selectedCountry?.code}
               </Text>
               <Animated.Text
+                allowFontScaling={false}
                 style={getLabelStyles({
                   isDisabled,
                   isFocused,
@@ -163,7 +164,7 @@ const PhoneInput: FC<PhoneInputProps> = ({
                         ]}
                       >
                         <item.flag />
-                        <Text style={TextStyles.main_l}>{item.name}</Text>
+                        <Text allowFontScaling={false} style={TextStyles.main_l}>{item.name}</Text>
                         {isSelected && (
                           <View style={styles.checkIconContainer}>
                             <CheckIcon />
@@ -178,7 +179,7 @@ const PhoneInput: FC<PhoneInputProps> = ({
           </View>
         </View>
         {Boolean(supportingText) && !isOpen && (
-          <Text style={getSupportingTextStyles({ isDisabled, isValid })}>
+          <Text allowFontScaling={false} style={getSupportingTextStyles({ isDisabled, isValid })}>
             {supportingText}
           </Text>
         )}

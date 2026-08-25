@@ -90,7 +90,7 @@ const OptionModal: FC<OptionModalProps> = ({
               >
                 Bananas love brave monkeys!
               </OutlinedText>
-              <Text style={styles.actionTextIcon}>🙊</Text>
+              <Text allowFontScaling={false} style={styles.actionTextIcon}>🙊</Text>
             </View>
           </View>
         </View>
