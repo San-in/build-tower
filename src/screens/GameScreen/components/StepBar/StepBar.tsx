@@ -1,5 +1,4 @@
 import { OutlinedText } from '@components/atoms'
-import { COLORS } from '@theme'
 import { formatTabletElementsSize } from '@utils'
 import { MotiView } from 'moti'
 import { FC } from 'react'
@@ -44,28 +43,27 @@ const StepBar: FC<StepBarProps> = ({
                   from={{ opacity: isLastVisibleStep ? 0.2 : 1 }}
                   transition={{ type: 'timing', duration: 1500, delay: 500 }}
                 >
-                  <MotiView
-                    animate={{
-                      backgroundColor: isVisible
-                        ? [COLORS.collar, COLORS.gradientGold_1, COLORS.collar]
-                        : 'transparent',
-                    }}
-                    from={{
-                      backgroundColor: isVisible
-                        ? COLORS.collar
-                        : COLORS.collar20,
-                    }}
-                    key={animationKey}
-                    style={styles.stepContainer}
-                    transition={{
-                      backgroundColor: {
+                  <View
+                    style={[
+                      styles.stepContainer,
+                      isVisible && styles.stepContainerFilled,
+                    ]}
+                  >
+                    <MotiView
+                      animate={{ opacity: isVisible ? 1 : 0 }}
+                      from={{ opacity: isVisible ? 0 : 1 }}
+                      key={animationKey}
+                      style={
+                        isVisible ? styles.stepPulseGold : styles.stepPulseDim
+                      }
+                      transition={{
                         type: 'timing',
                         duration: 2000,
                         loop: true,
                         repeatReverse: true,
-                      },
-                    }}
-                  />
+                      }}
+                    />
+                  </View>
                 </MotiView>
                 <View style={styles.stepLabel}>
                   <OutlinedText

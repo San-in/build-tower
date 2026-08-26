@@ -45,17 +45,15 @@ export const hydrateUserActivity = () => async (dispatch: AppDispatch) => {
 
 export const setupUserActivityPersistence = (store: Store<RootState>) => {
   let timer: ReturnType<typeof setTimeout> | null = null
-  let lastSerialized = ''
+  let lastPersisted = store.getState().userActivity
 
   store.subscribe(() => {
     const ua = store.getState().userActivity
-    const serialized = JSON.stringify(ua)
 
-    if (serialized === lastSerialized) {
+    if (ua === lastPersisted) {
       return
     }
-    lastSerialized = serialized
-
+    lastPersisted = ua
     if (timer) {
       clearTimeout(timer)
     }

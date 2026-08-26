@@ -11,9 +11,11 @@
     "ios": {
       "backgroundColor": "#ffffff",
       "supportsTablet": true,
+      "requireFullScreen": true,
       "bundleIdentifier": "com.sanin.buildtower",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"]
       },
       "config": {
         "usesNonExemptEncryption": false
@@ -36,8 +38,9 @@
         {
           "image": "./assets/images/splash.png",
           "imageWidth": 180,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "resizeMode": "cover",
+          "enableFullScreenImage_legacy": true,
+          "backgroundColor": "#017BA5"
         }
       ],
       [

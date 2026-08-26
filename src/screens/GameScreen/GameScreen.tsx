@@ -1,4 +1,4 @@
-import { ConfettiGif, StarsGif } from '@assets/gifs'
+import { StarsGif } from '@assets/gifs'
 import {
   BackgroundImg,
   BlockImg,
@@ -226,7 +226,6 @@ const GameScreen: FC = () => {
       BlockImg,
       MonkeyNotificationImg,
       MonkeyWizardImg,
-      ConfettiGif,
       BackgroundImg,
       WinBannerImg,
       ModalBorderMultiplyImg,
@@ -482,8 +481,8 @@ const GameScreen: FC = () => {
   }, [dispatch, handleAddPowerUp])
 
   const handleGoHome = useCallback(async () => {
-    navigation.navigate(SCREENS.WelcomeScreen)
     handleCloseActionModal()
+    setImmediate(() => navigation.navigate(SCREENS.WelcomeScreen))
   }, [handleCloseActionModal, navigation])
 
   const handleGoHomeAfterLoss = useCallback(() => {

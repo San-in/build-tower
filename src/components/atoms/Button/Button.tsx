@@ -1,10 +1,7 @@
-import { gradientsMap } from '@components/atoms/Button/gradinentsMap'
 import { OutlinedText } from '@components/atoms/OutlinedText'
-import { COLORS } from '@theme'
 import { BUTTON_TYPE } from '@types'
 import { formatTabletElementsSize, playSfx } from '@utils'
-import { LinearGradient } from 'expo-linear-gradient'
-import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { FC, memo, useCallback, useEffect, useRef } from 'react'
 import {
   Animated,
   GestureResponderEvent,
@@ -17,6 +14,7 @@ import { Easing } from 'react-native-reanimated'
 
 import { styles } from './Button.styles'
 import { ButtonProps } from './Button.types'
+import ButtonGradient, { ButtonGradientHandle } from './ButtonGradient'
 
 const Button: FC<ButtonProps> = ({
   title,
@@ -30,24 +28,32 @@ const Button: FC<ButtonProps> = ({
   textIconStyle,
   numberOfLines,
   withSound = true,
+  titleOffset,
   ...props
 }) => {
-  const [isPressed, setIsPressed] = useState(false)
   const borderAnim = useRef(new Animated.Value(0)).current
   const pulseAnim = useRef(new Animated.Value(1)).current
+  const gradientRef = useRef<ButtonGradientHandle>(null)
 
-  const [gradientIndex, setGradientIndex] = useState(0)
+  const handleLongPress = useCallback(() => {
+    gradientRef.current?.sweep()
+  }, [])
 
-  const gradients: ReadonlyArray<[string, string, ...Array<string>]> =
-    gradientsMap[type] as Array<[string, string, ...Array<string>]>
+  const handlePressIn = useCallback(() => {
+    Animated.timing(borderAnim, {
+      toValue: 1,
+      duration: 250,
+      useNativeDriver: false,
+    }).start()
+  }, [borderAnim])
 
-  const runChangeGradient = useCallback(() => {
-    for (let i = 0; i < gradients.length; i += 1) {
-      setTimeout(() => {
-        setGradientIndex(i)
-      }, i * 50)
-    }
-  }, [gradients])
+  const handlePressOut = useCallback(() => {
+    Animated.timing(borderAnim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: false,
+    }).start()
+  }, [borderAnim])
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
@@ -65,17 +71,10 @@ const Button: FC<ButtonProps> = ({
   })
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      runChangeGradient()
-    }, 10000)
-    return () => clearInterval(intervalId)
-  }, [runChangeGradient])
-
-  useEffect(() => {
     let isCancelled = false
 
     const pulse = () => {
-      if (isDisabled || isPressed) {
+      if (isDisabled) {
         return
       }
 
@@ -105,33 +104,17 @@ const Button: FC<ButtonProps> = ({
       isCancelled = true
       pulseAnim.setValue(1)
     }
-  }, [isDisabled, isPressed, pulseAnim])
-
-  const currentColors = gradients[gradientIndex]
+  }, [isDisabled, pulseAnim])
 
   return (
     <Animated.View style={[{ transform: [{ scale: pulseAnim }] }, style]}>
       <Pressable
         {...props}
         disabled={isDisabled}
-        onLongPress={runChangeGradient}
+        onLongPress={handleLongPress}
         onPress={handlePress}
-        onPressIn={() => {
-          setIsPressed(true)
-          Animated.timing(borderAnim, {
-            toValue: 1,
-            duration: 250,
-            useNativeDriver: false,
-          }).start()
-        }}
-        onPressOut={() => {
-          setIsPressed(false)
-          Animated.timing(borderAnim, {
-            toValue: 0,
-            duration: 250,
-            useNativeDriver: false,
-          }).start()
-        }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         style={({ pressed }) => [
           styles.container,
           buttonContainerStyle,
@@ -151,34 +134,29 @@ const Button: FC<ButtonProps> = ({
         <Animated.View
           style={[StyleSheet.absoluteFill, styles.gradientContainer]}
         >
-          {currentColors && (
-            <LinearGradient
-              colors={
-                isDisabled
-                  ? [
-                      COLORS.gradientGrey_1,
-                      COLORS.gradientGrey_2,
-                      COLORS.gradientGrey_5,
-                      COLORS.gradientGrey_3,
-                      COLORS.gradientGrey_2,
-                    ]
-                  : currentColors
-              }
-              end={{ x: 1, y: 0 }}
-              start={{ x: 0, y: 0 }}
-              style={styles.gradientBackground}
-            />
-          )}
+          <ButtonGradient
+            isDisabled={isDisabled}
+            ref={gradientRef}
+            type={type}
+          />
         </Animated.View>
         <View style={styles.titleContainer}>
-          <OutlinedText fontSize={textSize} numberOfLines={numberOfLines}>
+          <OutlinedText
+            fontSize={textSize}
+            numberOfLines={numberOfLines}
+            offset={titleOffset}
+          >
             {title}
           </OutlinedText>
-          {textIcon && <Text allowFontScaling={false} style={textIconStyle}>{textIcon}</Text>}
+          {textIcon && (
+            <Text allowFontScaling={false} style={textIconStyle}>
+              {textIcon}
+            </Text>
+          )}
         </View>
       </Pressable>
     </Animated.View>
   )
 }
 
-export default Button
+export default memo(Button)

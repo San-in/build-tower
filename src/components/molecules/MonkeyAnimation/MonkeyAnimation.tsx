@@ -2,10 +2,26 @@ import { MonkeyAnimationProps } from '@components/molecules/MonkeyAnimation/Monk
 import { EMPTY_FUNCTION } from '@constants'
 import { MONKEY_ANIMATION_TYPE } from '@types'
 import LottieView from 'lottie-react-native'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useMemo } from 'react'
 import { View } from 'react-native'
 
 import { styles } from './MonkeyAnimation.styles'
+
+const getAnimationSource = (type: MONKEY_ANIMATION_TYPE) => {
+  switch (type) {
+    case MONKEY_ANIMATION_TYPE.RunAndJump:
+      return require('@assets/icons/animations/run-and-jump.json')
+    case MONKEY_ANIMATION_TYPE.Landing:
+      return require('@assets/icons/animations/landing.json')
+    case MONKEY_ANIMATION_TYPE.JumpToTop:
+      return require('@assets/icons/animations/jump-top.json')
+    case MONKEY_ANIMATION_TYPE.Celebration:
+      return require('@assets/icons/animations/celebration.json')
+    case MONKEY_ANIMATION_TYPE.Idle:
+    default:
+      return require('@assets/icons/animations/idle.json')
+  }
+}
 
 export const MonkeyAnimation: FC<MonkeyAnimationProps> = ({
   type,
@@ -23,13 +39,12 @@ export const MonkeyAnimation: FC<MonkeyAnimationProps> = ({
     onFinish()
   }
 
-  const animationSource = {
-    [MONKEY_ANIMATION_TYPE.RunAndJump]: require('@assets/icons/animations/run-and-jump.json'),
-    [MONKEY_ANIMATION_TYPE.Landing]: require('@assets/icons/animations/landing.json'),
-    [MONKEY_ANIMATION_TYPE.Idle]: require('@assets/icons/animations/idle.json'),
-    [MONKEY_ANIMATION_TYPE.JumpToTop]: require('@assets/icons/animations/jump-top.json'),
-    [MONKEY_ANIMATION_TYPE.Celebration]: require('@assets/icons/animations/celebration.json'),
-  }[type]
+  const animationSource = useMemo(() => getAnimationSource(type), [type])
+
+  const animationStyle = useMemo(
+    () => [{ width: size, height: size }, styles.content, containerStyles],
+    [containerStyles, size]
+  )
 
   return (
     <View style={styles.container}>
@@ -40,14 +55,7 @@ export const MonkeyAnimation: FC<MonkeyAnimationProps> = ({
           onAnimationFinish={handleAnimationFinish}
           source={animationSource}
           speed={speed}
-          style={[
-            {
-              width: size,
-              height: size,
-            },
-            styles.content,
-            containerStyles,
-          ]}
+          style={animationStyle}
         />
       )}
     </View>

@@ -8,7 +8,11 @@ const Stack = createNativeStackNavigator<GameStackParamList>()
 
 const GameStack = () => (
   <Stack.Navigator
-    screenOptions={{ headerShown: false, gestureEnabled: false }}
+    screenOptions={{
+      headerShown: false,
+      gestureEnabled: false,
+      freezeOnBlur: true,
+    }}
   >
     <Stack.Screen
       component={WelcomeScreen}

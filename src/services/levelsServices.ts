@@ -33,17 +33,15 @@ const hydrateLevels = () => async (dispatch: AppDispatch) => {
 
 const setupLevelsPersistence = (store: Store<RootState>) => {
   let timer: ReturnType<typeof setTimeout> | null = null
-  let lastSerialized = ''
+  let lastPersisted = store.getState().levels.levels
 
   store.subscribe(() => {
     const levels = store.getState().levels.levels
-    const serialized = JSON.stringify(levels)
 
-    if (serialized === lastSerialized) {
+    if (levels === lastPersisted) {
       return
     }
-    lastSerialized = serialized
-
+    lastPersisted = levels
     if (timer) {
       clearTimeout(timer)
     }

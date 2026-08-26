@@ -43,9 +43,8 @@ SettingsProvider (React Context, deliberately OUTSIDE Redux)
 ```
 
 `RootStackWrapper` (`src/components/wrappers/RootStackWrapper`) is where startup
-actually happens: it loads the Bell Gothic fonts (expo-font), hydrates the five
-Redux slices in parallel via service thunks, then dispatches
-`checkAndUpdateOnAppStart` (daily-streak logic). Until fonts + hydration + the
+actually happens: it hydrates the five Redux slices in parallel via service thunks, then dispatches
+`checkAndUpdateOnAppStart` (daily-streak logic). Until hydration and the
 SettingsProvider's `hydrated` flag are all ready it renders a full-screen
 `ActivityIndicator`. The native splash (expo-splash-screen) auto-hides; the code
 never calls `preventAutoHideAsync`/`hideAsync`.
@@ -115,7 +114,8 @@ colors, **Moti** (`MotiView` / `AnimatePresence`) for declarative animation, RN
   `@theme`, `@navigation/*`, `@validation`, `@constants`, `@store/*`, `@assets/*`,
   `@services`, `@hooks`. Most point at an `index.ts` barrel.
 - **Theme** (`@theme`): `COLORS` (flat palette with 10 alpha steps per color +
-  gradient ramps), `TextStyles` / `FONT_FAMILY`, `GlobalStyles`. No light/dark theme.
+  gradient ramps), `GlobalStyles`. No custom font: text renders in the platform
+  system face, and `OutlinedText` sets only `fontWeight: '900'`. No light/dark theme.
 - **Z-index**: use `Z_INDEX_TYPE` from `@constants` (keyed by the `Z_INDEX_PRIORITY`
   enum), never raw numbers.
 - **SVGs** import as React components (`react-native-svg-transformer`); `.lottie` and

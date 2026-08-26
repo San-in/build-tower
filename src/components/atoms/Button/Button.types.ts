@@ -19,4 +19,5 @@ export type ButtonProps = PressableProps & {
   textIconStyle?: StyleProp<TextStyle>
   numberOfLines?: number
   withSound?: boolean
+  titleOffset?: number
 }

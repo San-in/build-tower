@@ -39,17 +39,15 @@ const hydrateAwards = () => async (dispatch: AppDispatch) => {
 }
 const setupAwardsPersistence = (store: Store<RootState>) => {
   let timer: ReturnType<typeof setTimeout> | null = null
-  let lastSerialized = ''
+  let lastPersisted = store.getState().awards
 
   store.subscribe(() => {
     const awards = store.getState().awards
-    const serialized = JSON.stringify(awards)
 
-    if (serialized === lastSerialized) {
+    if (awards === lastPersisted) {
       return
     }
-    lastSerialized = serialized
-
+    lastPersisted = awards
     if (timer) {
       clearTimeout(timer)
     }

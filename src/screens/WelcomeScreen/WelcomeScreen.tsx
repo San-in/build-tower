@@ -1,4 +1,4 @@
-import { ConfettiGif, StarsGif } from '@assets/gifs'
+import { StarsGif } from '@assets/gifs'
 import birdsAnimation from '@assets/icons/animations/birds.json'
 import {
   BackgroundImg,
@@ -21,7 +21,12 @@ import {
   WinBannerImg,
 } from '@assets/images'
 import { Button, OutlinedText } from '@components/atoms'
-import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
+import {
+  useAssetPreload,
+  useAssetsReady,
+  useBackgroundMusic,
+  useHideSplashWhenReady,
+} from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import { useNavigation } from '@react-navigation/core'
 import { NavigationProp, useFocusEffect } from '@react-navigation/native'
@@ -52,7 +57,6 @@ const INITIAL_ACTIVITY_MODAL_STATE: ActivityModal = {
 
 const WelcomeScreen = () => {
   const navigation = useNavigation<NavigationProp<GameStackParamList>>()
-  useBackgroundMusic('welcome')
   const assetsToPreload = useMemo(
     () => [
       BackgroundImg,
@@ -74,7 +78,6 @@ const WelcomeScreen = () => {
       SplashImg,
       WinBannerImg,
       StarsGif,
-      ConfettiGif,
     ],
     []
   )
@@ -82,6 +85,11 @@ const WelcomeScreen = () => {
   const { ready: bgReady, done: assetLoaded } = useAssetsReady(
     useMemo(() => Object.values(ASSET_KEYS), [])
   )
+
+  // Both are gated on the same flag as the visible UI below: the native splash
+  // stays up and the track stays silent until this screen is actually painted.
+  useHideSplashWhenReady(bgReady)
+  useBackgroundMusic('welcome', bgReady)
 
   const [activityModalConfig, setActivityModalConfig] = useState<ActivityModal>(
     INITIAL_ACTIVITY_MODAL_STATE
@@ -164,7 +172,10 @@ const WelcomeScreen = () => {
         priority="high"
         source={SplashImg}
         style={[StyleSheet.absoluteFill, styles.image]}
-        transition={100}
+        // No fade: the native splash shows this same artwork full-bleed and only
+        // hides once this has loaded, so a cross-fade here would flash the bare
+        // background colour in the middle of an otherwise seamless hand-off.
+        transition={0}
       />
       <SafeAreaView
         pointerEvents={bgReady ? 'auto' : 'none'}

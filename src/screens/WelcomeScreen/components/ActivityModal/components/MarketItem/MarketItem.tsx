@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { removeBananas } from '@store/slices/bananasSlice'
 import { incrementProduct } from '@store/slices/marketSlice'
 import { COLORS } from '@theme'
-import { MARKET_PRODUCT, POWER_UP_GRADE } from '@types'
+import { POWER_UP_GRADE } from '@types'
 import {
   formatTabletElementsSize,
   getPowerUpInfoByMarketProduct,
@@ -53,22 +53,24 @@ const MarketItem: FC<MarketItemProps> = ({
     [grade]
   )
 
-  const handleBuyPowerUp = useCallback(
-    async (type: MARKET_PRODUCT) => {
-      if (isBuyDisabled) {
-        return
-      }
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-      playSfx('monkey_notification')
-      dispatch(incrementProduct({ product: type, count: 1 }))
-      dispatch(removeBananas(currentPrice))
-    },
-    [dispatch, currentPrice, isBuyDisabled]
+  const handleBuyPowerUp = useCallback(() => {
+    if (isBuyDisabled) {
+      return
+    }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    playSfx('monkey_notification')
+    dispatch(incrementProduct({ product, count: 1 }))
+    dispatch(removeBananas(currentPrice))
+  }, [dispatch, currentPrice, isBuyDisabled, product])
+
+  const handleToggleSelect = useCallback(
+    () => toggleSelect(product),
+    [product, toggleSelect]
   )
 
   return (
     <Pressable
-      onPress={toggleSelect}
+      onPress={handleToggleSelect}
       style={({ pressed }) => [
         styles.container,
         (pressed || isSelected) && styles.activeContainer,
@@ -95,11 +97,12 @@ const MarketItem: FC<MarketItemProps> = ({
       <Button
         buttonContainerStyle={styles.buttonContainer}
         isDisabled={isBuyDisabled}
-        onPress={() => handleBuyPowerUp(product)}
+        onPress={handleBuyPowerUp}
         textIcon={isMaxed ? undefined : ' 🍌'}
         textIconStyle={styles.buttonIcon}
         textSize={formatTabletElementsSize(12, 2.5)}
         title={isMaxed ? 'MAX' : `${currentPrice}`}
+        titleOffset={1}
         withSound={false}
       />
     </Pressable>

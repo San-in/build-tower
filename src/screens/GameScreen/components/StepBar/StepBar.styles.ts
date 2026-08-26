@@ -32,12 +32,22 @@ export const styles = StyleSheet.create({
   },
   stepContainer: {
     height: '100%',
+    position: 'relative',
     width: '100%',
   },
+  stepContainerFilled: { backgroundColor: COLORS.collar },
   stepLabel: {
     alignItems: 'flex-end',
     position: 'absolute',
     top: formatTabletElementsSize(24),
     width: '100%',
+  },
+  stepPulseDim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: COLORS.collar20,
+  },
+  stepPulseGold: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: COLORS.gradientGold_1,
   },
 })

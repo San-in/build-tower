@@ -24,17 +24,15 @@ const MarketContent: FC = () => {
     null
   )
 
-  const handleToggleSelect = useCallback(
-    (product: MARKET_PRODUCT) => {
-      playSfx('button')
-      if (selectedProduct === product) {
-        setSelectedProduct(null)
-        return
-      }
-      setSelectedProduct(product)
-    },
-    [selectedProduct]
-  )
+  // Functional update keeps this identity stable for the life of the screen; a
+  // `selectedProduct` dependency here would hand every MarketItem a fresh
+  // callback on each tap and defeat their `memo`.
+  const handleToggleSelect = useCallback((product: MARKET_PRODUCT) => {
+    playSfx('button')
+    setSelectedProduct((prevSelected) =>
+      prevSelected === product ? null : product
+    )
+  }, [])
 
   return (
     <>
@@ -60,7 +58,7 @@ const MarketContent: FC = () => {
                   isSelected={selectedProduct === product}
                   key={product}
                   product={product}
-                  toggleSelect={() => handleToggleSelect(product)}
+                  toggleSelect={handleToggleSelect}
                   totalBananas={bananas}
                 />
               ))}

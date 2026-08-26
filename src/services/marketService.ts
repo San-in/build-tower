@@ -40,17 +40,15 @@ const hydrateMarket = () => async (dispatch: AppDispatch) => {
 
 const setupMarketPersistence = (store: Store<RootState>) => {
   let timer: ReturnType<typeof setTimeout> | null = null
-  let lastSerialized = ''
+  let lastPersisted = store.getState().market
 
   store.subscribe(() => {
     const market = store.getState().market
-    const serialized = JSON.stringify(market)
 
-    if (serialized === lastSerialized) {
+    if (market === lastPersisted) {
       return
     }
-    lastSerialized = serialized
-
+    lastPersisted = market
     if (timer) {
       clearTimeout(timer)
     }
