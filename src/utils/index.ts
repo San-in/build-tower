@@ -3,6 +3,12 @@ export { calculateExpectedLevelConditions } from './calculateExpectedLevelCondit
 export { calculateIsLevelAvailable } from './calculateIsLevelAvailable'
 export { calculateWheelResult } from './calculateWheelResult'
 export { OperatorType } from './checkOperatorType'
+export {
+  getIsDebugOverlayVisible,
+  registerDebugOverlayTap,
+  subscribeToDebugOverlay,
+  toggleDebugOverlay,
+} from './debugOverlay'
 export { formatLevelToRomanNum } from './formatLevelToRomanNum'
 export { formatTabletElementsSize } from './formatTabletElementsSize'
 export { generateInitialLevels } from './generateInitialLevels'

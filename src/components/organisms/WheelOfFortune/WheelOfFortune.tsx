@@ -20,6 +20,7 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { Platform, TextStyle, useWindowDimensions, View } from 'react-native'
@@ -72,7 +73,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       borderColor = COLORS.white,
       borderWidth = formatTabletElementsSize(4),
       textStyle = {},
-      innerRadius = formatTabletElementsSize(60),
+      innerRadius = formatTabletElementsSize(60, 1.5),
       result = false,
     },
     ref
@@ -84,6 +85,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     const oneTurn = 360
     const angleOffset = 360 / Math.max(sectors.length, 1) / 2
     const [winnerSector, setWinnerSector] = useState<number | null>(null)
+    const spinIdRef = useRef(0)
 
     const makeWheel = useCallback(() => {
       const data = Array.from<number>({ length: sectors.length }).fill(1)
@@ -120,6 +122,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     useEffect(() => () => stopLoopSfx('roulette'), [])
 
     const spin = () => {
+      spinIdRef.current += 1
+      const spinId = spinIdRef.current
       const sectorAngle = oneTurn / sectors.length
 
       const finalRotation =
@@ -134,11 +138,13 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
       const handleSpinEnd = (finished?: boolean) => {
         clearInterval(hapticInterval)
-        stopLoopSfx('roulette')
+        if (spinIdRef.current === spinId) {
+          stopLoopSfx('roulette')
+        }
         if (!finished) {
           return
         }
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         setWinnerSector(winnerIndex)
         onFinish(sectors[winnerIndex] ?? '', winnerIndex)
       }
@@ -169,8 +175,8 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
               2100, 2280, 2360, 2540, 2720, 2900,
             ].map((value) => value * KNOB_WOBBLE_RATIO),
             [
-              0, -35, 35, -35, 35, -35, 35, -30, 30, -25, 25, -15, 15, -10,
-              10, -5, 5, 0,
+              0, -35, 35, -35, 35, -35, 35, -30, 30, -25, 25, -15, 15, -10, 10,
+              -5, 5, 0,
             ],
             Extrapolation.CLAMP
           )}deg`,
@@ -222,7 +228,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
                 fill={(textStyle as TextStyle).color || COLORS.white}
                 fontSize={
                   (textStyle as TextStyle).fontSize ||
-                  formatTabletElementsSize(24)
+                  formatTabletElementsSize(24, 1.5)
                 }
                 fontWeight={(textStyle as TextStyle).fontWeight || '900'}
                 textAnchor="middle"
@@ -273,9 +279,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
             )}
           </MotiView>
         </View>
-        <Reanimated.View
-          style={[styles.knobIconContainer, knobAnimatedStyle]}
-        >
+        <Reanimated.View style={[styles.knobIconContainer, knobAnimatedStyle]}>
           <KnobIcon
             height={formatTabletElementsSize(70)}
             width={formatTabletElementsSize(70)}

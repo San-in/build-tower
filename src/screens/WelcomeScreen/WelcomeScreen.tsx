@@ -157,7 +157,7 @@ const WelcomeScreen = () => {
       </View>
       <Image
         allowDownscaling
-        cachePolicy="disk"
+        cachePolicy="memory-disk"
         contentFit="cover"
         onError={() => assetLoaded(ASSET_KEYS.BG)}
         onLoadEnd={() => assetLoaded(ASSET_KEYS.BG)}
@@ -189,7 +189,7 @@ const WelcomeScreen = () => {
               <OutlinedText
                 color={COLORS.yellow}
                 fontSize={formatTabletElementsSize(45)}
-                offset={5}
+                offset={formatTabletElementsSize(3, 1.5)}
                 strokeColor={COLORS.brown}
               >
                 BuildTower

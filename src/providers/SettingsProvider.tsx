@@ -42,7 +42,7 @@ const guessTabletBySize = () => {
   return smallestDp >= 600
 }
 
-const initialIsTablet =
+export const initialIsTablet =
   Device.deviceType === Device.DeviceType.TABLET ||
   (Platform.OS === 'ios' && Platform.isPad) ||
   (!Device.deviceType && guessTabletBySize())

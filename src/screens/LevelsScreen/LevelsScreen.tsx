@@ -177,7 +177,7 @@ const LevelsScreen = () => {
     <View style={styles.backgroundImage}>
       <Image
         allowDownscaling
-        cachePolicy="disk"
+        cachePolicy="memory-disk"
         contentFit="cover"
         onError={handleBgLoaded}
         onLoadEnd={handleBgLoaded}

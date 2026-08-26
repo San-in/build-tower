@@ -10,17 +10,17 @@ import {
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
-
-import { formatTabletElementsSize } from '../utils/formatTabletElementsSize'
+import { formatTabletElementsSize } from '@utils'
 
 export { IS_TABLET } from './device'
 
 export const HOURS_IN_DAY = 24
 export const TOTAL_LEVELS = 30
-export const LEVEL_CARD_WIDTH = formatTabletElementsSize(200)
+export const LEVEL_CARD_SCALE = 1.5
+export const LEVEL_CARD_WIDTH = formatTabletElementsSize(200, LEVEL_CARD_SCALE)
 export const LEVEL_CARD_GAP = formatTabletElementsSize(20)
 export const INITIAL_SPIN_QUANTITY = 4
-export const BLOCK_DIMENSION = formatTabletElementsSize(70, 1.8)
+export const BLOCK_DIMENSION = formatTabletElementsSize(70, 1.5)
 export const Z_INDEX_TYPE: Record<Z_INDEX_PRIORITY, number> = {
   [Z_INDEX_PRIORITY.Hidden]: -1,
   [Z_INDEX_PRIORITY.Minimal]: 1,

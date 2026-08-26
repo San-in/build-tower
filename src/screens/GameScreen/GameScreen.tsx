@@ -124,9 +124,10 @@ import {
   NextButton,
   PrizeSection,
   ProgressBadge,
+  STEP_BAR_WIDTH,
+  StepBar,
   SuccessActionModal,
 } from './components'
-import StepBar from './components/StepBar/StepBar'
 import {
   ResetLevelContent,
   ResetStepsContent,
@@ -174,6 +175,28 @@ const GameScreen: FC = () => {
   const resetStepUsedRef = useRef(false)
   const hasFinishedRef = useRef(false)
   const welcomeBonusShownRef = useRef(false)
+  const monkeyNotificationShownRef = useRef(false)
+  const timersRef = useRef(new Set<ReturnType<typeof setTimeout>>())
+
+  // Every deferred step of the game loop goes through `schedule` so it can be
+  // cancelled as a group: hard on unmount, soft on level reset. A bare
+  // setTimeout here fires after the screen is gone and drives state (and even
+  // sound) for a level nobody is playing any more.
+  const clearScheduled = useCallback(() => {
+    timersRef.current.forEach(clearTimeout)
+    timersRef.current.clear()
+  }, [])
+
+  const schedule = useCallback((callback: () => void, delayMs: number) => {
+    const timerId = setTimeout(() => {
+      timersRef.current.delete(timerId)
+      callback()
+    }, delayMs)
+    timersRef.current.add(timerId)
+    return timerId
+  }, [])
+
+  useEffect(() => clearScheduled, [clearScheduled])
 
   useFocusEffect(
     useCallback(() => {
@@ -290,6 +313,12 @@ const GameScreen: FC = () => {
   const animationRestartKey = `${actionModalData.isVisible}${buildModalData.isVisible} 
   ${monkeyAnimationData.isVisible}`
   const isOutOfAttempts = useMemo(() => step > attempts, [attempts, step])
+  const starsGifBackdropWidth = useMemo(
+    () =>
+      formatTabletElementsSize(14) +
+      STEP_BAR_WIDTH * Math.min(step / attempts, 1),
+    [attempts, step]
+  )
   const isLevelPrematurelyFinished = useMemo(
     () =>
       Boolean(
@@ -327,7 +356,9 @@ const GameScreen: FC = () => {
     powerUpUsedRef.current = false
     resetStepUsedRef.current = false
     hasFinishedRef.current = false
-  }, [])
+    monkeyNotificationShownRef.current = false
+    clearScheduled()
+  }, [clearScheduled])
 
   const handleCloseMonkeyAnimation = () => {
     setMonkeyAnimationData((prevState) => ({ ...prevState, isVisible: false }))
@@ -516,15 +547,18 @@ const GameScreen: FC = () => {
     handleCloseMonkeyAnimation()
   }, [chosenOption, firstOptionCard, secondOptionCard])
 
-  const handleInitFirstTowerCallBack = useCallback((number: number) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setInitialBlockValue(number)
-    setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
-    setTimeout(() => {
+  const handleInitFirstTowerCallBack = useCallback(
+    (number: number) => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      handleOpenActionModal(GAME_MODAL_TYPE.LevelConditions)
-    }, 1500)
-  }, [])
+      setInitialBlockValue(number)
+      setBuildModalData((prevState) => ({ ...prevState, isVisible: false }))
+      schedule(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        handleOpenActionModal(GAME_MODAL_TYPE.LevelConditions)
+      }, 1500)
+    },
+    [schedule]
+  )
 
   const handleRandomAddBlockPress = () => {
     if (!userBlockValue) {
@@ -710,26 +744,33 @@ const GameScreen: FC = () => {
     setIsPrizeVisible(true)
     setIsScaledTower(true)
     handleCloseActionModal()
-    setTimeout(() => {
+    schedule(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setBuildModalData({ isVisible: true, type: TOWER.SecondTower })
     }, 1500)
-  }, [handleCloseActionModal])
+  }, [handleCloseActionModal, schedule])
 
   const handleMonkeyAnimationRunAndJumpFinished = useCallback(() => {
     handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
   }, [])
 
   const handleMonkeyAnimationLandingFinished = useCallback(() => {
+    setIsTowerBuilding(false)
     if (isOutOfAttempts) {
-      setTimeout(() => handleOpenActionModal(GAME_MODAL_TYPE.LevelResult), 800)
+      schedule(() => handleOpenActionModal(GAME_MODAL_TYPE.LevelResult), 800)
       return
     }
     if (isLevelPrematurelyFinished || isLevelFinished) {
       return
     }
 
-    if (monkeyNotificationShowedSteps === step) {
+    // Once per level: a power-up runs an extra JumpToTop → Landing cycle
+    // without advancing `step`, so the step match alone re-fired it.
+    if (
+      monkeyNotificationShowedSteps === step &&
+      !monkeyNotificationShownRef.current
+    ) {
+      monkeyNotificationShownRef.current = true
       playSfx('monkey_notification')
       setIsMonkeyNotificationVisible(true)
     }
@@ -741,11 +782,12 @@ const GameScreen: FC = () => {
     monkeyNotificationShowedSteps,
     step,
     isLevelPrematurelyFinished,
+    schedule,
   ])
 
   const handleMonkeyAnimationJumpToTopFinished = useCallback(() => {
     if (isLevelFinished) {
-      setTimeout(() => {
+      schedule(() => {
         playSfx('celebration')
         handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Celebration)
       }, 100)
@@ -766,7 +808,7 @@ const GameScreen: FC = () => {
     }
 
     userBlockManipulation()
-  }, [isLevelFinished, powerUpActiveAction, userBlockManipulation])
+  }, [isLevelFinished, powerUpActiveAction, userBlockManipulation, schedule])
 
   const handleNextStepPress = useCallback(() => {
     if (isOutOfAttempts || !isInterfacesVisible || isTowerBuilding) {
@@ -842,12 +884,13 @@ const GameScreen: FC = () => {
     handleCloseActionModal()
     resetStepUsedRef.current = true
     setStep(1)
+    setIsTowerBuilding(false)
     setResetStepsModalData((prevState) => ({
       ...prevState,
       isVisible: false,
     }))
 
-    setTimeout(() => {
+    schedule(() => {
       setSuccessActionInfoModalData({
         isVisible: true,
         type: GAME_SCREEN_SUCCESS_ACTION.ResetSteps,
@@ -857,11 +900,11 @@ const GameScreen: FC = () => {
         attempt: prevState.attempt - 1,
       }))
     }, 800)
-  }, [handleCloseActionModal])
+  }, [handleCloseActionModal, schedule])
 
   const handlePressCloseResetStepsModal = () => {
     handleCloseResetStepsModal()
-    setTimeout(() => {
+    schedule(() => {
       handleOpenActionModal(GAME_MODAL_TYPE.LevelResult)
     }, 500)
   }
@@ -889,6 +932,10 @@ const GameScreen: FC = () => {
       monkeyAnimationData.type === MONKEY_ANIMATION_TYPE.JumpToTop
     ) {
       handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.Landing)
+      setIsTowerBuilding(false)
+      return
+    }
+    if (monkeyAnimationData.type !== MONKEY_ANIMATION_TYPE.JumpToTop) {
       setIsTowerBuilding(false)
     }
   }
@@ -922,43 +969,43 @@ const GameScreen: FC = () => {
           powerUpUsedRef.current = true
           dispatch(increaseRepeatsForAward(masterAward))
           playSfx('power_up')
-          setTimeout(async () => {
+          schedule(() => {
             handleRemovePowerUp(marketProduct)
           }, 1000)
         }
       }
     },
-    [dispatch, handleCloseActionModal, handleRemovePowerUp]
+    [dispatch, handleCloseActionModal, handleRemovePowerUp, schedule]
   )
 
   // CONFIGS
   const monkeyAnimationConfig = {
     [MONKEY_ANIMATION_TYPE.RunAndJump]: {
-      size: formatTabletElementsSize(400, 1.8),
+      size: formatTabletElementsSize(400, 1.5),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationRunAndJumpFinished,
       speed: 3,
     },
     [MONKEY_ANIMATION_TYPE.Landing]: {
-      size: formatTabletElementsSize(100, 1.8),
+      size: formatTabletElementsSize(100, 1.5),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationLandingFinished,
       speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.Idle]: {
-      size: formatTabletElementsSize(100, 1.8),
+      size: formatTabletElementsSize(100, 1.5),
       loop: true,
       onFinishCalBack: EMPTY_FUNCTION,
       speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.JumpToTop]: {
-      size: formatTabletElementsSize(140, 1.8),
+      size: formatTabletElementsSize(140, 1.5),
       loop: false,
       onFinishCalBack: handleMonkeyAnimationJumpToTopFinished,
       speed: 4,
     },
     [MONKEY_ANIMATION_TYPE.Celebration]: {
-      size: formatTabletElementsSize(100, 1.8),
+      size: formatTabletElementsSize(100, 1.5),
       loop: false,
       onFinishCalBack: EMPTY_FUNCTION,
       speed: 2,
@@ -1214,11 +1261,11 @@ const GameScreen: FC = () => {
   }, [assetsReady, assetLoaded])
 
   useEffect(() => {
-    if (isTowerBuilding) {
-      startLoopSfx('building')
-    } else {
-      stopLoopSfx('building')
+    if (!isTowerBuilding) {
+      return undefined
     }
+    startLoopSfx('building')
+    return () => stopLoopSfx('building')
   }, [isTowerBuilding])
 
   useEffect(() => {
@@ -1253,7 +1300,7 @@ const GameScreen: FC = () => {
       return
     }
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setTimeout(() => {
+    schedule(() => {
       if (scrollViewRef?.current && focusedTower === TOWER.SecondTower) {
         const scrolledPosition =
           (initialBlockValue - userBlockValue) * BLOCK_DIMENSION
@@ -1270,6 +1317,7 @@ const GameScreen: FC = () => {
     userBlockValue,
     focusedTower,
     contentVisible,
+    schedule,
   ])
 
   useEffect(() => {
@@ -1314,7 +1362,7 @@ const GameScreen: FC = () => {
       <View style={styles.backgroundContainer}>
         <Image
           allowDownscaling
-          cachePolicy="disk"
+          cachePolicy="memory-disk"
           contentFit="cover"
           key={String(level)}
           onError={() => assetLoaded(ASSET_KEYS.BG)}
@@ -1359,9 +1407,7 @@ const GameScreen: FC = () => {
                     <View
                       style={[
                         styles.starsGifBackdrop,
-                        {
-                          width: step * formatTabletElementsSize(50),
-                        },
+                        { width: starsGifBackdropWidth },
                       ]}
                     />
                   </>
@@ -1462,7 +1508,7 @@ const GameScreen: FC = () => {
                         {
                           bottom:
                             userBlockValue * BLOCK_DIMENSION -
-                            formatTabletElementsSize(12, 1.8),
+                            formatTabletElementsSize(12, 1.5),
                         },
                       ]}
                     >

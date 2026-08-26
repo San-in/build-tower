@@ -22,17 +22,13 @@ const StepBar: FC<StepBarProps> = ({
       transition={{ type: 'timing', duration: 500, delay: 300 }}
     >
       <MotiView
-        animate={{
-          shadowOpacity: [0.5, 1, 0],
-          shadowColor: [COLORS.yellow, COLORS.yellow20, COLORS.yellow],
-          scale: [1, 1.1, 1],
-        }}
-        from={{ shadowOpacity: 0, shadowColor: COLORS.yellow, scale: 1 }}
+        animate={{ scale: [1, 1.1, 1] }}
+        from={{ scale: 1 }}
         key={currentStep}
         style={styles.contentContainer}
         transition={{ type: 'timing', duration: 2000 }}
       >
-        <OutlinedText fontSize={formatTabletElementsSize(18)}>
+        <OutlinedText fontSize={formatTabletElementsSize(18, 1.8)}>
           {isLastStep ? 'Last step' : 'Step'}
         </OutlinedText>
 

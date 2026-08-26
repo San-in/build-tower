@@ -1,3 +1,5 @@
 export * from './useAssetPreload'
 export * from './useAssetsReady'
 export * from './useBackgroundMusic'
+export * from './useDebugOverlay'
+export * from './useScrollHint'

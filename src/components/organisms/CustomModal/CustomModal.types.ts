@@ -7,6 +7,7 @@ export type CustomModalProps = {
   modalVisible: boolean
   handleClose: () => void
   title?: string
+  onTitlePress?: () => void
   children: ReactNode
   type?: MODAL_TYPE
   containerStyles?: StyleProp<ViewStyle>

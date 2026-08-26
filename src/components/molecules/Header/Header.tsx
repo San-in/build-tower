@@ -17,7 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { styles } from './Header.styles'
 
-const ICON_SIZE = formatTabletElementsSize(36)
+const ICON_SIZE = formatTabletElementsSize(36, 1.7)
 
 const Header: FC<HeaderProps> = ({
   onResetPress,
@@ -63,16 +63,19 @@ const Header: FC<HeaderProps> = ({
             <PowerUpButton
               count={totalAddBlocksPowerUps}
               onPress={onRandomAddBlockPress}
+              size={formatTabletElementsSize(30, 1.5)}
               type={POWER_UP_TYPE.AddRandomBlocks}
             />
             <PowerUpButton
               count={totalRemoveBlocksPowerUps}
               onPress={onRandomRemoveBlockPress}
+              size={formatTabletElementsSize(30, 1.5)}
               type={POWER_UP_TYPE.RemoveRandomBlocks}
             />
             <PowerUpButton
               count={addExtraStepPowerUps}
               onPress={onAddExtraStepPress}
+              size={formatTabletElementsSize(30, 1.5)}
               type={POWER_UP_TYPE.AddExtraStep}
             />
           </View>

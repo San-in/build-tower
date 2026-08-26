@@ -13,7 +13,7 @@ import { CalendarPrizeIcon } from '../CalendarPrizeIcon'
 import { styles } from './CalendarItem.styles'
 import { CalendarItemProps } from './CalendarItem.types'
 
-const STATUS_ICON_SIZE = formatTabletElementsSize(20)
+const STATUS_ICON_SIZE = formatTabletElementsSize(20, 1)
 
 const CalendarItem: FC<CalendarItemProps> = ({
   day,
@@ -99,7 +99,7 @@ const CalendarItem: FC<CalendarItemProps> = ({
           >
             <CalendarPrizeIcon
               count={quantity}
-              size={formatTabletElementsSize(35)}
+              size={formatTabletElementsSize(35, 1.6)}
               type={prize}
             />
           </View>

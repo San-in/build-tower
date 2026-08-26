@@ -67,9 +67,7 @@ const BuildTowerSplash: FC<BuildTowerSplashProps> = ({ onPress, tower }) => {
             {
               transform: [
                 {
-                  translateY: formatTabletElementsSize(
-                    tower === TOWER.FirstTower ? 65 : 75
-                  ),
+                  translateY: formatTabletElementsSize(45),
                 },
               ],
             },

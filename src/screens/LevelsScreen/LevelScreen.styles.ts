@@ -1,4 +1,6 @@
+import { IS_TABLET } from '@constants'
 import { COLORS } from '@theme'
+import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -16,9 +18,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonContainer: {
-    left: 16,
+    left: formatTabletElementsSize(16),
     position: 'absolute',
-    right: 16,
+    right: formatTabletElementsSize(16),
   },
   contentContainer: {
     flex: 1,
@@ -32,29 +34,30 @@ export const styles = StyleSheet.create({
   levelsList: {
     alignItems: 'stretch',
     justifyContent: 'center',
-    paddingVertical: 40,
+    paddingVertical: formatTabletElementsSize(40),
   },
   modalContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
-    paddingHorizontal: 20,
+    marginBottom: formatTabletElementsSize(24),
+    marginTop: IS_TABLET ? 40 : 0,
+    paddingHorizontal: formatTabletElementsSize(20),
     width: '100%',
   },
   modalContentContainer: {
     alignItems: 'center',
-    borderRadius: 28,
-    gap: 20,
+    borderRadius: formatTabletElementsSize(28),
+    gap: formatTabletElementsSize(20, 1),
     justifyContent: 'flex-start',
-    paddingVertical: 24,
+    paddingVertical: formatTabletElementsSize(24, 1),
     position: 'relative',
     width: '100%',
   },
-  title: { marginBottom: 12 },
+  title: { marginBottom: formatTabletElementsSize(12, 1) },
   titleContainer: {
     alignItems: 'center',
     alignSelf: 'center',
-    marginHorizontal: 16,
+    marginHorizontal: formatTabletElementsSize(16),
   },
 })

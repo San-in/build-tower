@@ -15,7 +15,7 @@ import {
   resetStreakToFirstDay,
 } from '@store/slices/userActivitySlice'
 import { MODAL_TYPE } from '@types'
-import { Haptics, playSfx } from '@utils'
+import { Haptics, playSfx, registerDebugOverlayTap } from '@utils'
 import React, { FC, memo, useCallback, useMemo, useState } from 'react'
 
 import SuccessAwardClaimedModal from '../SuccessAwardClaimedModal/SuccessAwardClaimedModal'
@@ -78,6 +78,8 @@ const ActivityModal: FC<ActivityModalProps> = ({
         [ACTIVITY_MODAL_TYPES.SETTINGS]: {
           title: 'Settings',
           color: MODAL_TYPE.Green,
+          // 10 taps here reveal the hidden performance badge.
+          onTitlePress: registerDebugOverlayTap,
           content: (
             <SettingsContent onPressResetProgress={onPressResetProgress} />
           ),
@@ -96,7 +98,7 @@ const ActivityModal: FC<ActivityModalProps> = ({
     [onPressResetProgress, type]
   )
 
-  const { title, content, color } = modalConfig
+  const { title, content, color, onTitlePress } = modalConfig
   return (
     <>
       <CustomModal
@@ -105,6 +107,7 @@ const ActivityModal: FC<ActivityModalProps> = ({
         handleClose={onClose}
         isMonkeyVisible={false}
         modalVisible={isVisible}
+        onTitlePress={onTitlePress}
         renderOverlay={
           <SuccessAwardClaimedModal
             countPrize={awardSuccess.countPrize}

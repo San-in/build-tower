@@ -124,6 +124,12 @@ export enum EDGE_GLOW_OVERLAY_TYPE {
   All = 'all',
 }
 
+export enum FADE_EDGES_TYPE {
+  Top = 'top',
+  Bottom = 'bottom',
+  Both = 'both',
+}
+
 export enum MONKEY_NOTIFICATION_STATUS {
   TooLittleForWin = 'too_little_for_win',
   TooMuchForWin = 'too_much_for_win',

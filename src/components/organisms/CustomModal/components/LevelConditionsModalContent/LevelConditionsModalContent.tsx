@@ -36,7 +36,7 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
           </OutlinedText>
           <OutlinedText
             color={COLORS.gradientGold_1}
-            fontSize={formatTabletElementsSize(30)}
+            fontSize={formatTabletElementsSize(30, 1.5)}
             strokeColor={COLORS.brown}
           >
             {`${initialBlocksQuantity}`}
@@ -48,7 +48,9 @@ const LevelConditionsModalContent: FC<LevelConditionsModalContentProps> = ({
         </OutlinedText>
         <OutlinedText
           fontSize={
-            stars ? formatTabletElementsSize(18) : formatTabletElementsSize(25)
+            stars
+              ? formatTabletElementsSize(18, 1.8)
+              : formatTabletElementsSize(25, 1.8)
           }
           style={styles.rewardsTitle}
         >

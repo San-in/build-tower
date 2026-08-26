@@ -19,9 +19,11 @@ const AwardsContent: FC = () => {
   const [selected, setSelected] = useState<{
     isVisible: boolean
     type: AWARD_TYPE | null
+    openRequestId: number
   }>({
     isVisible: false,
     type: null,
+    openRequestId: 0,
   })
 
   const awardsDetails = useAppSelector(selectAwardsDetails)
@@ -35,7 +37,11 @@ const AwardsContent: FC = () => {
 
   const handleOpenAward = (type: AWARD_TYPE) => {
     playSfx('power_up')
-    setSelected({ isVisible: true, type })
+    setSelected((prevState) => ({
+      isVisible: true,
+      type,
+      openRequestId: prevState.openRequestId + 1,
+    }))
   }
 
   const handleCloseSheet = () => {
@@ -96,6 +102,7 @@ const AwardsContent: FC = () => {
       <AwardBottomSheet
         isVisible={selected.isVisible}
         onClose={handleCloseSheet}
+        openRequestId={selected.openRequestId}
         progress={selectedProgress}
       />
     </>

@@ -20,10 +20,6 @@ export const useStyles = (circleSize: number) =>
       height: circleSize * 0.9,
       justifyContent: 'center',
       padding: formatTabletElementsSize(10),
-      shadowColor: '#FFD700',
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.5,
-      shadowRadius: 10,
       width: circleSize * 0.9,
     },
     pulse: {

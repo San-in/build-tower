@@ -1,4 +1,4 @@
-import { LEVEL_CARD_WIDTH } from '@constants'
+import { LEVEL_CARD_SCALE, LEVEL_CARD_WIDTH } from '@constants'
 import { COLORS } from '@theme'
 import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: COLORS.thatch70,
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 15,
+    borderRadius: formatTabletElementsSize(15, LEVEL_CARD_SCALE),
     overflow: 'hidden',
     pointerEvents: 'none',
   },
@@ -19,8 +19,8 @@ export const styles = StyleSheet.create({
     aspectRatio: 0.58,
     backgroundColor: COLORS.thatch,
     borderColor: COLORS.thatch,
-    borderRadius: 15,
-    borderWidth: 5,
+    borderRadius: formatTabletElementsSize(15, LEVEL_CARD_SCALE),
+    borderWidth: formatTabletElementsSize(5, LEVEL_CARD_SCALE),
     elevation: 0,
     opacity: 0.7,
     position: 'relative',
@@ -30,7 +30,11 @@ export const styles = StyleSheet.create({
     shadowRadius: 20,
     width: LEVEL_CARD_WIDTH,
   },
-  containerSelected: { borderWidth: 8, elevation: 8, opacity: 1 },
+  containerSelected: {
+    borderWidth: formatTabletElementsSize(8, LEVEL_CARD_SCALE),
+    elevation: 8,
+    opacity: 1,
+  },
   gradientContainer: {
     borderRadius: 5,
     height: '100%',

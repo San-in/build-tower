@@ -1,8 +1,11 @@
 import { BananasIcon } from '@assets/icons'
-import { OutlinedText } from '@components/atoms'
+import { OutlinedText, ScrollHint } from '@components/atoms'
+import { FadeEdges } from '@components/wrappers'
+import { IS_TABLET } from '@constants'
+import { useScrollHint } from '@hooks'
 import { useAppSelector } from '@store/hooks'
 import { selectBananas } from '@store/slices/bananasSlice'
-import { MARKET_PRODUCT } from '@types'
+import { FADE_EDGES_TYPE, MARKET_PRODUCT } from '@types'
 import { formatTabletElementsSize, playSfx } from '@utils'
 import React, { FC, memo, useCallback, useState } from 'react'
 import { ScrollView, useWindowDimensions, View } from 'react-native'
@@ -14,6 +17,7 @@ const PRODUCTS = Object.values(MARKET_PRODUCT)
 
 const MarketContent: FC = () => {
   const { height } = useWindowDimensions()
+  const { isHintVisible, scrollHintProps } = useScrollHint()
 
   const bananas = useAppSelector(selectBananas)
   const [selectedProduct, setSelectedProduct] = useState<MARKET_PRODUCT | null>(
@@ -34,27 +38,37 @@ const MarketContent: FC = () => {
 
   return (
     <>
-      <ScrollView
-        style={[
-          styles.contentContainer,
-          {
-            minHeight: height * 0.5,
-            maxHeight: height * 0.7,
-          },
-        ]}
-      >
-        <View style={styles.productsListContainer}>
-          {PRODUCTS.map((product) => (
-            <MarketItem
-              isSelected={selectedProduct === product}
-              key={product}
-              product={product}
-              toggleSelect={() => handleToggleSelect(product)}
-              totalBananas={bananas}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      <View style={styles.scrollWrapper}>
+        <FadeEdges
+          edges={FADE_EDGES_TYPE.Both}
+          fadeSize={formatTabletElementsSize(10)}
+        >
+          <ScrollView
+            {...scrollHintProps}
+            showsVerticalScrollIndicator={false}
+            style={[
+              styles.contentContainer,
+              {
+                minHeight: height * 0.5,
+                maxHeight: height * (IS_TABLET ? 0.5 : 0.7),
+              },
+            ]}
+          >
+            <View style={styles.productsListContainer}>
+              {PRODUCTS.map((product) => (
+                <MarketItem
+                  isSelected={selectedProduct === product}
+                  key={product}
+                  product={product}
+                  toggleSelect={() => handleToggleSelect(product)}
+                  totalBananas={bananas}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        </FadeEdges>
+        <ScrollHint isVisible={isHintVisible} />
+      </View>
       <View style={styles.container}>
         <OutlinedText
           fontSize={formatTabletElementsSize(15, 2.5)}

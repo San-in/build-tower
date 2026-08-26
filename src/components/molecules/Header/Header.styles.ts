@@ -1,3 +1,4 @@
+import { IS_TABLET } from '@constants'
 import { COLORS } from '@theme'
 import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
@@ -39,7 +40,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: formatTabletElementsSize(10),
     justifyContent: 'flex-start',
-    marginTop: formatTabletElementsSize(-5),
+    marginTop: IS_TABLET ? 30 : 0,
     paddingHorizontal: formatTabletElementsSize(16),
     shadowColor: COLORS.codeGrey,
     shadowOffset: {
@@ -53,7 +54,7 @@ export const styles = StyleSheet.create({
   contentContainer: {
     alignItems: 'flex-start',
     flexGrow: 1,
-    gap: formatTabletElementsSize(5),
+    gap: formatTabletElementsSize(5, 1),
   },
   gradientContainer: {
     alignItems: 'center',
@@ -84,6 +85,6 @@ export const styles = StyleSheet.create({
   },
   powerUpsContainer: {
     flexDirection: 'row',
-    gap: formatTabletElementsSize(5),
+    gap: formatTabletElementsSize(5, 1.5),
   },
 })

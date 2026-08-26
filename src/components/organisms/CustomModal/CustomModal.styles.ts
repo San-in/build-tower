@@ -25,13 +25,14 @@ export const styles = StyleSheet.create({
     transform: [{ scale: 0.9 }],
   },
   container: {
+    marginTop: IS_TABLET ? 100 : 0,
     maxWidth: '90%',
   },
   contentContainer: {
     alignItems: 'center',
     gap: formatTabletElementsSize(16),
     overflow: 'hidden',
-    padding: IS_TABLET ? 25 : 15,
+    padding: IS_TABLET ? 20 : 15,
     width: '100%',
   },
   gestureHandlerRoot: {
@@ -51,12 +52,12 @@ export const styles = StyleSheet.create({
     position: 'relative',
   },
   monkeyImage: {
-    height: formatTabletElementsSize(150),
+    height: formatTabletElementsSize(150, 1.7),
     left: '50%',
     position: 'absolute',
-    top: formatTabletElementsSize(-125),
+    top: formatTabletElementsSize(-125, 1.7),
     transform: [{ translateX: '-50%' }],
-    width: formatTabletElementsSize(150),
+    width: formatTabletElementsSize(150, 1.7),
     zIndex: Z_INDEX_TYPE.extra_high,
   },
   text: { alignSelf: 'flex-start', color: COLORS.codeGrey },

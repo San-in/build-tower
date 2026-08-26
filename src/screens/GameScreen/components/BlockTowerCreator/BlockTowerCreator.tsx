@@ -118,7 +118,7 @@ const BlockTowerCreator: FC<BlockTowerCreatorProps> = memo(
                     },
                   }}
                 >
-                  <BlockIcon size={'100%'} />
+                  <BlockIcon size={'100%'} styleContainer={styles.blockIcon} />
                 </MotiView>
               )
             })}

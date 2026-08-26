@@ -88,7 +88,7 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
         <View style={styles.labelContainer}>
           <OutlinedText
             containerStyle={styles.labelAutoFit}
-            fontSize={formatTabletElementsSize(14, 2.2)}
+            fontSize={formatTabletElementsSize(14, 1.5)}
             numberOfLines={1}
             style={!isAvailable ? GlobalStyles.invisible : GlobalStyles.visible}
           >
@@ -123,8 +123,8 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
             containerStyle={styles.labelAutoFit}
             fontSize={
               stars
-                ? formatTabletElementsSize(18, 2.5)
-                : formatTabletElementsSize(22, 2.5)
+                ? formatTabletElementsSize(18, 2)
+                : formatTabletElementsSize(22, 2)
             }
             numberOfLines={1}
             style={styles.levelLabel}
@@ -135,9 +135,9 @@ const CardInner: FC<LevelCardProps> = ({ onPress, level, isSelectedLevel }) => {
             <View style={styles.ratingContainer}>
               {Array.from({ length: stars }, (_, i) => (
                 <StarIcon
-                  height={formatTabletElementsSize(25)}
+                  height={formatTabletElementsSize(25, 1.2)}
                   key={i}
-                  width={formatTabletElementsSize(25)}
+                  width={formatTabletElementsSize(25, 1.2)}
                 />
               ))}
             </View>

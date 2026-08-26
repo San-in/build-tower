@@ -22,5 +22,12 @@ export const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
   },
-  productsListContainer: { gap: 10 },
+  productsListContainer: {
+    gap: 10,
+    paddingVertical: formatTabletElementsSize(15),
+  },
+  scrollWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
 })

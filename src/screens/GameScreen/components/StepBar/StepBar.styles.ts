@@ -2,18 +2,24 @@ import { COLORS } from '@theme'
 import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
+// Width of the segmented bar itself. Exported so overlays anchored to it (the
+// stars-gif backdrop in GameScreen) can size themselves against the same value
+// instead of guessing a per-step width.
+export const STEP_BAR_WIDTH = formatTabletElementsSize(150)
+
 export const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     gap: formatTabletElementsSize(2),
     marginHorizontal: formatTabletElementsSize(4),
   },
+  // No shadow here on purpose: this container is transparent AND holds a
+  // forever-looping child animation, which is the pathological RN case — the
+  // whole subtree gets re-rasterised offscreen every frame to compute the
+  // shadow shape. The scale pulse below carries the emphasis instead.
   contentContainer: {
     alignItems: 'center',
-    elevation: 5,
     gap: formatTabletElementsSize(5),
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 10,
   },
   stepBarContainer: {
     borderColor: COLORS.codeGrey40,
@@ -22,7 +28,7 @@ export const styles = StyleSheet.create({
     height: formatTabletElementsSize(20),
     overflow: 'visible',
     position: 'relative',
-    width: formatTabletElementsSize(150),
+    width: STEP_BAR_WIDTH,
   },
   stepContainer: {
     height: '100%',

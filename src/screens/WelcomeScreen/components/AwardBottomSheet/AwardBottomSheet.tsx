@@ -39,15 +39,18 @@ const GIFT_ICON_SIZE_LARGE = formatTabletElementsSize(70)
 
 const AwardBottomSheet = ({
   isVisible,
+  openRequestId,
   onClose,
   progress,
 }: {
   isVisible: boolean
+  openRequestId: number
   onClose: () => void
   progress: SingleAwardState | null
 }) => {
   const dispatch = useAppDispatch()
   const bottomSheetRef = useRef<BottomSheet>(null)
+  const expandedRequestRef = useRef(0)
   const { currentLevel, currentRepeats = 0, type, levelsInfo } = progress || {}
   const { levelConditions, maxLevel, name, icon, description } =
     getAwardConfigByType(type || AWARD_TYPE.NO_POWER_UPS) || {}
@@ -125,12 +128,15 @@ const AwardBottomSheet = ({
   )
 
   useEffect(() => {
-    if (isVisible) {
+    if (openRequestId && expandedRequestRef.current !== openRequestId) {
+      expandedRequestRef.current = openRequestId
       bottomSheetRef.current?.expand()
-    } else {
+      return
+    }
+    if (!isVisible) {
       bottomSheetRef.current?.close()
     }
-  }, [isVisible])
+  }, [isVisible, openRequestId])
 
   return (
     <BottomSheet

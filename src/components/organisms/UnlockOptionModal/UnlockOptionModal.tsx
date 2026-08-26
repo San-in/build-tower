@@ -6,7 +6,7 @@ import {
   INFO_UNLOCK_OPTION_MODAL_KEY,
   MODAL_TYPE,
 } from '@types'
-import { formatTabletElementsSize,Haptics  } from '@utils'
+import { formatTabletElementsSize, Haptics } from '@utils'
 import { MotiView } from 'moti'
 import React, { FC, useMemo, useState } from 'react'
 import { Text, View } from 'react-native'
@@ -79,7 +79,9 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Choose at least one option
         </OutlinedText>
-        <Text allowFontScaling={false} style={styles.emoji}>😉</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>
+          😉
+        </Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledAd]: (
@@ -87,7 +89,9 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Ads are resting right now...
         </OutlinedText>
-        <Text allowFontScaling={false} style={styles.emoji}>🛌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>
+          🛌
+        </Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.DisabledBananas]: (
@@ -95,7 +99,9 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           You need more bananas
         </OutlinedText>
-        <Text allowFontScaling={false} style={styles.emoji}>🙈🍌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>
+          🙈🍌
+        </Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledAd]: (
@@ -103,7 +109,9 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           Watch a short ad & go!
         </OutlinedText>
-        <Text allowFontScaling={false} style={styles.emoji}>🎬</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>
+          🎬
+        </Text>
       </View>
     ),
     [INFO_UNLOCK_OPTION_MODAL_KEY.EnabledBananas]: (
@@ -111,7 +119,9 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
         <OutlinedText
           fontSize={formatTabletElementsSize(12)}
         >{`${price}`}</OutlinedText>
-        <Text allowFontScaling={false} style={styles.emoji}>🍌</Text>
+        <Text allowFontScaling={false} style={styles.emoji}>
+          🍌
+        </Text>
         <OutlinedText fontSize={formatTabletElementsSize(12)}>
           {enabledBananasText || '- a good price'}
         </OutlinedText>
@@ -133,7 +143,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
 
   const handleConfirmPress = async () => {
     if (selectedOption === BONUS_OPTION_TYPE.Bananas) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
       dispatch(removeBananas(price))
       setSelectedOption(null)
       onConfirm()
@@ -144,6 +154,7 @@ const UnlockOptionModal: FC<UnlockOptionModalProps> = ({
     <CustomModal
       containerStyles={styles.container}
       handleClose={handleClose}
+      isMonkeyVisible={false}
       modalVisible={visible}
       type={MODAL_TYPE.Green}
     >

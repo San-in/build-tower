@@ -36,7 +36,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
   const { isAvailable } = levelData
 
   return (
-    <View>
+    <View style={styles.container}>
       <MotiView
         renderToHardwareTextureAndroid
         shouldRasterizeIOS
@@ -64,7 +64,7 @@ const LevelCard: FC<LevelCardProps> = ({ onPress, isSelectedLevel, level }) => {
       >
         <OutlinedText
           color={COLORS.white50}
-          fontSize={formatTabletElementsSize(14)}
+          fontSize={formatTabletElementsSize(14, 1.5)}
           strokeColor={COLORS.gradientGrey_2}
         >
           {infoMessage}

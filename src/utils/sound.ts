@@ -57,6 +57,7 @@ let audioModePromise: Promise<void> | null = null
 const musicPlayers: Partial<Record<MusicTrack, AudioPlayer>> = {}
 const sfxPlayers: Partial<Record<SfxName, AudioPlayer>> = {}
 const loopSfxPlayers: Partial<Record<LoopSfxName, AudioPlayer>> = {}
+const loopSfxGeneration: Partial<Record<LoopSfxName, number>> = {}
 
 const ensureAudioMode = (): void => {
   if (audioModeReady) {
@@ -94,16 +95,32 @@ const restoreMusicVolume = (): void => {
   }
 }
 
-// On a cold start the very first music play() can race the audio-session setup
-// and be dropped — with nothing (no ducking sfx) to recover it. Once the session
-// resolves, re-assert playback if this is still the active, enabled track.
-const reassertMusic = (track: MusicTrack): void => {
-  void audioModePromise?.then(() => {
+// On a cold start the very first music play() can be dropped: the audio session
+// may still be resolving, and the player may not have finished loading its
+// asset. Neither surfaces as an error and nothing (no ducking sfx) recovers it,
+// so poll for a bounded window and re-assert playback until it actually sticks.
+const MUSIC_START_RETRIES = 8
+const MUSIC_START_RETRY_DELAY = 250
+
+const reassertMusic = (track: MusicTrack, attempt = 0): void => {
+  if (attempt >= MUSIC_START_RETRIES) {
+    return
+  }
+  const retry = (): void => {
     const player = musicPlayers[track]
-    if (currentTrack === track && enabled && player && !player.playing) {
-      player.play()
+    if (currentTrack !== track || !enabled || !player || player.playing) {
+      return
     }
-  })
+    player.play()
+    setTimeout(() => reassertMusic(track, attempt + 1), MUSIC_START_RETRY_DELAY)
+  }
+  // First pass waits for the audio session instead of racing it; the polling
+  // that follows covers the player still loading its asset.
+  if (attempt === 0 && audioModePromise) {
+    void audioModePromise.then(retry)
+    return
+  }
+  retry()
 }
 
 const anySfxPlaying = (): boolean =>
@@ -139,6 +156,22 @@ const getSfx = (name: SfxName): AudioPlayer => {
     sfxPlayers[name] = player
   }
   return player
+}
+
+// `seekTo` is ASYNC. Firing play() straight after it can hit a player still
+// parked at the end of its previous playback, and a player at EOF plays
+// nothing — which is why a one-shot sfx occasionally went silent on a repeat
+// trigger (celebration, fanfare). Rewind first, then play.
+const playFromStart = (
+  player: AudioPlayer,
+  isStillWanted: () => boolean
+): void => {
+  const start = () => {
+    if (isStillWanted()) {
+      player.play()
+    }
+  }
+  void player.seekTo(0).then(start, start)
 }
 
 const getLoopSfx = (name: LoopSfxName): AudioPlayer => {
@@ -193,9 +226,7 @@ export const playSfx = (name: SfxName): void => {
   if (music) {
     music.volume = name === 'celebration' ? EXTRA_DUCK_VOLUME : DUCK_VOLUME
   }
-  const player = getSfx(name)
-  void player.seekTo(0)
-  player.play()
+  playFromStart(getSfx(name), () => enabled)
 }
 
 export const startLoopSfx = (name: LoopSfxName): void => {
@@ -203,12 +234,18 @@ export const startLoopSfx = (name: LoopSfxName): void => {
     return
   }
   ensureAudioMode()
-  const player = getLoopSfx(name)
-  void player.seekTo(0)
-  player.play()
+  // Bumped by every start AND every stop, so a rewind that resolves after the
+  // loop was already stopped can't resurrect it.
+  const generation = (loopSfxGeneration[name] ?? 0) + 1
+  loopSfxGeneration[name] = generation
+  playFromStart(
+    getLoopSfx(name),
+    () => enabled && loopSfxGeneration[name] === generation
+  )
 }
 
 export const stopLoopSfx = (name: LoopSfxName): void => {
+  loopSfxGeneration[name] = (loopSfxGeneration[name] ?? 0) + 1
   loopSfxPlayers[name]?.pause()
   if (!anySfxPlaying()) {
     restoreMusicVolume()
@@ -224,9 +261,10 @@ export const setSoundEnabled = (value: boolean): void => {
     return
   }
   const music = currentMusic()
-  if (music) {
+  if (music && currentTrack) {
     music.volume = MUSIC_VOLUME
     music.play()
+    reassertMusic(currentTrack)
   }
 }
 

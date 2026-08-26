@@ -1,4 +1,4 @@
-import { Z_INDEX_TYPE } from '@constants'
+import { IS_TABLET, Z_INDEX_TYPE } from '@constants'
 import { formatTabletElementsSize } from '@utils'
 import { StyleSheet } from 'react-native'
 
@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     gap: formatTabletElementsSize(5),
     position: 'absolute',
     right: formatTabletElementsSize(20),
-    top: 0,
+    top: IS_TABLET ? 40 : 0,
     zIndex: Z_INDEX_TYPE.high,
   },
   menuListContainer: {

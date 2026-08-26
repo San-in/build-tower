@@ -11,7 +11,7 @@ const OutlinedText = ({
   fontSize = formatTabletElementsSize(32),
   color = COLORS.roseWhite,
   strokeColor = COLORS.codeGrey,
-  offset = formatTabletElementsSize(1.5),
+  offset = formatTabletElementsSize(1.5, 1),
   style,
   containerStyle,
   numberOfLines,

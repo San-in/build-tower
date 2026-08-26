@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
   infoMessageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: formatTabletElementsSize(90),
+    minHeight: formatTabletElementsSize(75, 1),
   },
   powerUp: {
     alignItems: 'center',

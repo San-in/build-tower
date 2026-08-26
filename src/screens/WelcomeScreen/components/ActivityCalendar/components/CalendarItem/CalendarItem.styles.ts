@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
     flex: 1,
     justifyContent: 'center',
-    padding: 4,
+    padding: formatTabletElementsSize(4),
     position: 'relative',
     shadowOpacity: 0.8,
     shadowRadius: 10,

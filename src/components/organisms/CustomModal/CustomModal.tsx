@@ -81,6 +81,7 @@ const CustomModal: FC<CustomModalProps> = ({
   modalVisible,
   handleClose,
   title = '',
+  onTitlePress,
   children,
   type = MODAL_TYPE.Orange,
   containerStyles = {},
@@ -119,7 +120,7 @@ const CustomModal: FC<CustomModalProps> = ({
     const opened = !prev.current.visible && modalVisible
     const typeChangedWhileOpen = modalVisible && prev.current.type !== type
     if (opened) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       if (openSound) {
         playSfx(openSound)
       }
@@ -172,7 +173,7 @@ const CustomModal: FC<CustomModalProps> = ({
               style={[styles.monkeyImage, { opacity: Number(isMonkeyVisible) }]}
               transition={120}
             />
-  
+
             <View style={styles.imageBackground}>
               <Image
                 cachePolicy="memory-disk"
@@ -188,7 +189,7 @@ const CustomModal: FC<CustomModalProps> = ({
                 ]}
                 transition={100}
               />
-  
+
               {withCrossIcon && (
                 <Pressable
                   onPress={handleCrossIconPress}
@@ -203,7 +204,7 @@ const CustomModal: FC<CustomModalProps> = ({
                   />
                 </Pressable>
               )}
-  
+
               <LinearGradient
                 colors={gradientColors}
                 end={{ x: 1, y: 1 }}
@@ -212,12 +213,14 @@ const CustomModal: FC<CustomModalProps> = ({
               >
                 <View style={styles.contentContainer}>
                   {Boolean(title) && (
-                    <OutlinedText
-                      fontSize={formatTabletElementsSize(20)}
-                      offset={2}
-                    >
-                      {title}
-                    </OutlinedText>
+                    <Pressable disabled={!onTitlePress} onPress={onTitlePress}>
+                      <OutlinedText
+                        fontSize={formatTabletElementsSize(20)}
+                        offset={2}
+                      >
+                        {title}
+                      </OutlinedText>
+                    </Pressable>
                   )}
                   {children}
                 </View>

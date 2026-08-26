@@ -38,8 +38,9 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   const [wheelWinnerSector, setWheelWinnerSector] = useState('')
   const [isFirstSpinFinished, setIsFirstSpinFinished] = useState(false)
   const [isSpinButtonDisabled, setIsSpinButtonDisabled] = useState(false)
-  const [shouldReset, setShouldReset] = useState(true)
+  const [shouldReset, setShouldReset] = useState(false)
   const [shouldSpinWheel, setShouldSpinWheel] = useState(false)
+  const isSpinningRef = useRef(false)
   const isSpinCounterVisible = useMemo(
     () => spinCounter < INITIAL_SPIN_QUANTITY && spinCounter,
     [spinCounter]
@@ -75,6 +76,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     setIsVisible((prevState) => ({ ...prevState, isVisible: false }))
     setShouldReset(true)
     setIsModalShacked(false)
+    isSpinningRef.current = false
   }
 
   const handleTryAgain = async () => {
@@ -124,6 +126,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     onFinish(wheelResult)
   }
   const handleWheelFortuneFinish = (winner: string) => {
+    isSpinningRef.current = false
     setWheelWinnerSector(winner)
     setIsWheelModalResultVisible(true)
     setSpinCounter((prevState) => prevState && prevState - 1)
@@ -183,13 +186,13 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   )
 
   useEffect(() => {
-    if (shouldReset) {
-      setTimeout(handleReset, 1000)
-    }
+    const timerId = shouldReset ? setTimeout(handleReset, 1000) : undefined
+    return () => clearTimeout(timerId)
   }, [handleReset, shouldReset])
 
   useEffect(() => {
-    if (shouldSpinWheel && winnerIndex !== null) {
+    if (shouldSpinWheel && winnerIndex !== null && !isSpinningRef.current) {
+      isSpinningRef.current = true
       wheelRef.current?.spin()
     }
   }, [shouldSpinWheel, winnerIndex])
