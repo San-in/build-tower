@@ -51,6 +51,8 @@ jobs:
 
       - run: npx tsc --noEmit
 
+      - run: npm test
+
   release:
     name: Version, build, submit
     needs: quality
