@@ -1,0 +1,112 @@
+name: Release
+
+on:
+  # Автотригер вимкнений до першого успішного смоук-тесту.
+  # Увімкни, коли готові: секрет EXPO_TOKEN, App Store Connect API Key і Google
+  # Service Account key на EAS, ascAppId в eas.json, і перший AAB уже залитий
+  # у Play Console руками (через API перша публікація не проходить).
+  #
+  # push:
+  #   branches: [main]
+  #   paths-ignore:
+  #     - '**.md'
+  #     - '.github/**'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Явна версія X.Y.Z (порожньо — авто patch-бамп)'
+        required: false
+        type: string
+      platform:
+        description: 'Платформи для збірки'
+        required: false
+        default: all
+        type: choice
+        options:
+          - all
+          - ios
+          - android
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    name: Lint & types
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npx tsc --noEmit
+
+  release:
+    name: Version, build, submit
+    needs: quality
+    runs-on: ubuntu-latest
+    # Чекаємо на завершення збірки, щоб падіння на EAS давало червоний джоб у GitHub.
+    # Ціна — runner-хвилини на очікування. Якщо стане дорого, додай --no-wait до
+    # eas build нижче: сабміт усе одно доїде на боці EAS, але про фейл дізнаєшся
+    # лише з листа Expo.
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Bump version
+        id: version
+        run: node scripts/bump-version.js "${{ github.event.inputs.version }}"
+
+      - name: Commit and tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app.json package.json
+          if git diff --cached --quiet; then
+            echo "Версія не змінилась — коміт не потрібен"
+          else
+            git commit --no-verify -m "chore(release): v${VERSION} [skip ci]"
+          fi
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "Тег v${VERSION} уже існує — пропускаю"
+          else
+            git tag "v${VERSION}"
+          fi
+          git push origin HEAD:main --follow-tags
+
+      - name: Build and submit
+        run: |
+          eas build \
+            --platform ${{ github.event.inputs.platform || 'all' }} \
+            --profile production \
+            --auto-submit \
+            --non-interactive
