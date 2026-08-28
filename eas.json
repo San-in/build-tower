@@ -33,10 +33,11 @@
   "submit": {
     "production": {
       "ios": {
-        "appleTeamId": "MCFVD95NSG"
+        "appleTeamId": "MCFVD95NSG",
+        "ascAppId": "6806200749"
       },
       "android": {
-        "track": "internal"
+        "track": "alpha"
       }
     }
   }
