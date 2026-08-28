@@ -186,7 +186,12 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
   )
 
   useEffect(() => {
-    const timerId = shouldReset ? setTimeout(handleReset, 1000) : undefined
+    if (!shouldReset) {
+      return undefined
+    }
+
+    const timerId = setTimeout(handleReset, 1000)
+
     return () => clearTimeout(timerId)
   }, [handleReset, shouldReset])
 

@@ -75,7 +75,9 @@ const ButtonGradient = forwardRef<ButtonGradientHandle, ButtonGradientProps>(
 
       return () => {
         clearTimeout(startId)
-        clearInterval(intervalId)
+        if (intervalId !== undefined) {
+          clearInterval(intervalId)
+        }
         clearTimers()
       }
     }, [clearTimers, sweep])
