@@ -23,6 +23,7 @@ import { Header, MonkeyAnimation } from '@components/molecules'
 import {
   CustomModal,
   OptionModal,
+  RateAppModal,
   UnlockOptionModal,
   WheelOfFortuneModal,
 } from '@components/organisms'
@@ -59,6 +60,8 @@ import {
   selectTotalRemoveRandomBlocks,
 } from '@store/slices/marketSlice'
 import {
+  markRatePromptShown,
+  selectUserActivity,
   selectWelcomeBonusClaimed,
   setWelcomeBonusClaimed,
 } from '@store/slices/userActivitySlice'
@@ -151,6 +154,11 @@ const ASSET_KEYS = {
   GROUND: 'ground',
 }
 
+// Ask once for level 1, 10 and 20 (persisted via ratePromptShownLevels), every
+// time for level 30 — it's the last level, so there's no next unlock to gate on.
+const RATE_PROMPT_GATED_LEVELS = [1, 10, 20]
+const RATE_PROMPT_ALWAYS_LEVEL = 30
+
 const getModalOpenSound = (type: GAME_MODAL_TYPE) => {
   if (type === GAME_MODAL_TYPE.LevelResult) {
     return 'result_modal_open' as const
@@ -178,10 +186,6 @@ const GameScreen: FC = () => {
   const monkeyNotificationShownRef = useRef(false)
   const timersRef = useRef(new Set<ReturnType<typeof setTimeout>>())
 
-  // Every deferred step of the game loop goes through `schedule` so it can be
-  // cancelled as a group: hard on unmount, soft on level reset. A bare
-  // setTimeout here fires after the screen is gone and drives state (and even
-  // sound) for a level nobody is playing any more.
   const clearScheduled = useCallback(() => {
     timersRef.current.forEach(clearTimeout)
     timersRef.current.clear()
@@ -210,6 +214,9 @@ const GameScreen: FC = () => {
 
   const stars = useAppSelector(selectLevelById(level))?.stars ?? 0
   const isWelcomeBonusClaimed = useAppSelector(selectWelcomeBonusClaimed)
+  const ratePromptShownLevels = useAppSelector(
+    selectUserActivity
+  ).ratePromptShownLevels
   const totalRemoveBlocksPowerUps = useAppSelector(
     selectTotalRemoveRandomBlocks
   )
@@ -268,6 +275,7 @@ const GameScreen: FC = () => {
   const [isPrizeVisible, setIsPrizeVisible] = useState(false)
   const [isInterfacesVisible, setIsInterfacesVisible] = useState(false)
   const [isLevelFinished, setIsLevelFinished] = useState(false)
+  const [isRateModalVisible, setIsRateModalVisible] = useState(false)
 
   const [isModalOptionVisible, setIsModalOptionVisible] = useState(false)
   const [actionModalData, setActionModalData] =
@@ -675,6 +683,17 @@ const GameScreen: FC = () => {
         if (!resetStepUsedRef.current) {
           accrueAward(AWARD_TYPE.NO_RESET_STEPS)
         }
+
+        const isGatedPrompt = RATE_PROMPT_GATED_LEVELS.includes(level)
+        if (
+          (isGatedPrompt && !ratePromptShownLevels.includes(level)) ||
+          level === RATE_PROMPT_ALWAYS_LEVEL
+        ) {
+          if (isGatedPrompt) {
+            dispatch(markRatePromptShown(level))
+          }
+          schedule(() => setIsRateModalVisible(true), 2500)
+        }
       }
 
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -683,7 +702,13 @@ const GameScreen: FC = () => {
       setIsInterfacesVisible(false)
       handleOpenMonkeyAnimation(MONKEY_ANIMATION_TYPE.JumpToTop)
     },
-    [dispatch, handleGetPrizeAndUnlockLevel, level]
+    [
+      dispatch,
+      handleGetPrizeAndUnlockLevel,
+      level,
+      ratePromptShownLevels,
+      schedule,
+    ]
   )
 
   const handleLevelResultGetPrizePressed = useCallback(
@@ -1625,6 +1650,10 @@ const GameScreen: FC = () => {
         goal={initialBlockValue}
         onRequestClose={() => setIsMonkeyNotificationVisible(false)}
         visible={isMonkeyNotificationVisible}
+      />
+      <RateAppModal
+        isVisible={isRateModalVisible}
+        onClose={() => setIsRateModalVisible(false)}
       />
     </>
   )

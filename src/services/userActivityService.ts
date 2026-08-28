@@ -28,7 +28,7 @@ const loadPersisted = async (): Promise<UserActivityState> => {
   try {
     const parsed = JSON.parse(raw) as unknown
     return isValidUserActivity(parsed)
-      ? (parsed as UserActivityState)
+      ? { ...createInitialActivityState(), ...(parsed as UserActivityState) }
       : createInitialActivityState()
   } catch {
     return createInitialActivityState()

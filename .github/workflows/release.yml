@@ -1,16 +1,11 @@
 name: Release
 
 on:
-  # Автотригер вимкнений до першого успішного смоук-тесту.
-  # Увімкни, коли готові: секрет EXPO_TOKEN, App Store Connect API Key і Google
-  # Service Account key на EAS, ascAppId в eas.json, і перший AAB уже залитий
-  # у Play Console руками (через API перша публікація не проходить).
-  #
-  # push:
-  #   branches: [main]
-  #   paths-ignore:
-  #     - '**.md'
-  #     - '.github/**'
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
   workflow_dispatch:
     inputs:
       version:

@@ -2,3 +2,258 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npm run lint && npx tsc --noEmit && npm test
+
+export PATH="/Users/aleksandrsanin/.nvm/versions/node/v20.16.0/bin:$PATH"
+
+set -eu
+
+CLAUDE_MD_PATH="$(git rev-parse --show-toplevel)/CLAUDE.md"
+MAX_DIFF_CHARS=30000
+CLAUDE_MODEL_FAST="claude-haiku-4-5-20251001"   # mechanical pattern checks (conventions/aliases)
+CLAUDE_MODEL_SMART="claude-sonnet-5"             # deeper reasoning (bugs/logic/dead code)
+
+if ! command -v claude &>/dev/null; then
+  exit 0
+fi
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue
+  fi
+
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    base=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
+    if [ -z "$base" ]; then
+      exit 0
+    fi
+  else
+    base="$remote_sha"
+  fi
+
+  changed_files=$(git diff --name-only "$base" "$local_sha" 2>/dev/null || echo "")
+  if [ -z "$changed_files" ]; then
+    exit 0
+  fi
+
+  diff_full=$(git diff "$base" "$local_sha" -- '*.ts' '*.tsx' '*.js' '*.jsx' 2>/dev/null || echo "")
+  diff_output="${diff_full:0:$MAX_DIFF_CHARS}"
+
+  if [ -z "$diff_output" ]; then
+    exit 0
+  fi
+
+  files_list=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx)$' || echo "")
+  if [ -z "$files_list" ]; then
+    exit 0
+  fi
+
+  # ── Phase 1: deterministic grep checks (fast, always consistent) ──
+  added_lines=$(echo "$diff_output" | grep -E '^\+[^+]' || true)
+  grep_warnings=""
+
+  console_hits=$(echo "$added_lines" | grep -E 'console\.(log|debug)\(' | grep -vE '^\+\s*//' || true)
+  if [ -n "$console_hits" ]; then
+    grep_warnings="${grep_warnings}- debug statement (console.log/debug) left in committed code\n"
+  fi
+
+  scale_hits=$(echo "$added_lines" | grep -E '\b(verticalScale|moderateScale|scaleFont)\(' || true)
+  if [ -n "$scale_hits" ]; then
+    grep_warnings="${grep_warnings}- reintroduced verticalScale()/moderateScale()/scaleFont() — this project deliberately removed the scaling layer, use plain design values\n"
+  fi
+
+  zindex_hits=$(echo "$added_lines" | grep -E 'zIndex:\s*[0-9]' || true)
+  if [ -n "$zindex_hits" ]; then
+    grep_warnings="${grep_warnings}- raw numeric zIndex used instead of Z_INDEX_TYPE from @constants\n"
+  fi
+
+  raw_redux_hits=$(echo "$added_lines" | grep -E "\b(useSelector|useDispatch)\b" | grep -v "src/store/hooks" || true)
+  if [ -n "$raw_redux_hits" ]; then
+    grep_warnings="${grep_warnings}- untyped useSelector/useDispatch used instead of useAppSelector/useAppDispatch from src/store/hooks\n"
+  fi
+
+  if [ -n "$grep_warnings" ]; then
+    echo ""
+    echo "── Pre-push review: WARNINGS ────────────────────────────"
+    echo "WARNINGS:"
+    printf "%b" "$grep_warnings"
+    echo "─────────────────────────────────────────────────────────"
+    echo ""
+    echo "Push blocked. Fix warnings or use 'git push --no-verify' to bypass."
+    exit 1
+  fi
+
+  # ── Phase 2: parallel AI review ─────────────────────────────────
+  claude_md=""
+  if [ -f "$CLAUDE_MD_PATH" ]; then
+    claude_md=$(cat "$CLAUDE_MD_PATH")
+  fi
+
+  COMMON_HEADER="You are a code reviewer enforcing project coding standards.
+
+## Project standards (CLAUDE.md):
+${claude_md}
+
+## Changed files in this push:
+${files_list}
+
+## Diff (may be truncated at ${MAX_DIFF_CHARS} chars):
+${diff_output}
+
+CRITICAL: You may ONLY report findings in the files listed under 'Changed files in this push' above.
+Do NOT mention any other file — not even if you know about potential issues there from general knowledge or training data.
+
+IMPORTANT: Review ONLY newly added lines (+). Do not flag pre-existing code not touched in this diff.
+Report ALL issues you find — do not stop at the first one.
+
+Classify issues:
+- WARNINGS: clear violations of explicit rules in CLAUDE.md that will likely cause bugs or inconsistency
+- RECOMMENDATIONS: style suggestions, minor improvements, optional best practices
+
+Respond in EXACTLY this format (first line must be the status token, nothing else on that line):
+
+NO_ISSUES
+(if no issues found — nothing else needed)
+
+OR:
+
+WARNINGS_FOUND
+WARNINGS:
+- <file>:<line> — <concise description>
+
+OR:
+
+RECOMMENDATIONS_ONLY
+RECOMMENDATIONS:
+- <file>:<line> — <concise description>
+
+OR if both:
+
+WARNINGS_FOUND
+WARNINGS:
+- <file>:<line> — <concise description>
+
+RECOMMENDATIONS:
+- <file>:<line> — <concise description>"
+
+  PROMPT_CONVENTIONS="${COMMON_HEADER}
+
+Focus ONLY on:
+- Path aliases (@components, @utils, @theme, @store/*, @constants, etc. — see CLAUDE.md) not used where a deep relative import crosses into an aliased directory
+- Responsive styling: any reintroduced scaling helper, or hardcoded values that look copied from a different baseline than iPhone 11 (414 × 896 pt)
+- Z-index: raw numbers instead of Z_INDEX_TYPE / Z_INDEX_PRIORITY
+- Redux: raw react-redux hooks instead of the typed useAppSelector/useAppDispatch
+- AsyncStorage accessed directly outside a slice's service in src/services (SettingsProvider is the one deliberate exception)"
+
+  PROMPT_QUALITY="${COMMON_HEADER}
+
+Focus ONLY on:
+- TypeScript: 'any' type used, missing types on new functions/hooks
+- Dead code: newly added functions, variables, or imports never referenced in the diff
+- Potential bugs: missing cleanup for timers/subscriptions/animations added in this diff, infinite loops, off-by-one in level/medal threshold math
+- Game logic in src/utils: newly added non-deterministic behaviour (Math.random, Date.now, etc.) outside the three documented RNG helpers
+- Absolutely-positioned overlays anchored to another component (monkey bubbles, badges, wheel knob, modal decorations) whose offsets don't track the host's actual size (e.g. blocks * BLOCK_DIMENSION) but use a fixed value instead"
+
+  tmpdir=$(mktemp -d)
+  trap 'rm -rf "$tmpdir"' EXIT
+
+  claude -p "$PROMPT_CONVENTIONS" --model "$CLAUDE_MODEL_FAST" >"$tmpdir/conventions.txt" 2>"$tmpdir/conventions.err" &
+  pid1=$!
+  claude -p "$PROMPT_QUALITY" --model "$CLAUDE_MODEL_SMART" >"$tmpdir/quality.txt" 2>"$tmpdir/quality.err" &
+  pid2=$!
+
+  printf "\n⏳ AI is reviewing your push — please wait"
+  while kill -0 "$pid1" 2>/dev/null || kill -0 "$pid2" 2>/dev/null; do
+    printf "."
+    sleep 2
+  done
+  printf "\n"
+
+  rc1=0
+  rc2=0
+  wait "$pid1" || rc1=$?
+  wait "$pid2" || rc2=$?
+
+  # ── Detect silent AI-review failures (e.g. `claude` auth errors) ──
+  failed_reviews=""
+  if [ "$rc1" -ne 0 ] || [ ! -s "$tmpdir/conventions.txt" ]; then
+    reason="empty output"
+    [ "$rc1" -ne 0 ] && reason="exited with code $rc1"
+    errmsg=""
+    [ -s "$tmpdir/conventions.err" ] && errmsg=" — $(head -n 1 "$tmpdir/conventions.err")"
+    failed_reviews="${failed_reviews}- conventions review (${CLAUDE_MODEL_FAST}): ${reason}${errmsg}\n"
+  fi
+  if [ "$rc2" -ne 0 ] || [ ! -s "$tmpdir/quality.txt" ]; then
+    reason="empty output"
+    [ "$rc2" -ne 0 ] && reason="exited with code $rc2"
+    errmsg=""
+    [ -s "$tmpdir/quality.err" ] && errmsg=" — $(head -n 1 "$tmpdir/quality.err")"
+    failed_reviews="${failed_reviews}- quality review (${CLAUDE_MODEL_SMART}): ${reason}${errmsg}\n"
+  fi
+  if [ -n "$failed_reviews" ]; then
+    echo ""
+    echo "⚠️  AI review did not run for one or more checks (push NOT blocked by this):"
+    printf "%b" "$failed_reviews"
+    echo "   Check \`claude\` auth (\`claude -p \"hi\"\`) if this keeps happening."
+    echo ""
+  fi
+
+  has_warnings=false
+  all_warnings=""
+  all_recs=""
+
+  for f in "$tmpdir/conventions.txt" "$tmpdir/quality.txt"; do
+    [ -f "$f" ] || continue
+    content=$(cat "$f" 2>/dev/null || true)
+    [ -z "$content" ] && continue
+
+    status=$(echo "$content" | head -n 1 | tr -d '[:space:]')
+
+    case "$status" in
+      WARNINGS_FOUND)
+        has_warnings=true
+        w=$(echo "$content" | awk '/^WARNINGS:/{p=1;next} /^RECOMMENDATIONS:/{p=0} p{print}' || true)
+        r=$(echo "$content" | awk '/^RECOMMENDATIONS:/{p=1;next} p{print}' || true)
+        [ -n "$w" ] && all_warnings="${all_warnings}${w}"$'\n'
+        [ -n "$r" ] && all_recs="${all_recs}${r}"$'\n'
+        ;;
+      RECOMMENDATIONS_ONLY)
+        r=$(echo "$content" | awk '/^RECOMMENDATIONS:/{p=1;next} p{print}' || true)
+        [ -n "$r" ] && all_recs="${all_recs}${r}"$'\n'
+        ;;
+    esac
+  done
+
+  if $has_warnings; then
+    echo ""
+    echo "── Pre-push review: WARNINGS ────────────────────────────"
+    [ -n "$all_warnings" ] && printf "WARNINGS:\n%s\n" "$all_warnings"
+    [ -n "$all_recs" ] && printf "RECOMMENDATIONS:\n%s\n" "$all_recs"
+    echo "─────────────────────────────────────────────────────────"
+    echo ""
+    echo "Push blocked. Fix warnings or use 'git push --no-verify' to bypass."
+    exit 1
+  elif [ -n "$all_recs" ]; then
+    if [ -t 1 ]; then
+      echo ""
+      echo "── Pre-push review ──────────────────────────────────────"
+      printf "RECOMMENDATIONS:\n%s\n" "$all_recs"
+      echo "─────────────────────────────────────────────────────────"
+      echo ""
+      echo "Pushing automatically in 180s — type 'n' to cancel:"
+      read -r -t 180 -p "Push anyway? [Y/n] " response </dev/tty || true
+      case "$response" in
+        [nN][oO]|[nN])
+          echo "Push cancelled."
+          exit 1
+          ;;
+        *)
+          echo "Pushing..."
+          ;;
+      esac
+    fi
+  else
+    echo "✓ Pre-push review: no issues found."
+  fi
+done
+
+exit 0

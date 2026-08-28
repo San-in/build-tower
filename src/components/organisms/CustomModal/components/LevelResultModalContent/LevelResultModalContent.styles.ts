@@ -34,8 +34,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: formatTabletElementsSize(10),
   },
+  // Full width, not `flex: 1`: prizeContainer is a wrapping row whose long
+  // "already claimed" message fills the line, and RN's default flexShrink of 0
+  // means it never gives that width back. A zero-basis item would collapse to
+  // 0 wide, hiding the text and leaving only the fixed-size BananasIcon
+  // overflowing. A full-width basis puts this block on its own line instead.
   consolationPrizeHederContainer: {
-    flex: 1,
+    alignItems: 'center',
+    width: '100%',
   },
   container: { alignItems: 'center', justifyContent: 'center' },
   iconContainer: {

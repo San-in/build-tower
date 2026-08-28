@@ -11,6 +11,40 @@ of state lives on the device (Redux Toolkit + AsyncStorage). The player grows a
 tower" height, choosing one of two arithmetic operations each step. 30 levels,
 grouped Easy / Medium / Hard, themed after world cities.
 
+## Mandatory Planning Before Mutating Actions
+
+Read-only actions (Read, Glob, LS, grep, find, `git status`/`log`/`diff`, etc.) —
+execute immediately, no plan needed.
+
+Mutating actions require a plan and explicit user approval before execution:
+
+- File changes: Edit, Write
+- Dangerous shell: `rm`, `mv`, package installs/removes (`npm install`/`uninstall`),
+  `git commit`, `git push`, `git reset`
+- Any action that adds, modifies, or deletes code or files
+
+Single action — present plan and wait:
+
+```
+Plan: edit src/foo.tsx — remove displayName field
+Proceed? (yes/no)
+```
+
+Multiple parallel actions — list and wait for selection:
+
+```
+Plan:
+1. Edit src/foo.tsx — remove displayName field
+2. Edit src/validation/schemas.js — remove displayName rule
+3. Edit src/types/form.ts — update types
+
+Approve: all / 1 / 2 / 1,2 / 1,3 / etc.
+```
+
+Never execute mutating actions without explicit approval. If the user already
+described the task in detail and said "do it" — that counts as approval, list the
+plan and proceed.
+
 ## Commands
 
 ```bash

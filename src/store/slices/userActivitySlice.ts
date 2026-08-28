@@ -12,6 +12,7 @@ export interface UserActivityState {
   welcomeBonusClaimed: boolean
   days: Array<DayEntry>
   lastCheckAt: string | null
+  ratePromptShownLevels: Array<number>
 }
 
 const now = () => new Date()
@@ -50,6 +51,7 @@ export const createInitialActivityState = (): UserActivityState => ({
   welcomeBonusClaimed: false,
   days: makeDefaultDays(),
   lastCheckAt: null,
+  ratePromptShownLevels: [],
 })
 
 const initialState: UserActivityState = createInitialActivityState()
@@ -82,6 +84,12 @@ const userActivitySlice = createSlice({
       }
       day.rewardClaimed = true
     },
+
+    markRatePromptShown: (state, { payload }: PayloadAction<number>) => {
+      if (!state.ratePromptShownLevels.includes(payload)) {
+        state.ratePromptShownLevels.push(payload)
+      }
+    },
   },
 })
 
@@ -91,6 +99,7 @@ export const {
   resetActivityToDefault,
   applyStreakUpdate,
   markRewardClaimedForDay,
+  markRatePromptShown,
 } = userActivitySlice.actions
 
 export default userActivitySlice.reducer
@@ -110,6 +119,10 @@ export const selectIsHasUnclaimedRewards = (state: RootState) =>
 
 export const selectWelcomeBonusClaimed = (state: RootState) =>
   state.userActivity.welcomeBonusClaimed
+
+export const selectHasRatePromptShownForLevel =
+  (level: number) => (state: RootState) =>
+    state.userActivity.ratePromptShownLevels.includes(level)
 
 const calculateHoursDifference = (fromISO: string, to: Date): number => {
   const from = new Date(fromISO)
