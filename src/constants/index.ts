@@ -11,6 +11,10 @@ import {
   Z_INDEX_PRIORITY,
 } from '@types'
 
+// Deliberately bypasses the `@utils` barrel: that barrel re-exports
+// generateInitialLevels, which imports TOTAL_LEVELS from this very file,
+// so importing the barrel here creates a require cycle. This file only
+// needs the one leaf function, which has no path back to `@constants`.
 import { formatTabletElementsSize } from '../utils/formatTabletElementsSize'
 
 export { IS_TABLET } from './device'
