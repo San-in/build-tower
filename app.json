@@ -13,6 +13,7 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.sanin.buildtower",
+      "appStoreUrl": "https://apps.apple.com/app/id6806200749",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "UISupportedInterfaceOrientations": [
@@ -28,7 +29,8 @@
         "foregroundImage": "./assets/images/android-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.sanin.buildtower"
+      "package": "com.sanin.buildtower",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.sanin.buildtower"
     },
     "web": {
       "bundler": "metro",

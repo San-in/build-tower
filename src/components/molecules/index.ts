@@ -1,3 +1,4 @@
+export * from './ComingSoonCard'
 export * from './Header'
 export * from './LevelCard'
 export * from './ModalCard'

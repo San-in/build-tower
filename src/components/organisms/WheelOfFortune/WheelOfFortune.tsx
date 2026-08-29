@@ -86,6 +86,7 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
     const angleOffset = 360 / Math.max(sectors.length, 1) / 2
     const [winnerSector, setWinnerSector] = useState<number | null>(null)
     const spinIdRef = useRef(0)
+    const hapticIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
     const makeWheel = useCallback(() => {
       const data = Array.from<number>({ length: sectors.length }).fill(1)
@@ -119,7 +120,16 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
 
     const wheelPaths = useMemo(() => makeWheel(), [makeWheel])
 
-    useEffect(() => () => stopLoopSfx('roulette'), [])
+    useEffect(
+      () => () => {
+        stopLoopSfx('roulette')
+        if (hapticIntervalRef.current) {
+          clearInterval(hapticIntervalRef.current)
+          hapticIntervalRef.current = null
+        }
+      },
+      []
+    )
 
     const spin = () => {
       spinIdRef.current += 1
@@ -132,12 +142,18 @@ const WheelOfFortune = forwardRef<WheelOfFortuneRef, WheelOfFortuneProps>(
       setWinnerSector(null)
       startLoopSfx('roulette')
 
-      const hapticInterval = setInterval(() => {
+      if (hapticIntervalRef.current) {
+        clearInterval(hapticIntervalRef.current)
+      }
+      hapticIntervalRef.current = setInterval(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
       }, 300)
 
       const handleSpinEnd = (finished?: boolean) => {
-        clearInterval(hapticInterval)
+        if (hapticIntervalRef.current) {
+          clearInterval(hapticIntervalRef.current)
+          hapticIntervalRef.current = null
+        }
         if (spinIdRef.current === spinId) {
           stopLoopSfx('roulette')
         }

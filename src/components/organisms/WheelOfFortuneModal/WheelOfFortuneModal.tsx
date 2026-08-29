@@ -2,7 +2,7 @@ import { BlockIcon, Button, OutlinedText } from '@components/atoms'
 import { SuccessActionInfoModal } from '@components/organisms/SuccessActionInfoModal'
 import { WheelOfFortune } from '@components/organisms/WheelOfFortune'
 import { WheelOfFortuneRef } from '@components/organisms/WheelOfFortune/WheelOfFortune.types'
-import { INITIAL_SPIN_QUANTITY } from '@constants'
+import { EMPTY_FUNCTION, INITIAL_SPIN_QUANTITY } from '@constants'
 import { COLORS, GlobalStyles } from '@theme'
 import { BUTTON_TYPE, OPERATOR, POWER_UP_TYPE, TOWER } from '@types'
 import {
@@ -216,7 +216,7 @@ const WheelOfFortuneModal: FC<WheelOfFortuneModalProps> = ({
     <Modal
       statusBarTranslucent
       animationType="fade"
-      onRequestClose={handleClose}
+      onRequestClose={EMPTY_FUNCTION}
       transparent={true}
       visible={isVisible}
     >

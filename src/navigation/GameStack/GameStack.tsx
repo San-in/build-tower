@@ -17,7 +17,11 @@ const GameStack = () => (
     <Stack.Screen
       component={WelcomeScreen}
       name={SCREENS.WelcomeScreen}
-      options={{ animation: 'fade' }}
+      // The persistent ActivityCalendar bottom sheet loses its native
+      // gesture/Reanimated wiring across a react-freeze cycle: JS state
+      // (isOpen, the ref, the effect) keeps working, but `.expand()` stops
+      // reaching the sheet after this screen has been frozen and refocused.
+      options={{ animation: 'fade', freezeOnBlur: false }}
     />
     <Stack.Screen
       component={GameScreen}

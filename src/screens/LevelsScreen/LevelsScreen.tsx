@@ -1,7 +1,8 @@
 import { BackColorIcon, BananasIcon } from '@assets/icons'
 import { BackgroundImg, LockImg } from '@assets/images'
 import { Button, IconButton, OutlinedText } from '@components/atoms'
-import { LevelCard } from '@components/molecules'
+import { ComingSoonCard, LevelCard } from '@components/molecules'
+import { RequestMoreLevelsModal } from '@components/organisms'
 import { LEVEL_CARD_GAP, LEVEL_CARD_WIDTH, TOTAL_LEVELS } from '@constants'
 import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
@@ -9,7 +10,10 @@ import { useNavigation } from '@react-navigation/core'
 import { NavigationProp } from '@react-navigation/native'
 import { useAppSelector } from '@store/hooks'
 import { selectBananas } from '@store/slices/bananasSlice'
-import { selectAvailableLevels } from '@store/slices/levelsSlice'
+import {
+  selectAvailableLevels,
+  selectLevelById,
+} from '@store/slices/levelsSlice'
 import { GlobalStyles } from '@theme'
 import { BUTTON_TYPE, LevelId, SCREENS } from '@types'
 import {
@@ -42,6 +46,9 @@ const ASSET_KEYS = {
 const separatorStyle = { width: ITEM_GAP }
 const ItemSeparator = () => <View style={separatorStyle} />
 
+const COMING_SOON_ITEM = 'comingSoon' as const
+type LevelListItem = LevelId | typeof COMING_SOON_ITEM
+
 const LevelsScreen = () => {
   useBackgroundMusic('welcome')
   const availableLevels = useAppSelector(selectAvailableLevels)
@@ -51,12 +58,17 @@ const LevelsScreen = () => {
   const insets = useSafeAreaInsets()
   const { width } = useWindowDimensions()
 
-  const listRef = useRef<FlatList<LevelId>>(null)
+  const listRef = useRef<FlatList<LevelListItem>>(null)
   const didInitialCenter = useRef(false)
 
   const [selectedLevel, setSelectedLevel] = useState<LevelId>(
     (Math.min(availableLevels.length, TOTAL_LEVELS) || 1) as LevelId
   )
+  const [isRequestLevelsModalVisible, setIsRequestLevelsModalVisible] =
+    useState(false)
+
+  const level30 = useAppSelector(selectLevelById(TOTAL_LEVELS as LevelId))
+  const isLevel30Passed = Boolean(level30?.stars)
 
   const preloadList = useMemo(
     () => [
@@ -73,8 +85,11 @@ const LevelsScreen = () => {
     Object.values(ASSET_KEYS)
   )
 
-  const data = useMemo(
-    () => Array.from({ length: TOTAL_LEVELS }, (_, i) => (i + 1) as LevelId),
+  const data = useMemo<Array<LevelListItem>>(
+    () => [
+      ...Array.from({ length: TOTAL_LEVELS }, (_, i) => (i + 1) as LevelId),
+      COMING_SOON_ITEM,
+    ],
     []
   )
   const sideSpacer = useMemo(
@@ -127,6 +142,12 @@ const LevelsScreen = () => {
     [getOffsetForIndex]
   )
 
+  const handleComingSoonPress = useCallback(() => {
+    void Haptics.selectionAsync()
+    playSfx('button')
+    setIsRequestLevelsModalVisible(true)
+  }, [])
+
   useEffect(() => {
     if (assetsReady) {
       assetLoaded(ASSET_KEYS.ASSETS)
@@ -143,20 +164,28 @@ const LevelsScreen = () => {
   }, [width, selectedLevel, getOffsetForIndex])
 
   const renderItem = useCallback(
-    ({ item: level }: { item: LevelId }) => {
-      const isSelectedLevel = level === selectedLevel
+    ({ item }: { item: LevelListItem }) => {
+      if (item === COMING_SOON_ITEM) {
+        return (
+          <ComingSoonCard
+            isEnabled={isLevel30Passed}
+            onPress={handleComingSoonPress}
+          />
+        )
+      }
+      const isSelectedLevel = item === selectedLevel
       return (
         <LevelCard
           isSelectedLevel={isSelectedLevel}
-          level={level}
-          onPress={() => handleSelectLevel(level)}
+          level={item}
+          onPress={() => handleSelectLevel(item)}
         />
       )
     },
-    [selectedLevel, handleSelectLevel]
+    [selectedLevel, handleSelectLevel, isLevel30Passed, handleComingSoonPress]
   )
 
-  const keyExtractor = useCallback((lvl: LevelId) => String(lvl), [])
+  const keyExtractor = useCallback((item: LevelListItem) => String(item), [])
 
   const handleBgLoaded = useCallback(
     () => assetLoaded(ASSET_KEYS.BG),
@@ -275,6 +304,11 @@ const LevelsScreen = () => {
           />
         </View>
       </View>
+
+      <RequestMoreLevelsModal
+        isVisible={isRequestLevelsModalVisible}
+        onClose={() => setIsRequestLevelsModalVisible(false)}
+      />
     </View>
   )
 }

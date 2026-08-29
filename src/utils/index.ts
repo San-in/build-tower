@@ -26,6 +26,8 @@ export {
   getValidOptionNumber,
   showIsUserNeedHelp,
 } from './nextStepOptionsUtils'
+export { openStoreForReview } from './openStoreForReview'
+export { openStoreWriteReviewPage } from './openStoreWriteReviewPage'
 export {
   type LoopSfxName,
   type MusicTrack,

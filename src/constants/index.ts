@@ -10,7 +10,8 @@ import {
   POWER_UP_GRADE,
   Z_INDEX_PRIORITY,
 } from '@types'
-import { formatTabletElementsSize } from '@utils'
+
+import { formatTabletElementsSize } from '../utils/formatTabletElementsSize'
 
 export { IS_TABLET } from './device'
 

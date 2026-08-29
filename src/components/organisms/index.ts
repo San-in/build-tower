@@ -1,6 +1,7 @@
 export * from './CustomModal'
 export * from './OptionModal'
 export * from './RateAppModal'
+export * from './RequestMoreLevelsModal'
 export * from './SuccessActionInfoModal'
 export * from './UnlockOptionModal'
 export * from './WheelOfFortune'

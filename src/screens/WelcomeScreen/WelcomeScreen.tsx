@@ -36,7 +36,13 @@ import { formatTabletElementsSize, playSfx } from '@utils'
 import { Image } from 'expo-image'
 import LottieView from 'lottie-react-native'
 import { AnimatePresence, MotiView } from 'moti'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { BackHandler, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -106,6 +112,19 @@ const WelcomeScreen = () => {
     }, [])
   )
 
+  const birdsAnimationRef = useRef<LottieView>(null)
+
+  // freezeOnBlur is off for this screen (it breaks the ActivityCalendar
+  // bottom sheet across a freeze/unfocus cycle), so the birds loop is paused
+  // by hand instead — otherwise it keeps burning frame budget the whole time
+  // a level is being played on top of this screen.
+  useFocusEffect(
+    useCallback(() => {
+      birdsAnimationRef.current?.play()
+      return () => birdsAnimationRef.current?.pause()
+    }, [])
+  )
+
   const handleStartButtonPress = () => {
     setIsCalendarOpen(false)
     navigation.navigate(SCREENS.LevelsScreen)
@@ -159,6 +178,7 @@ const WelcomeScreen = () => {
         <LottieView
           loop
           autoPlay={true}
+          ref={birdsAnimationRef}
           source={birdsAnimation}
           style={styles.birdsAnimation}
         />

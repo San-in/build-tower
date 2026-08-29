@@ -1,65 +1,35 @@
 import { CustomModal } from '@components/organisms/CustomModal'
 import { BasicModalContent } from '@components/organisms/CustomModal/components'
 import { MODAL_TYPE } from '@types'
-import * as StoreReview from 'expo-store-review'
-import { FC, useEffect, useState } from 'react'
-import { Linking } from 'react-native'
+import { openStoreForReview } from '@utils'
+import { FC } from 'react'
 
 import { RateAppModalProps } from './RateAppModal.types'
 
-type Step = 'ask' | 'rate'
-
 const RateAppModal: FC<RateAppModalProps> = ({ isVisible, onClose }) => {
-  const [step, setStep] = useState<Step>('ask')
-
-  useEffect(() => {
-    if (isVisible) {
-      setStep('ask')
-    }
-  }, [isVisible])
-
   const handleLike = () => {
-    setStep('rate')
-  }
-
-  const handleRate = async () => {
-    try {
-      if (await StoreReview.isAvailableAsync()) {
-        await StoreReview.requestReview()
-      } else {
-        const url = StoreReview.storeUrl()
-        if (url) {
-          await Linking.openURL(url)
-        }
-      }
-    } catch {
-      // rating is best-effort — nothing to recover from here
-    }
+    // Close our own Modal before presenting the native review sheet — leaving
+    // it open while iOS stacks SKStoreReviewController on top can strand it
+    // in a broken presentation state that keeps blocking touches even after
+    // isVisible flips to false.
     onClose()
+    void openStoreForReview()
   }
 
   return (
     <CustomModal
       handleClose={onClose}
       modalVisible={isVisible}
-      title={step === 'ask' ? 'Enjoying the game?' : 'Thank you!'}
+      title="Enjoying the game?"
       type={MODAL_TYPE.Blue}
     >
-      {step === 'ask' ? (
-        <BasicModalContent
-          cancelButtonText="NO"
-          confirmButtonText="YES"
-          onCancel={onClose}
-          onConfirm={handleLike}
-          text="Let us know how you like the game"
-        />
-      ) : (
-        <BasicModalContent
-          confirmButtonText="Rate Us"
-          onConfirm={handleRate}
-          text="Leave us a rating in the store — it really helps!"
-        />
-      )}
+      <BasicModalContent
+        cancelButtonText="NO"
+        confirmButtonText="YES"
+        onCancel={onClose}
+        onConfirm={handleLike}
+        text="Let us know how you like the game"
+      />
     </CustomModal>
   )
 }

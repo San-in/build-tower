@@ -45,7 +45,8 @@ import { useAssetPreload, useAssetsReady, useBackgroundMusic } from '@hooks'
 import { GameStackParamList } from '@navigation/GameStack/GameStack.types'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/core'
-import { NavigationProp, useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { increaseRepeatsForAward } from '@store/slices/awardsSlice'
 import { addBananas } from '@store/slices/bananasSlice'
@@ -254,7 +255,8 @@ const GameScreen: FC = () => {
   )
   const { ready: assetsReady } = useAssetPreload(assetsToPreload)
 
-  const navigation = useNavigation<NavigationProp<GameStackParamList>>()
+  const navigation =
+    useNavigation<NativeStackNavigationProp<GameStackParamList>>()
   const dispatch = useAppDispatch()
   useBackgroundMusic('level')
 
@@ -490,7 +492,11 @@ const GameScreen: FC = () => {
 
   const handleGoHome = useCallback(async () => {
     handleCloseActionModal()
-    setImmediate(() => navigation.navigate(SCREENS.WelcomeScreen))
+    // `navigate` pushes a NEW Welcome in React Navigation v7 (it only reuses an
+    // existing route when the name matches the current one), so the whole
+    // Welcome → Levels → Game cycle grew the stack on every playthrough and
+    // left the old screens mounted with their animation loops still running.
+    setImmediate(() => navigation.popTo(SCREENS.WelcomeScreen))
   }, [handleCloseActionModal, navigation])
 
   const handleGoHomeAfterLoss = useCallback(() => {
@@ -1226,7 +1232,7 @@ const GameScreen: FC = () => {
           ),
           actionModalColor: MODAL_TYPE.Purple,
           withCrossIcon: false,
-          onCrossIconPress: handleCloseActionModal,
+          onCrossIconPress: EMPTY_FUNCTION,
         },
         [GAME_MODAL_TYPE.LevelResult]: {
           actionModalContent: (
